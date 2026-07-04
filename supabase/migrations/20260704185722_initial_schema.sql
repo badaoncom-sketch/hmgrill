@@ -68,6 +68,16 @@ create index member_coupons_issue_id_idx on public.member_coupons(issue_id);
 create index member_coupons_status_idx on public.member_coupons(status);
 create index coupon_events_issue_id_idx on public.coupon_events(issue_id);
 
+grant usage on schema public to anon, authenticated, service_role;
+grant select on public.coupon_issues to anon, authenticated;
+grant select on public.profiles to authenticated;
+grant select on public.member_coupons to authenticated;
+grant select on public.coupon_events to authenticated;
+grant all on public.profiles to service_role;
+grant all on public.coupon_issues to service_role;
+grant all on public.member_coupons to service_role;
+grant all on public.coupon_events to service_role;
+
 alter table public.profiles enable row level security;
 alter table public.coupon_issues enable row level security;
 alter table public.member_coupons enable row level security;
@@ -75,23 +85,27 @@ alter table public.coupon_events enable row level security;
 
 create policy "Profiles are readable by owner"
   on public.profiles for select
-  using (auth.uid() = id);
+  to authenticated
+  using ((select auth.uid()) = id);
 
-create policy "Members can read issuing coupons"
+create policy "Public can read issuing coupons"
   on public.coupon_issues for select
+  to anon, authenticated
   using (status = 'issuing');
 
 create policy "Members can read own coupons"
   on public.member_coupons for select
-  using (auth.uid() = member_id);
+  to authenticated
+  using ((select auth.uid()) = member_id);
 
 create policy "Members can read own coupon events"
   on public.coupon_events for select
+  to authenticated
   using (
     exists (
       select 1
       from public.member_coupons mc
       where mc.id = coupon_events.member_coupon_id
-      and mc.member_id = auth.uid()
+      and mc.member_id = (select auth.uid())
     )
   );

@@ -14,6 +14,7 @@
 - Supabase SSR 클라이언트 준비
 - Resend 이메일 인증 API 라우트와 이메일 템플릿 준비
 - Supabase 초기 스키마와 RLS 초안 작성
+- Supabase CLI 프로젝트 설정과 표준 마이그레이션 파일 구성
 - 환경변수 예시 파일 작성
 
 ## 아직 실제 연동 전인 항목
@@ -36,3 +37,14 @@
 - `npm run build`: 통과
 - 개발 서버: `http://localhost:3000`
 - 라우트 응답 확인: `/`, `/coupons`, `/staff`, `/admin/coupons` 모두 `200 OK`
+- `.env.local` 필수 키 존재 확인: 통과
+- Supabase CLI 확인: `2.108.0`
+
+## Supabase 마이그레이션 운영 기준
+
+추후 사용자가 Supabase SQL 적용을 요청하면 Codex가 직접 마이그레이션을 실행한다.
+
+- 새 SQL 변경은 `supabase migration new <name>`으로 파일을 만든 뒤 작성한다.
+- 원격 적용 전 Supabase changelog와 CLI help를 확인한다.
+- `public` 테이블은 명시적 `GRANT`와 RLS 정책을 함께 관리한다.
+- 적용 후 가능한 범위에서 migration list, advisors, 테스트 쿼리로 검증한다.

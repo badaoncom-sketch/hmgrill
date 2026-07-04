@@ -25,7 +25,8 @@
 | `src/components/*` | 신규 작성 | 재사용 UI, 쿠폰 카드, QR 쿠폰, 직원 스캐너, 관리자 쿠폰 발행 폼을 구성했다. |
 | `src/lib/*` | 신규 작성 | 타입, 샘플 데이터, 쿠폰 정책, Supabase 클라이언트, 환경변수 유틸을 구성했다. |
 | `src/emails/*` | 신규 작성 | Resend 이메일 인증 템플릿을 구성했다. |
-| `supabase/migrations/0001_initial_schema.sql` | 신규 작성 | 쿠폰 운영을 위한 초기 테이블, enum, RLS 초안을 작성했다. |
+| `supabase/config.toml` | 신규 작성 | Supabase CLI 프로젝트 설정을 초기화했다. |
+| `supabase/migrations/20260704185722_initial_schema.sql` | 신규 작성 | 쿠폰 운영을 위한 초기 테이블, enum, 명시적 GRANT, RLS 초안을 작성했다. |
 
 ## 확인한 사항
 
@@ -35,6 +36,7 @@
 - 이전 커밋은 원격 `origin/main`과 동기화되어 있었다.
 - 구현 코드와 패키지 설정이 존재한다.
 - Supabase 원격 마이그레이션은 아직 적용하지 않았다.
+- 추후 Supabase SQL 마이그레이션은 사용자가 별도 요청하면 Codex가 직접 적용한다.
 
 ## 미확인 또는 향후 확인 필요
 
