@@ -19,7 +19,6 @@
 
 ## 아직 실제 연동 전인 항목
 
-- Supabase 프로젝트 생성 및 원격 마이그레이션 적용
 - Supabase Auth 회원가입, 로그인 서버 액션 연결
 - 쿠폰 발행, 다운로드, 사용완료의 DB 트랜잭션 구현
 - 관리자, 직원 권한 검증 미들웨어 또는 서버 가드 구현
@@ -43,6 +42,11 @@
 - `npm run db:push:dry-run`: DB 마이그레이션 접속정보가 없어 안전하게 중단됨
 - 직접 DB URL dry-run: IPv6 직접 접속 문제로 실패. Transaction Pooler IPv4 접속 문자열 필요
 - Transaction Pooler dry-run: region-only host는 자동 보정했으나 `tenant/user not found`로 실패. Dashboard에서 복사한 정확한 pooler URI 필요
+- Supabase 원격 마이그레이션 적용: `20260704185722`, `20260704192827` 적용 완료
+- Supabase advisors: 이슈 없음
+- RLS 확인: `profiles`, `coupon_issues`, `member_coupons`, `coupon_events` 모두 활성화
+- 정책 확인: 4개 SELECT 정책 적용 확인
+- GRANT 확인: `anon`은 `coupon_issues` SELECT만 허용, `authenticated`는 필요한 SELECT만 허용, `service_role`은 운영 권한 허용
 
 ## Supabase 마이그레이션 운영 기준
 

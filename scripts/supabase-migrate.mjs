@@ -46,6 +46,10 @@ function normalizePoolerUrl(rawUrl) {
     url.hostname = `aws-0-${url.hostname}`;
   }
 
+  if (url.hostname.endsWith(".pooler.supabase.com")) {
+    url.port = "5432";
+  }
+
   return url.toString();
 }
 

@@ -23,6 +23,8 @@ SUPABASE_POOLER_DB_URL=
 
 pooler 호스트가 `ap-northeast-2.pooler.supabase.com`처럼 region-only 형태이면 스크립트가 `aws-0-ap-northeast-2.pooler.supabase.com` 형식으로 자동 보정한다.
 
+Supabase CLI migration 작업은 prepared statement 문제를 피하기 위해 pooler session 포트인 `5432`를 사용한다. Dashboard의 Transaction pooler URI가 `6543` 포트여도 스크립트가 CLI 실행 시 `5432`로 보정한다.
+
 대안 1:
 
 ```bash
