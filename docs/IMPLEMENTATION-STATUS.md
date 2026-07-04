@@ -39,6 +39,8 @@
 - 라우트 응답 확인: `/`, `/coupons`, `/staff`, `/admin/coupons` 모두 `200 OK`
 - `.env.local` 필수 키 존재 확인: 통과
 - Supabase CLI 확인: `2.108.0`
+- Supabase CLI/MCP 계정 프로젝트 확인: 현재 연결 계정에는 `.env.local`의 hmgrill project ref가 표시되지 않음
+- `npm run db:push:dry-run`: DB 마이그레이션 접속정보가 없어 안전하게 중단됨
 
 ## Supabase 마이그레이션 운영 기준
 
@@ -48,3 +50,4 @@
 - 원격 적용 전 Supabase changelog와 CLI help를 확인한다.
 - `public` 테이블은 명시적 `GRANT`와 RLS 정책을 함께 관리한다.
 - 적용 후 가능한 범위에서 migration list, advisors, 테스트 쿼리로 검증한다.
+- 직접 적용을 위해 `npm run db:push:dry-run`, `npm run db:push` 스크립트를 사용한다.

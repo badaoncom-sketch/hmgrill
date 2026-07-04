@@ -19,12 +19,14 @@
 | `docs/FILE-AUDIT.md` | 신규 작성 | 현재 저장소 파일별 점검 결과를 기록했다. |
 | `docs/IMPLEMENTATION-ROADMAP.md` | 신규 작성 | 기획설계서를 기준으로 개발 단계와 검증 기준을 정리했다. |
 | `docs/IMPLEMENTATION-STATUS.md` | 신규 작성 | 1차 구현 완료 범위와 남은 실제 연동 항목을 기록했다. |
+| `docs/SUPABASE-MIGRATION.md` | 신규 작성 | Codex가 직접 Supabase 마이그레이션을 적용하기 위한 환경변수와 명령을 정리했다. |
 | `package.json` | 신규 작성 | Next.js, React, Supabase, Resend, UI 유틸 의존성과 실행 스크립트를 정의했다. |
 | `.env.example` | 신규 작성 | Supabase, Resend, 사이트 URL 환경변수 예시를 정의했다. |
 | `src/app/*` | 신규 작성 | 공개, 회원, 쿠폰, 직원모드, 관리자 라우트 화면을 구성했다. |
 | `src/components/*` | 신규 작성 | 재사용 UI, 쿠폰 카드, QR 쿠폰, 직원 스캐너, 관리자 쿠폰 발행 폼을 구성했다. |
 | `src/lib/*` | 신규 작성 | 타입, 샘플 데이터, 쿠폰 정책, Supabase 클라이언트, 환경변수 유틸을 구성했다. |
 | `src/emails/*` | 신규 작성 | Resend 이메일 인증 템플릿을 구성했다. |
+| `scripts/supabase-migrate.mjs` | 신규 작성 | `.env.local`의 DB 접속정보를 사용해 Supabase 원격 마이그레이션을 직접 적용하는 스크립트다. |
 | `supabase/config.toml` | 신규 작성 | Supabase CLI 프로젝트 설정을 초기화했다. |
 | `supabase/migrations/20260704185722_initial_schema.sql` | 신규 작성 | 쿠폰 운영을 위한 초기 테이블, enum, 명시적 GRANT, RLS 초안을 작성했다. |
 
