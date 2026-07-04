@@ -1,3 +1,5 @@
+import Image from "next/image";
+import QRCode from "qrcode";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import type { MemberCoupon } from "@/lib/types";
@@ -9,8 +11,21 @@ const statusLabel = {
   expired: "기간 만료",
 };
 
-export function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
+async function createQrDataUrl(token: string) {
+  return QRCode.toDataURL(token, {
+    errorCorrectionLevel: "M",
+    margin: 2,
+    width: 280,
+    color: {
+      dark: "#171717",
+      light: "#ffffff",
+    },
+  });
+}
+
+export async function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
   const isAvailable = coupon.status === "available";
+  const qrDataUrl = isAvailable ? await createQrDataUrl(coupon.token) : "";
 
   return (
     <Card>
@@ -63,18 +78,15 @@ export function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
         <div className="grid content-start gap-3">
           {isAvailable ? (
             <div className="aspect-square rounded-lg border border-neutral-300 bg-white p-5">
-              <div className="grid h-full grid-cols-5 grid-rows-5 gap-2">
-                {Array.from({ length: 25 }).map((_, index) => (
-                  <span
-                    key={index}
-                    className={
-                      index % 2 === 0 || index % 7 === 0
-                        ? "bg-neutral-950"
-                        : "bg-neutral-100"
-                    }
-                  />
-                ))}
-              </div>
+              {/* The QR payload intentionally contains only the opaque coupon token. */}
+              <Image
+                src={qrDataUrl}
+                alt="쿠폰 QR 코드"
+                width={280}
+                height={280}
+                unoptimized
+                className="h-full w-full object-contain"
+              />
             </div>
           ) : (
             <div className="grid aspect-square place-items-center rounded-lg border border-neutral-200 bg-neutral-100 p-5 text-center text-sm font-semibold text-neutral-500">

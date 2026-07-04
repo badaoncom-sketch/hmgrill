@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { SectionHeading } from "@/components/section-heading";
 import { Card, CardContent } from "@/components/ui/card";
+import { requireAdminAccess } from "@/lib/auth/access";
 
 const sections: Record<string, string> = {
   members: "회원관리",
@@ -20,9 +21,29 @@ export default async function AdminSectionPage({
 }) {
   const { section } = await params;
   const title = sections[section];
+  const { canAccess } = await requireAdminAccess();
 
   if (!title) {
     notFound();
+  }
+
+  if (!canAccess) {
+    return (
+      <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+        <SectionHeading
+          eyebrow="ADMIN"
+          title={title}
+          description="관리자 운영 메뉴입니다."
+        />
+        <Card>
+          <CardContent>
+            <p className="text-sm font-semibold text-red-700">
+              관리자 권한과 이메일 인증이 필요합니다.
+            </p>
+          </CardContent>
+        </Card>
+      </main>
+    );
   }
 
   return (

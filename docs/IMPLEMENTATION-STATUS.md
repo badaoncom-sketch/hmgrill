@@ -17,6 +17,9 @@
 - Resend 이메일 인증 토큰 생성, 재발송, 검증 흐름 연결
 - 쿠폰 발행 및 다운로드 서버 액션과 Supabase RPC 트랜잭션 연결
 - 직원모드 쿠폰 조회 및 사용완료 서버 액션과 Supabase RPC 트랜잭션 연결
+- 관리자와 직원모드 서버 가드 공통화
+- 초기 관리자/직원 권한 승격 스크립트 준비
+- 회원 쿠폰 QR 이미지를 실제 QR 생성 라이브러리로 연결
 - 쿠폰 다운로드 목록, 내 쿠폰, 사용내역, 관리자 쿠폰 화면 DB 조회 연결
 - Supabase 초기 스키마와 RLS 초안 작성
 - Supabase CLI 프로젝트 설정과 표준 마이그레이션 파일 구성
@@ -24,9 +27,7 @@
 
 ## 아직 실제 연동 전인 항목
 
-- 관리자 전체 라우트 권한 검증 미들웨어 또는 서버 가드 구현
-- 관리자 계정 승격 또는 초기 관리자 생성 절차
-- 실제 QR 이미지 생성 라이브러리 연동
+- 관리자 세부 운영 화면의 실제 CRUD 구현
 - Resend 발신 도메인 검증
 - Vercel 프로젝트 연결과 운영 환경변수 등록
 
@@ -38,6 +39,9 @@
 
 - `npm run lint`: 통과
 - `npm run build`: 통과
+- `npm run db:push:dry-run`: 원격 DB 최신 상태 확인
+- `npm run admin:promote`: 인자 누락 시 사용법 출력 확인
+- `npm audit --audit-level=moderate`: Next.js 내부 PostCSS moderate 2건 유지. 강제 수정 제안은 Next.js 9 다운그레이드라 미적용
 - 개발 서버: `http://localhost:3000`
 - 라우트 응답 확인: `/`, `/coupons`, `/staff`, `/admin/coupons` 모두 `200 OK`
 - `.env.local` 필수 키 존재 확인: 통과
@@ -56,8 +60,9 @@
 - GRANT 확인: `anon`은 `coupon_issues` SELECT만 허용, `authenticated`는 필요한 SELECT만 허용, `service_role`은 운영 권한 허용
 - 인증 구현 확인: 회원가입, 로그인, 로그아웃, 인증 메일 재발송, 이메일 인증 링크 검증, 마이페이지 접근 제한 연결
 - 쿠폰 RPC 확인: `issue_coupon`, `download_coupon`, `use_coupon` 함수는 `service_role`만 실행 가능
-- 쿠폰 화면 확인: `/coupons`, `/admin/coupons`는 `200 OK`, `/coupons/my`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
+- 쿠폰 화면 확인: `/coupons`는 `200 OK`, `/coupons/my`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - 직원모드 화면 확인: `/staff`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
+- 관리자 화면 확인: `/admin`, `/admin/coupons`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - 라우트 응답 확인: `/signup`, `/login`, `/auth/verify`는 `200 OK`, `/mypage`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 
 ## Supabase 마이그레이션 운영 기준

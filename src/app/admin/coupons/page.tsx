@@ -2,27 +2,14 @@ import { CouponIssueForm } from "@/components/admin/coupon-issue-form";
 import { SectionHeading } from "@/components/section-heading";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { requireAdminAccess } from "@/lib/auth/access";
 import { couponIssueSelect, mapCouponIssue } from "@/lib/coupons/db";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
 import { formatCurrency } from "@/lib/utils";
 
 export default async function AdminCouponsPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: profile } = user
-    ? await supabase
-        .from("profiles")
-        .select("role,email_verified")
-        .eq("id", user.id)
-        .maybeSingle()
-    : { data: null };
-  const canManage = Boolean(
-    user && profile?.email_verified && profile.role === "admin",
-  );
-  const { data: rows } = canManage
+  const { canAccess } = await requireAdminAccess();
+  const { data: rows } = canAccess
     ? await createAdminClient()
         .from("coupon_issues")
         .select(couponIssueSelect)
@@ -46,7 +33,7 @@ export default async function AdminCouponsPage() {
             </p>
           </CardHeader>
           <CardContent>
-            {canManage ? (
+            {canAccess ? (
               <CouponIssueForm />
             ) : (
               <p className="text-sm leading-6 text-red-700">
@@ -75,7 +62,7 @@ export default async function AdminCouponsPage() {
                 </p>
               </div>
             ))}
-            {!canManage ? (
+            {!canAccess ? (
               <p className="text-sm text-neutral-500">
                 관리자 권한이 확인되면 쿠폰 이력이 표시됩니다.
               </p>

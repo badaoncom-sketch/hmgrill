@@ -67,3 +67,25 @@ npm run db:push
 - `service_role` 키는 브라우저 코드에서 사용하지 않는다.
 - `public` 테이블은 명시적 `GRANT`와 RLS 정책을 함께 관리한다.
 - 잘못된 프로젝트에 적용하지 않도록 project ref를 먼저 확인한다.
+
+## 초기 관리자 또는 직원 권한 부여
+
+회원가입이 끝난 계정은 기본 `member` 권한으로 생성된다. 운영 초기에는 아래 명령으로 기존 가입 계정을 관리자 또는 직원으로 승격한다.
+
+관리자 승격:
+
+```bash
+npm run admin:promote -- owner@example.com admin
+```
+
+직원 승격:
+
+```bash
+npm run admin:promote -- staff@example.com staff
+```
+
+이 명령은 `profiles.role`과 Supabase Auth `app_metadata.role`을 함께 갱신한다. 기본적으로 이메일 인증 상태는 바꾸지 않는다. Resend 도메인 설정 전이라 초기 운영 계정의 이메일 인증까지 강제로 완료해야 할 때만 아래 플래그를 추가한다.
+
+```bash
+npm run admin:promote -- owner@example.com admin --verify-email
+```

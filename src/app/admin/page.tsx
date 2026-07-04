@@ -3,7 +3,9 @@ import { BarChart3, Users, UserRoundCog } from "lucide-react";
 import { SectionHeading } from "@/components/section-heading";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { couponIssues } from "@/lib/site-data";
+import { couponIssueSelect, mapCouponIssue } from "@/lib/coupons/db";
+import { requireAdminAccess } from "@/lib/auth/access";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { formatCurrency } from "@/lib/utils";
 
 const adminLinks = [
@@ -18,7 +20,32 @@ const adminLinks = [
   { href: "/admin/popups", label: "팝업관리", icon: BarChart3 },
 ];
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  const { canAccess } = await requireAdminAccess();
+
+  if (!canAccess) {
+    return (
+      <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+        <SectionHeading
+          eyebrow="ADMIN"
+          title="관리자 대시보드"
+          description="쿠폰 현황, 금액 통계, 회원과 직원 운영 메뉴를 확인합니다."
+        />
+        <Card>
+          <CardContent>
+            <p className="text-sm font-semibold text-red-700">
+              관리자 권한과 이메일 인증이 필요합니다.
+            </p>
+          </CardContent>
+        </Card>
+      </main>
+    );
+  }
+
+  const { data: rows } = await createAdminClient()
+    .from("coupon_issues")
+    .select(couponIssueSelect);
+  const couponIssues = (rows ?? []).map(mapCouponIssue);
   const totalIssued = couponIssues.reduce((sum, item) => sum + item.quantity, 0);
   const totalDownloaded = couponIssues.reduce(
     (sum, item) => sum + item.downloadedCount,
