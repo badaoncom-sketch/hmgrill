@@ -1,6 +1,8 @@
 "use client";
 
 import { Save } from "lucide-react";
+import { useActionState } from "react";
+import { issueCouponAction } from "@/app/actions/coupons";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Select, Textarea } from "@/components/ui/field";
 
@@ -10,9 +12,19 @@ const defaultCondition =
 const defaultQrNotice =
   "계산 전에 직원에게 QR코드를 제시해 주세요.\n직원 확인 또는 자동 처리 후 쿠폰이 사용 완료됩니다.\n사용 완료된 쿠폰은 다시 사용할 수 없습니다.";
 
+const initialState = {
+  ok: false,
+  message: "",
+};
+
 export function CouponIssueForm() {
+  const [state, formAction, isPending] = useActionState(
+    issueCouponAction,
+    initialState,
+  );
+
   return (
-    <form className="grid gap-5">
+    <form action={formAction} className="grid gap-5">
       <div className="grid gap-4 md:grid-cols-2">
         <Field label="쿠폰명">
           <Input name="name" placeholder="신규 회원 10,000원 쿠폰" required />
@@ -29,7 +41,6 @@ export function CouponIssueForm() {
             <option value="10">10일</option>
             <option value="15">15일</option>
             <option value="30">30일</option>
-            <option value="custom">직접 입력</option>
           </Select>
         </Field>
         <Field label="재다운로드 정책">
@@ -51,10 +62,15 @@ export function CouponIssueForm() {
       <Field label="QR 안내사항">
         <Textarea name="qrNotice" defaultValue={defaultQrNotice} />
       </Field>
-      <Button type="submit" className="w-full sm:w-fit">
+      <Button type="submit" className="w-full sm:w-fit" disabled={isPending}>
         <Save size={16} aria-hidden="true" />
-        쿠폰 발행
+        {isPending ? "발행 중" : "쿠폰 발행"}
       </Button>
+      {state.message ? (
+        <p className={state.ok ? "text-sm text-emerald-700" : "text-sm text-red-700"}>
+          {state.message}
+        </p>
+      ) : null}
     </form>
   );
 }

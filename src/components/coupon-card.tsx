@@ -1,13 +1,18 @@
-import { CalendarDays, Download, Ticket } from "lucide-react";
+import { CalendarDays, Ticket } from "lucide-react";
+import { CouponDownloadForm } from "@/components/coupon-download-form";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { canDownloadCoupon, getRemainingQuantity } from "@/lib/coupon-policy";
-import { memberCoupons } from "@/lib/site-data";
 import type { CouponIssue } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
-export function CouponCard({ issue }: { issue: CouponIssue }) {
+export function CouponCard({
+  issue,
+  memberCoupons = [],
+}: {
+  issue: CouponIssue;
+  memberCoupons?: Parameters<typeof canDownloadCoupon>[1];
+}) {
   const decision = canDownloadCoupon(issue, memberCoupons);
   const remaining = getRemainingQuantity(issue);
 
@@ -40,10 +45,7 @@ export function CouponCard({ issue }: { issue: CouponIssue }) {
           </p>
           <p className="whitespace-pre-line">{issue.conditionText}</p>
         </div>
-        <Button type="button" disabled={!decision.allowed}>
-          <Download size={16} aria-hidden="true" />
-          쿠폰 다운로드
-        </Button>
+        <CouponDownloadForm issueId={issue.id} disabled={!decision.allowed} />
         <p className="text-xs text-neutral-500">{decision.reason}</p>
       </CardContent>
     </Card>
