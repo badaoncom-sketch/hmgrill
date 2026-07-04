@@ -1,5 +1,6 @@
 import type {
   CouponIssue,
+  CouponEvent,
   CouponRedownloadPolicy,
   CouponUseFlow,
   MemberCoupon,
@@ -63,6 +64,24 @@ type MemberCouponRow = {
     | null;
 };
 
+type CouponEventRow = {
+  id: string;
+  event_type: string;
+  member_coupon_id: string | null;
+  metadata: Record<string, unknown>;
+  created_at: string;
+  actor_profile:
+    | {
+        name: string;
+        email: string;
+      }
+    | {
+        name: string;
+        email: string;
+      }[]
+    | null;
+};
+
 export const couponIssueSelect = [
   "id",
   "name",
@@ -92,6 +111,15 @@ export const memberCouponSelect = [
   "coupon_issues(name,amount,condition_text,qr_notice)",
   "member_profile:profiles!member_coupons_member_id_fkey(name)",
   "staff_profile:profiles!member_coupons_used_by_staff_id_fkey(name)",
+].join(",");
+
+export const couponEventSelect = [
+  "id",
+  "event_type",
+  "member_coupon_id",
+  "metadata",
+  "created_at",
+  "actor_profile:profiles!coupon_events_actor_id_fkey(name,email)",
 ].join(",");
 
 export function mapCouponIssue(row: unknown): CouponIssue {
@@ -142,5 +170,22 @@ export function mapMemberCoupon(row: unknown): MemberCoupon {
     usedByStaffName: staff?.name,
     conditionText: issue?.condition_text ?? "",
     qrNotice: issue?.qr_notice ?? "",
+  };
+}
+
+export function mapCouponEvent(row: unknown): CouponEvent {
+  const item = row as CouponEventRow;
+  const actor = Array.isArray(item.actor_profile)
+    ? item.actor_profile[0]
+    : item.actor_profile;
+
+  return {
+    id: item.id,
+    eventType: item.event_type,
+    actorName: actor?.name,
+    actorEmail: actor?.email,
+    memberCouponId: item.member_coupon_id ?? undefined,
+    metadata: item.metadata,
+    createdAt: item.created_at,
   };
 }

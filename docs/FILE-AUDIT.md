@@ -37,6 +37,7 @@
 | `middleware.ts` | 신규 작성 | Supabase SSR 세션 갱신 미들웨어를 연결했다. |
 | `scripts/supabase-migrate.mjs` | 신규 작성 | `.env.local`의 DB 접속정보를 사용해 Supabase 원격 마이그레이션을 직접 적용하는 스크립트다. |
 | `scripts/promote-user.mjs` | 신규 작성 | 기존 가입 계정을 관리자 또는 직원 권한으로 승격하는 운영 스크립트다. |
+| `scripts/e2e-coupon-flow.mjs` | 신규 작성 | 임시 계정과 쿠폰으로 쿠폰 발행부터 사용완료까지 검증하고 정리하는 E2E 스크립트다. |
 | `supabase/config.toml` | 신규 작성 | Supabase CLI 프로젝트 설정을 초기화했다. |
 | `supabase/migrations/20260704185722_initial_schema.sql` | 신규 작성 | 쿠폰 운영을 위한 초기 테이블, enum, 명시적 GRANT, RLS 초안을 작성했다. |
 | `supabase/migrations/20260704193516_add_email_verification_tokens.sql` | 신규 작성 | Resend 이메일 인증을 위한 토큰 테이블과 service role 전용 권한을 작성했다. |

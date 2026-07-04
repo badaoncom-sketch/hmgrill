@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   resumeCouponIssueAction,
   stopCouponIssueAction,
@@ -78,26 +79,33 @@ export default async function AdminCouponsPage() {
                   </p>
                 ) : null}
                 {canAccess ? (
-                  <form
-                    action={
-                      issue.status === "issuing"
-                        ? stopCouponIssueAction
-                        : resumeCouponIssueAction
-                    }
-                    className="mt-4"
-                  >
-                    <input name="issueId" type="hidden" value={issue.id} />
-                    <Button
-                      type="submit"
-                      variant={issue.status === "issuing" ? "danger" : "outline"}
-                      disabled={
-                        issue.status === "ended" &&
-                        issue.endReason !== "admin_stopped"
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Link
+                      href={`/admin/coupons/${issue.id}`}
+                      className="inline-flex min-h-11 items-center justify-center rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-950 transition hover:border-neutral-950"
+                    >
+                      상세
+                    </Link>
+                    <form
+                      action={
+                        issue.status === "issuing"
+                          ? stopCouponIssueAction
+                          : resumeCouponIssueAction
                       }
                     >
-                      {issue.status === "issuing" ? "발행중단" : "재발행"}
-                    </Button>
-                  </form>
+                      <input name="issueId" type="hidden" value={issue.id} />
+                      <Button
+                        type="submit"
+                        variant={issue.status === "issuing" ? "danger" : "outline"}
+                        disabled={
+                          issue.status === "ended" &&
+                          issue.endReason !== "admin_stopped"
+                        }
+                      >
+                        {issue.status === "issuing" ? "발행중단" : "재발행"}
+                      </Button>
+                    </form>
+                  </div>
                 ) : null}
               </div>
             ))}

@@ -46,6 +46,16 @@ export type MemberCoupon = {
   qrNotice: string;
 };
 
+export type CouponEvent = {
+  id: string;
+  eventType: string;
+  actorName?: string;
+  actorEmail?: string;
+  memberCouponId?: string;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+};
+
 export type MenuItem = {
   id: string;
   category: "대표메뉴" | "전체메뉴" | "세트메뉴" | "사이드" | "음료";
