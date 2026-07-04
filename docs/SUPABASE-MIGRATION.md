@@ -21,6 +21,8 @@ SUPABASE_POOLER_DB_URL=
 
 `SUPABASE_POOLER_DB_URL`은 Supabase Dashboard의 `Connect > Transaction pooler` URI를 사용한다. 직접 DB URL인 `db.<project-ref>.supabase.co:5432`는 IPv6 직접 접속이 필요할 수 있어 현재 실행 환경에서 실패할 수 있다.
 
+pooler 호스트가 `ap-northeast-2.pooler.supabase.com`처럼 region-only 형태이면 스크립트가 `aws-0-ap-northeast-2.pooler.supabase.com` 형식으로 자동 보정한다.
+
 대안 1:
 
 ```bash

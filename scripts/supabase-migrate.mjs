@@ -19,7 +19,7 @@ function getProjectRefFromUrl() {
 
 function getDatabaseUrl() {
   if (process.env.SUPABASE_POOLER_DB_URL) {
-    return process.env.SUPABASE_POOLER_DB_URL;
+    return normalizePoolerUrl(process.env.SUPABASE_POOLER_DB_URL);
   }
 
   if (process.env.SUPABASE_DB_URL) {
@@ -36,6 +36,17 @@ function getDatabaseUrl() {
   return `postgresql://postgres:${encodeURIComponent(
     password,
   )}@db.${projectRef}.supabase.co:5432/postgres`;
+}
+
+function normalizePoolerUrl(rawUrl) {
+  const url = new URL(rawUrl);
+  const regionOnlyPoolerHost = /^[a-z]+-[a-z]+-[0-9]+\.pooler\.supabase\.com$/;
+
+  if (regionOnlyPoolerHost.test(url.hostname)) {
+    url.hostname = `aws-0-${url.hostname}`;
+  }
+
+  return url.toString();
 }
 
 function runSupabase(args) {

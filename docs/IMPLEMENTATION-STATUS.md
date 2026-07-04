@@ -42,6 +42,7 @@
 - Supabase CLI/MCP 계정 프로젝트 확인: 현재 연결 계정에는 `.env.local`의 hmgrill project ref가 표시되지 않음
 - `npm run db:push:dry-run`: DB 마이그레이션 접속정보가 없어 안전하게 중단됨
 - 직접 DB URL dry-run: IPv6 직접 접속 문제로 실패. Transaction Pooler IPv4 접속 문자열 필요
+- Transaction Pooler dry-run: region-only host는 자동 보정했으나 `tenant/user not found`로 실패. Dashboard에서 복사한 정확한 pooler URI 필요
 
 ## Supabase 마이그레이션 운영 기준
 
@@ -53,3 +54,4 @@
 - 적용 후 가능한 범위에서 migration list, advisors, 테스트 쿼리로 검증한다.
 - 직접 적용을 위해 `npm run db:push:dry-run`, `npm run db:push` 스크립트를 사용한다.
 - 현재 실행 환경에서는 `SUPABASE_POOLER_DB_URL` 사용을 우선한다.
+- `SUPABASE_POOLER_DB_URL`은 프로젝트의 실제 Transaction pooler URI를 그대로 사용해야 한다. region 또는 host가 다르면 tenant를 찾지 못한다.
