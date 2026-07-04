@@ -26,6 +26,7 @@
 | `src/components/*` | 신규 작성 | 재사용 UI, 쿠폰 카드, QR 쿠폰, 직원 스캐너, 관리자 쿠폰 발행 폼을 구성했다. |
 | `src/components/auth/*` | 신규 작성 | 회원가입, 로그인, 인증 메일 재발송 클라이언트 폼을 구성했다. |
 | `src/components/coupon-download-form.tsx` | 신규 작성 | 회원 쿠폰 다운로드 서버 액션 폼을 구성했다. |
+| `src/app/actions/staff.ts` | 신규 작성 | 직원모드 쿠폰 조회와 사용완료 서버 액션을 구성했다. |
 | `src/lib/*` | 신규 작성 | 타입, 샘플 데이터, 쿠폰 정책, Supabase 클라이언트, 환경변수 유틸을 구성했다. |
 | `src/lib/auth/*` | 신규 작성 | 이메일 인증 토큰 생성, 해시, Resend 발송, 토큰 검증 로직을 구성했다. |
 | `src/lib/coupons/*` | 신규 작성 | Supabase 쿠폰 row를 화면 타입으로 변환하는 매퍼를 구성했다. |
@@ -36,6 +37,7 @@
 | `supabase/migrations/20260704185722_initial_schema.sql` | 신규 작성 | 쿠폰 운영을 위한 초기 테이블, enum, 명시적 GRANT, RLS 초안을 작성했다. |
 | `supabase/migrations/20260704193516_add_email_verification_tokens.sql` | 신규 작성 | Resend 이메일 인증을 위한 토큰 테이블과 service role 전용 권한을 작성했다. |
 | `supabase/migrations/20260704194707_add_coupon_issue_download_rpcs.sql` | 신규 작성 | 쿠폰 발행과 다운로드를 트랜잭션으로 처리하는 RPC 함수를 작성했다. |
+| `supabase/migrations/20260704195812_add_coupon_use_rpc.sql` | 신규 작성 | 직원모드 쿠폰 사용완료를 트랜잭션으로 처리하는 RPC 함수를 작성했다. |
 
 ## 확인한 사항
 

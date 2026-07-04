@@ -1,0 +1,208 @@
+"use server";
+
+import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
+import { mapMemberCoupon, memberCouponSelect } from "@/lib/coupons/db";
+import type { CouponUseFlow, MemberCoupon } from "@/lib/types";
+
+type StaffCouponRow = {
+  coupon_issues:
+    | {
+        use_flow: CouponUseFlow;
+      }
+    | {
+        use_flow: CouponUseFlow;
+      }[]
+    | null;
+};
+
+type StaffActionState = {
+  ok: boolean;
+  message: string;
+  coupon?: MemberCoupon;
+  canUse?: boolean;
+};
+
+function readToken(formData: FormData) {
+  const value = formData.get("token");
+  return typeof value === "string" ? value.trim() : "";
+}
+
+async function getCurrentStaff() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { user: null, profile: null, message: "로그인이 필요합니다." };
+  }
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("id,role,email_verified")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    return { user: null, profile: null, message: error.message };
+  }
+
+  if (!profile?.email_verified) {
+    return {
+      user: null,
+      profile: null,
+      message: "이메일 인증 후 직원모드를 사용할 수 있습니다.",
+    };
+  }
+
+  if (profile.role !== "staff" && profile.role !== "admin") {
+    return {
+      user: null,
+      profile: null,
+      message: "직원 또는 관리자 권한이 필요합니다.",
+    };
+  }
+
+  return { user, profile, message: "" };
+}
+
+function getUseFlow(row: unknown) {
+  const issue = (row as StaffCouponRow).coupon_issues;
+  const value = Array.isArray(issue) ? issue[0] : issue;
+  return value?.use_flow ?? "staff_confirm";
+}
+
+async function fetchCouponByToken(token: string) {
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("member_coupons")
+    .select(
+      memberCouponSelect.replace(
+        "coupon_issues(name,amount,condition_text,qr_notice)",
+        "coupon_issues(name,amount,condition_text,qr_notice,use_flow)",
+      ),
+    )
+    .eq("token", token)
+    .maybeSingle();
+
+  if (error) {
+    return { coupon: undefined, useFlow: "staff_confirm" as CouponUseFlow, error };
+  }
+
+  if (!data) {
+    return {
+      coupon: undefined,
+      useFlow: "staff_confirm" as CouponUseFlow,
+      error: null,
+    };
+  }
+
+  return {
+    coupon: mapMemberCoupon(data),
+    useFlow: getUseFlow(data),
+    error: null,
+  };
+}
+
+function isCouponUsable(coupon: MemberCoupon) {
+  return coupon.status === "available" && new Date(coupon.validUntil) >= new Date();
+}
+
+export async function lookupCouponAction(
+  _prevState: StaffActionState,
+  formData: FormData,
+): Promise<StaffActionState> {
+  const auth = await getCurrentStaff();
+
+  if (!auth.user) {
+    return { ok: false, message: auth.message };
+  }
+
+  const token = readToken(formData);
+
+  if (!token) {
+    return { ok: false, message: "QR 쿠폰 토큰을 입력해 주세요." };
+  }
+
+  const lookup = await fetchCouponByToken(token);
+
+  if (lookup.error) {
+    return { ok: false, message: lookup.error.message };
+  }
+
+  if (!lookup.coupon) {
+    return { ok: false, message: "쿠폰을 찾을 수 없습니다." };
+  }
+
+  if (lookup.useFlow === "auto_complete" && isCouponUsable(lookup.coupon)) {
+    const admin = createAdminClient();
+    const { error } = await admin.rpc("use_coupon", {
+      p_staff_id: auth.user.id,
+      p_token: token,
+    });
+
+    if (error) {
+      return { ok: false, message: error.message, coupon: lookup.coupon };
+    }
+
+    const refreshed = await fetchCouponByToken(token);
+
+    return {
+      ok: true,
+      message: "자동 사용완료 처리했습니다.",
+      coupon: refreshed.coupon ?? lookup.coupon,
+      canUse: false,
+    };
+  }
+
+  return {
+    ok: true,
+    message: isCouponUsable(lookup.coupon)
+      ? "사용 가능한 쿠폰입니다."
+      : "사용할 수 없는 쿠폰입니다.",
+    coupon: lookup.coupon,
+    canUse: isCouponUsable(lookup.coupon),
+  };
+}
+
+export async function useCouponAction(
+  _prevState: StaffActionState,
+  formData: FormData,
+): Promise<StaffActionState> {
+  const auth = await getCurrentStaff();
+
+  if (!auth.user) {
+    return { ok: false, message: auth.message };
+  }
+
+  const token = readToken(formData);
+
+  if (!token) {
+    return { ok: false, message: "QR 쿠폰 토큰을 입력해 주세요." };
+  }
+
+  const admin = createAdminClient();
+  const { error } = await admin.rpc("use_coupon", {
+    p_staff_id: auth.user.id,
+    p_token: token,
+  });
+
+  const lookup = await fetchCouponByToken(token);
+
+  if (error) {
+    return {
+      ok: false,
+      message: error.message,
+      coupon: lookup.coupon,
+      canUse: lookup.coupon ? isCouponUsable(lookup.coupon) : false,
+    };
+  }
+
+  return {
+    ok: true,
+    message: "쿠폰을 사용 완료 처리했습니다.",
+    coupon: lookup.coupon,
+    canUse: false,
+  };
+}

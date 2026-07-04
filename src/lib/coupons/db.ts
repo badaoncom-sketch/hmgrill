@@ -45,7 +45,15 @@ type MemberCouponRow = {
         qr_notice: string;
       }[]
     | null;
-  profiles:
+  member_profile:
+    | {
+        name: string;
+      }
+    | {
+        name: string;
+      }[]
+    | null;
+  staff_profile:
     | {
         name: string;
       }
@@ -82,7 +90,8 @@ export const memberCouponSelect = [
   "status",
   "used_at",
   "coupon_issues(name,amount,condition_text,qr_notice)",
-  "profiles!member_coupons_used_by_staff_id_fkey(name)",
+  "member_profile:profiles!member_coupons_member_id_fkey(name)",
+  "staff_profile:profiles!member_coupons_used_by_staff_id_fkey(name)",
 ].join(",");
 
 export function mapCouponIssue(row: unknown): CouponIssue {
@@ -111,7 +120,12 @@ export function mapMemberCoupon(row: unknown): MemberCoupon {
   const issue = Array.isArray(item.coupon_issues)
     ? item.coupon_issues[0]
     : item.coupon_issues;
-  const staff = Array.isArray(item.profiles) ? item.profiles[0] : item.profiles;
+  const member = Array.isArray(item.member_profile)
+    ? item.member_profile[0]
+    : item.member_profile;
+  const staff = Array.isArray(item.staff_profile)
+    ? item.staff_profile[0]
+    : item.staff_profile;
 
   return {
     id: item.id,
@@ -119,7 +133,7 @@ export function mapMemberCoupon(row: unknown): MemberCoupon {
     token: item.token,
     couponName: issue?.name ?? "쿠폰",
     amount: issue?.amount ?? 0,
-    memberName: "",
+    memberName: member?.name ?? "",
     downloadedAt: item.downloaded_at,
     validFrom: item.valid_from,
     validUntil: item.valid_until,
