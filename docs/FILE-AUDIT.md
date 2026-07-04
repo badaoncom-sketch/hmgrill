@@ -44,6 +44,7 @@
 | `supabase/migrations/20260704195812_add_coupon_use_rpc.sql` | 신규 작성 | 직원모드 쿠폰 사용완료를 트랜잭션으로 처리하는 RPC 함수를 작성했다. |
 | `supabase/migrations/20260704203904_add_content_management_tables.sql` | 신규 작성 | 메뉴, 이벤트, 공지, 문의, 배너, 팝업 운영 테이블과 RLS 정책을 작성했다. |
 | `supabase/migrations/20260704204545_restrict_content_table_grants.sql` | 신규 작성 | 운영 콘텐츠 테이블의 공개 권한을 SELECT 중심으로 정리했다. |
+| `supabase/migrations/20260704205054_add_coupon_issue_status_rpcs.sql` | 신규 작성 | 쿠폰 발행중단과 재발행 RPC 함수를 작성했다. |
 
 ## 확인한 사항
 

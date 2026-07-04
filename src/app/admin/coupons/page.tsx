@@ -1,6 +1,11 @@
+import {
+  resumeCouponIssueAction,
+  stopCouponIssueAction,
+} from "@/app/actions/coupons";
 import { CouponIssueForm } from "@/components/admin/coupon-issue-form";
 import { SectionHeading } from "@/components/section-heading";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { requireAdminAccess } from "@/lib/auth/access";
 import { couponIssueSelect, mapCouponIssue } from "@/lib/coupons/db";
@@ -60,6 +65,40 @@ export default async function AdminCouponsPage() {
                   {formatCurrency(issue.amount)} / {issue.downloadedCount}장
                   다운로드
                 </p>
+                <p className="mt-1 text-xs text-neutral-500">
+                  사용 {issue.usedCount}장 / 만료 {issue.expiredCount}장 / 총{" "}
+                  {issue.quantity}장
+                </p>
+                {issue.endReason ? (
+                  <p className="mt-1 text-xs font-semibold text-neutral-500">
+                    종료 사유:{" "}
+                    {issue.endReason === "admin_stopped"
+                      ? "관리자 발행중단"
+                      : "수량 소진"}
+                  </p>
+                ) : null}
+                {canAccess ? (
+                  <form
+                    action={
+                      issue.status === "issuing"
+                        ? stopCouponIssueAction
+                        : resumeCouponIssueAction
+                    }
+                    className="mt-4"
+                  >
+                    <input name="issueId" type="hidden" value={issue.id} />
+                    <Button
+                      type="submit"
+                      variant={issue.status === "issuing" ? "danger" : "outline"}
+                      disabled={
+                        issue.status === "ended" &&
+                        issue.endReason !== "admin_stopped"
+                      }
+                    >
+                      {issue.status === "issuing" ? "발행중단" : "재발행"}
+                    </Button>
+                  </form>
+                ) : null}
               </div>
             ))}
             {!canAccess ? (

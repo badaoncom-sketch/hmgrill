@@ -139,3 +139,57 @@ export async function downloadCouponAction(
 
   return { ok: true, message: "쿠폰을 다운로드했습니다." };
 }
+
+export async function stopCouponIssueAction(formData: FormData) {
+  const auth = await getCurrentVerifiedUser();
+
+  if (!auth.user || auth.profile?.role !== "admin") {
+    throw new Error(auth.message || "관리자 권한이 필요합니다.");
+  }
+
+  const issueId = readString(formData, "issueId");
+
+  if (!issueId) {
+    throw new Error("쿠폰 정보를 찾을 수 없습니다.");
+  }
+
+  const { error } = await createAdminClient().rpc("stop_coupon_issue", {
+    p_admin_id: auth.user.id,
+    p_issue_id: issueId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  revalidatePath("/admin/coupons");
+  revalidatePath("/coupons");
+  revalidatePath("/");
+}
+
+export async function resumeCouponIssueAction(formData: FormData) {
+  const auth = await getCurrentVerifiedUser();
+
+  if (!auth.user || auth.profile?.role !== "admin") {
+    throw new Error(auth.message || "관리자 권한이 필요합니다.");
+  }
+
+  const issueId = readString(formData, "issueId");
+
+  if (!issueId) {
+    throw new Error("쿠폰 정보를 찾을 수 없습니다.");
+  }
+
+  const { error } = await createAdminClient().rpc("resume_coupon_issue", {
+    p_admin_id: auth.user.id,
+    p_issue_id: issueId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  revalidatePath("/admin/coupons");
+  revalidatePath("/coupons");
+  revalidatePath("/");
+}

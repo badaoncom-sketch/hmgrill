@@ -16,6 +16,7 @@
 - Resend 이메일 인증 API 라우트와 이메일 템플릿 준비
 - Resend 이메일 인증 토큰 생성, 재발송, 검증 흐름 연결
 - 쿠폰 발행 및 다운로드 서버 액션과 Supabase RPC 트랜잭션 연결
+- 쿠폰 발행중단 및 관리자 중단 쿠폰 재발행 서버 액션과 Supabase RPC 트랜잭션 연결
 - 직원모드 쿠폰 조회 및 사용완료 서버 액션과 Supabase RPC 트랜잭션 연결
 - 관리자와 직원모드 서버 가드 공통화
 - 초기 관리자/직원 권한 승격 스크립트 준비
@@ -58,12 +59,13 @@
 - Supabase 원격 마이그레이션 적용: `20260704194707` 적용 완료
 - Supabase 원격 마이그레이션 적용: `20260704195812` 적용 완료
 - Supabase 원격 마이그레이션 적용: `20260704203904`, `20260704204545` 적용 완료
+- Supabase 원격 마이그레이션 적용: `20260704205054` 적용 완료
 - Supabase advisors: 이슈 없음
 - RLS 확인: `profiles`, `coupon_issues`, `member_coupons`, `coupon_events`, `email_verification_tokens`, `menu_items`, `content_posts`, `inquiries`, `site_banners`, `site_popups` 모두 활성화
 - 정책 확인: 쿠폰/프로필 공개 정책과 운영 콘텐츠 공개 SELECT 정책 적용 확인
 - GRANT 확인: 공개 운영 테이블은 `anon`, `authenticated` SELECT만 허용하고, `inquiries`와 관리자 쓰기 권한은 `service_role`만 허용
 - 인증 구현 확인: 회원가입, 로그인, 로그아웃, 인증 메일 재발송, 이메일 인증 링크 검증, 마이페이지 접근 제한 연결
-- 쿠폰 RPC 확인: `issue_coupon`, `download_coupon`, `use_coupon` 함수는 `service_role`만 실행 가능
+- 쿠폰 RPC 확인: `issue_coupon`, `download_coupon`, `use_coupon`, `stop_coupon_issue`, `resume_coupon_issue` 함수는 `service_role`만 실행 가능
 - 쿠폰 화면 확인: `/coupons`는 `200 OK`, `/coupons/my`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - 직원모드 화면 확인: `/staff`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - 관리자 화면 확인: `/admin`, `/admin/coupons`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
