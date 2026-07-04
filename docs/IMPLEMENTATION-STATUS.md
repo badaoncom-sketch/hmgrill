@@ -21,6 +21,8 @@
 - 초기 관리자/직원 권한 승격 스크립트 준비
 - 회원 쿠폰 QR 이미지를 실제 QR 생성 라이브러리로 연결
 - 관리자 회원관리와 직원관리의 `profiles` 조회 및 권한 변경 서버 액션 연결
+- 관리자 메뉴, 이벤트, 공지, 문의, 배너, 팝업 운영 테이블과 서버 액션 연결
+- 공개 홈, 메뉴, 이벤트, 공지, 고객센터를 Supabase 운영 데이터 조회로 연결
 - 쿠폰 다운로드 목록, 내 쿠폰, 사용내역, 관리자 쿠폰 화면 DB 조회 연결
 - Supabase 초기 스키마와 RLS 초안 작성
 - Supabase CLI 프로젝트 설정과 표준 마이그레이션 파일 구성
@@ -28,7 +30,7 @@
 
 ## 아직 실제 연동 전인 항목
 
-- 관리자 세부 운영 화면의 실제 CRUD 구현
+- 관리자 운영 화면의 수정 폼 고도화와 상세 편집 화면
 - Resend 발신 도메인 검증
 - Vercel 프로젝트 연결과 운영 환경변수 등록
 
@@ -55,16 +57,19 @@
 - Supabase 원격 마이그레이션 적용: `20260704193516` 적용 완료
 - Supabase 원격 마이그레이션 적용: `20260704194707` 적용 완료
 - Supabase 원격 마이그레이션 적용: `20260704195812` 적용 완료
+- Supabase 원격 마이그레이션 적용: `20260704203904`, `20260704204545` 적용 완료
 - Supabase advisors: 이슈 없음
-- RLS 확인: `profiles`, `coupon_issues`, `member_coupons`, `coupon_events`, `email_verification_tokens` 모두 활성화
-- 정책 확인: 4개 SELECT 정책 적용 확인
-- GRANT 확인: `anon`은 `coupon_issues` SELECT만 허용, `authenticated`는 필요한 SELECT만 허용, `service_role`은 운영 권한 허용
+- RLS 확인: `profiles`, `coupon_issues`, `member_coupons`, `coupon_events`, `email_verification_tokens`, `menu_items`, `content_posts`, `inquiries`, `site_banners`, `site_popups` 모두 활성화
+- 정책 확인: 쿠폰/프로필 공개 정책과 운영 콘텐츠 공개 SELECT 정책 적용 확인
+- GRANT 확인: 공개 운영 테이블은 `anon`, `authenticated` SELECT만 허용하고, `inquiries`와 관리자 쓰기 권한은 `service_role`만 허용
 - 인증 구현 확인: 회원가입, 로그인, 로그아웃, 인증 메일 재발송, 이메일 인증 링크 검증, 마이페이지 접근 제한 연결
 - 쿠폰 RPC 확인: `issue_coupon`, `download_coupon`, `use_coupon` 함수는 `service_role`만 실행 가능
 - 쿠폰 화면 확인: `/coupons`는 `200 OK`, `/coupons/my`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - 직원모드 화면 확인: `/staff`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - 관리자 화면 확인: `/admin`, `/admin/coupons`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - 관리자 세부 화면 확인: `/admin/members`, `/admin/staff`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
+- 공개 운영 화면 확인: `/`, `/menu`, `/events`, `/notices`, `/support`는 `200 OK`
+- 관리자 운영 화면 확인: `/admin/menu`, `/admin/events`, `/admin/inquiries`, `/admin/banners`, `/admin/popups`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - 라우트 응답 확인: `/signup`, `/login`, `/auth/verify`는 `200 OK`, `/mypage`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 
 ## Supabase 마이그레이션 운영 기준

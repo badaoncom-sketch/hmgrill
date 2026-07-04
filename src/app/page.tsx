@@ -1,7 +1,16 @@
 import { ArrowRight, ScanLine, ShieldCheck, Ticket } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { couponIssues, menuItems } from "@/lib/site-data";
+import {
+  mapMenuItem,
+  mapSiteBanner,
+  mapSitePopup,
+  menuItemSelect,
+  siteBannerSelect,
+  sitePopupSelect,
+} from "@/lib/content/db";
+import { couponIssueSelect, mapCouponIssue } from "@/lib/coupons/db";
+import { createClient } from "@/lib/supabase/server";
 import { formatCurrency } from "@/lib/utils";
 
 const operations = [
@@ -22,12 +31,54 @@ const operations = [
   },
 ];
 
-export default function HomePage() {
-  const featuredMenu = menuItems.filter((item) => item.featured);
-  const activeCoupon = couponIssues.find((issue) => issue.status === "issuing");
+export default async function HomePage() {
+  const supabase = await createClient();
+  const [{ data: menuRows }, { data: couponRows }, { data: bannerRows }, { data: popupRows }] =
+    await Promise.all([
+      supabase
+        .from("menu_items")
+        .select(menuItemSelect)
+        .eq("featured", true)
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("coupon_issues")
+        .select(couponIssueSelect)
+        .eq("status", "issuing")
+        .order("created_at", { ascending: false })
+        .limit(1),
+      supabase
+        .from("site_banners")
+        .select(siteBannerSelect)
+        .eq("placement", "home")
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("site_popups")
+        .select(sitePopupSelect)
+        .order("sort_order", { ascending: true })
+        .limit(1),
+    ]);
+  const featuredMenu = (menuRows ?? []).map(mapMenuItem);
+  const activeCoupon = (couponRows ?? []).map(mapCouponIssue)[0];
+  const banners = (bannerRows ?? []).map(mapSiteBanner);
+  const activePopup = (popupRows ?? []).map(mapSitePopup)[0];
 
   return (
     <main>
+      {activePopup ? (
+        <section className="border-b border-red-100 bg-red-50">
+          <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-3 text-sm text-red-950 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+            <div>
+              <p className="font-bold">{activePopup.title}</p>
+              <p className="mt-1 text-red-800">{activePopup.body}</p>
+            </div>
+            {activePopup.href ? (
+              <ButtonLink href={activePopup.href} variant="outline">
+                보기
+              </ButtonLink>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
       <section className="border-b border-neutral-200 bg-white">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
           <div className="flex flex-col justify-center">
@@ -87,6 +138,25 @@ export default function HomePage() {
                 );
               })}
             </div>
+            {banners.map((banner) => (
+              <Card key={banner.id}>
+                <CardContent>
+                  <p className="text-sm font-semibold text-red-700">
+                    운영 배너
+                  </p>
+                  <h2 className="mt-2 text-xl font-bold text-neutral-950">
+                    {banner.title}
+                  </h2>
+                  <p className="mt-2 text-sm text-neutral-600">{banner.body}</p>
+                  {banner.href ? (
+                    <ButtonLink href={banner.href} className="mt-4" variant="ghost">
+                      자세히
+                      <ArrowRight size={16} aria-hidden="true" />
+                    </ButtonLink>
+                  ) : null}
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -125,6 +195,15 @@ export default function HomePage() {
               </CardContent>
             </Card>
           ))}
+          {featuredMenu.length === 0 ? (
+            <Card>
+              <CardContent>
+                <p className="text-sm font-semibold text-neutral-600">
+                  대표 메뉴가 준비 중입니다.
+                </p>
+              </CardContent>
+            </Card>
+          ) : null}
         </div>
       </section>
     </main>

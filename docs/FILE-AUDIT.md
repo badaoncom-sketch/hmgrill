@@ -28,9 +28,11 @@
 | `src/components/coupon-download-form.tsx` | 신규 작성 | 회원 쿠폰 다운로드 서버 액션 폼을 구성했다. |
 | `src/app/actions/staff.ts` | 신규 작성 | 직원모드 쿠폰 조회와 사용완료 서버 액션을 구성했다. |
 | `src/app/actions/admin-users.ts` | 신규 작성 | 관리자 회원/직원 권한 변경 서버 액션을 구성했다. |
+| `src/app/actions/content.ts` | 신규 작성 | 메뉴, 이벤트, 공지, 문의, 배너, 팝업 운영 서버 액션을 구성했다. |
 | `src/lib/*` | 신규 작성 | 타입, 샘플 데이터, 쿠폰 정책, Supabase 클라이언트, 환경변수 유틸을 구성했다. |
 | `src/lib/auth/*` | 신규 작성 | 이메일 인증 토큰 생성, 해시, Resend 발송, 토큰 검증 로직을 구성했다. |
 | `src/lib/coupons/*` | 신규 작성 | Supabase 쿠폰 row를 화면 타입으로 변환하는 매퍼를 구성했다. |
+| `src/lib/content/*` | 신규 작성 | Supabase 운영 콘텐츠 row를 화면 타입으로 변환하는 매퍼를 구성했다. |
 | `src/emails/*` | 신규 작성 | Resend 이메일 인증 템플릿을 구성했다. |
 | `middleware.ts` | 신규 작성 | Supabase SSR 세션 갱신 미들웨어를 연결했다. |
 | `scripts/supabase-migrate.mjs` | 신규 작성 | `.env.local`의 DB 접속정보를 사용해 Supabase 원격 마이그레이션을 직접 적용하는 스크립트다. |
@@ -40,6 +42,8 @@
 | `supabase/migrations/20260704193516_add_email_verification_tokens.sql` | 신규 작성 | Resend 이메일 인증을 위한 토큰 테이블과 service role 전용 권한을 작성했다. |
 | `supabase/migrations/20260704194707_add_coupon_issue_download_rpcs.sql` | 신규 작성 | 쿠폰 발행과 다운로드를 트랜잭션으로 처리하는 RPC 함수를 작성했다. |
 | `supabase/migrations/20260704195812_add_coupon_use_rpc.sql` | 신규 작성 | 직원모드 쿠폰 사용완료를 트랜잭션으로 처리하는 RPC 함수를 작성했다. |
+| `supabase/migrations/20260704203904_add_content_management_tables.sql` | 신규 작성 | 메뉴, 이벤트, 공지, 문의, 배너, 팝업 운영 테이블과 RLS 정책을 작성했다. |
+| `supabase/migrations/20260704204545_restrict_content_table_grants.sql` | 신규 작성 | 운영 콘텐츠 테이블의 공개 권한을 SELECT 중심으로 정리했다. |
 
 ## 확인한 사항
 

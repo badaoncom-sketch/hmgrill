@@ -53,4 +53,60 @@ export type MenuItem = {
   description: string;
   price: number;
   featured?: boolean;
+  isActive?: boolean;
+  sortOrder?: number;
+};
+
+export type ContentPostType = "event" | "notice";
+
+export type ContentStatus = "draft" | "published" | "archived";
+
+export type ContentPost = {
+  id: string;
+  type: ContentPostType;
+  title: string;
+  body: string;
+  status: ContentStatus;
+  publishedAt?: string;
+  startsAt?: string;
+  endsAt?: string;
+  sortOrder: number;
+  createdAt: string;
+};
+
+export type InquiryStatus = "open" | "answered" | "closed";
+
+export type Inquiry = {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  status: InquiryStatus;
+  adminNote?: string;
+  answeredAt?: string;
+  createdAt: string;
+};
+
+export type SiteBanner = {
+  id: string;
+  title: string;
+  body: string;
+  imageUrl?: string;
+  href?: string;
+  placement: string;
+  isActive: boolean;
+  startsAt?: string;
+  endsAt?: string;
+  sortOrder: number;
+};
+
+export type SitePopup = {
+  id: string;
+  title: string;
+  body: string;
+  href?: string;
+  isActive: boolean;
+  startsAt?: string;
+  endsAt?: string;
+  sortOrder: number;
 };

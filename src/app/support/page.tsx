@@ -1,10 +1,17 @@
+import { submitInquiryAction } from "@/app/actions/content";
 import { SectionHeading } from "@/components/section-heading";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Field, Input, Textarea } from "@/components/ui/field";
 import { faqs } from "@/lib/site-data";
 
-export default function SupportPage() {
+export default async function SupportPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sent?: string }>;
+}) {
+  const { sent } = await searchParams;
+
   return (
     <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
       <SectionHeading
@@ -27,7 +34,12 @@ export default function SupportPage() {
         </div>
         <Card>
           <CardContent>
-            <form className="grid gap-4">
+            {sent === "1" ? (
+              <div className="mb-4 rounded-md bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
+                문의가 접수되었습니다.
+              </div>
+            ) : null}
+            <form action={submitInquiryAction} className="grid gap-4">
               <Field label="이름">
                 <Input name="name" placeholder="홍길동" />
               </Field>

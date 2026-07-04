@@ -1,9 +1,19 @@
 import { SectionHeading } from "@/components/section-heading";
 import { Card, CardContent } from "@/components/ui/card";
-import { notices } from "@/lib/site-data";
+import { contentPostSelect, mapContentPost } from "@/lib/content/db";
+import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
 
-export default function NoticesPage() {
+export default async function NoticesPage() {
+  const supabase = await createClient();
+  const { data: rows } = await supabase
+    .from("content_posts")
+    .select(contentPostSelect)
+    .eq("type", "notice")
+    .order("sort_order", { ascending: true })
+    .order("published_at", { ascending: false });
+  const notices = (rows ?? []).map(mapContentPost);
+
   return (
     <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
       <SectionHeading
@@ -15,7 +25,9 @@ export default function NoticesPage() {
         {notices.map((notice) => (
           <Card key={notice.id}>
             <CardContent>
-              <p className="text-sm text-neutral-500">{formatDate(notice.date)}</p>
+              <p className="text-sm text-neutral-500">
+                {formatDate(notice.publishedAt ?? notice.createdAt)}
+              </p>
               <h2 className="mt-2 text-xl font-bold text-neutral-950">
                 {notice.title}
               </h2>
@@ -25,6 +37,15 @@ export default function NoticesPage() {
             </CardContent>
           </Card>
         ))}
+        {notices.length === 0 ? (
+          <Card>
+            <CardContent>
+              <p className="text-sm font-semibold text-neutral-600">
+                등록된 공지사항이 없습니다.
+              </p>
+            </CardContent>
+          </Card>
+        ) : null}
       </div>
     </main>
   );
