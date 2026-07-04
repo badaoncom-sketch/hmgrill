@@ -25,6 +25,8 @@
 - 회원 쿠폰 QR 이미지를 실제 QR 생성 라이브러리로 연결
 - 관리자 회원관리와 직원관리의 `profiles` 조회 및 권한 변경 서버 액션 연결
 - 관리자 메뉴, 이벤트, 공지, 문의, 배너, 팝업 운영 테이블과 서버 액션 연결
+- 관리자 메뉴, 이벤트, 공지, 배너, 팝업 기존 항목 수정 폼 연결
+- 임시 운영 콘텐츠를 생성, 수정, 검증, 정리하는 E2E 스크립트 준비
 - 공개 홈, 메뉴, 이벤트, 공지, 고객센터를 Supabase 운영 데이터 조회로 연결
 - 쿠폰 다운로드 목록, 내 쿠폰, 사용내역, 관리자 쿠폰 화면 DB 조회 연결
 - Supabase 초기 스키마와 RLS 초안 작성
@@ -33,7 +35,6 @@
 
 ## 아직 실제 연동 전인 항목
 
-- 관리자 운영 화면의 수정 폼 고도화
 - Resend 발신 도메인 검증
 - Vercel 프로젝트 연결과 운영 환경변수 등록
 - 실제 QR 리더기 물리 장비 테스트
@@ -49,6 +50,7 @@
 - `npm run db:push:dry-run`: 원격 DB 최신 상태 확인
 - `npm run admin:promote`: 인자 누락 시 사용법 출력 확인
 - `npm run test:e2e:coupon`: 통과. 임시 관리자, 회원, 직원, 쿠폰을 생성해 발행, 발행중단, 재발행, 다운로드, 사용완료, 이벤트 기록을 검증하고 정리 완료
+- `npm run test:e2e:content`: 통과. 임시 메뉴, 공지, 문의, 배너, 팝업을 생성, 수정, 검증하고 정리 완료
 - `npm audit --audit-level=moderate`: Next.js 내부 PostCSS moderate 2건 유지. 강제 수정 제안은 Next.js 9 다운그레이드라 미적용
 - 개발 서버: `http://localhost:3000`
 - 라우트 응답 확인: `/`, `/coupons`, `/staff`, `/admin/coupons` 모두 `200 OK`
@@ -78,6 +80,8 @@
 - 관리자 운영 화면 확인: `/admin/menu`, `/admin/events`, `/admin/inquiries`, `/admin/banners`, `/admin/popups`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - 관리자 쿠폰 상세 화면 확인: `/admin/coupons/[id]`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - E2E 정리 확인: `hmgrill-e2e-%` 프로필, `E2E 쿠폰 %` 발행, `cpn_e2e_%` 회원 쿠폰 모두 0건
+- 콘텐츠 E2E 정리 확인: `E2E 메뉴%`, `E2E 공지%`, `hmgrill-content-e2e-%`, `E2E 배너%`, `E2E 팝업%` 모두 0건
+- 관리자 수정 화면 확인: `/admin/menu`, `/admin/banners`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - 라우트 응답 확인: `/signup`, `/login`, `/auth/verify`는 `200 OK`, `/mypage`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 
 ## Supabase 마이그레이션 운영 기준

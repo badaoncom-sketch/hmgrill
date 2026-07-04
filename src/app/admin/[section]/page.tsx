@@ -6,11 +6,11 @@ import {
   createMenuItemAction,
   createSiteBannerAction,
   createSitePopupAction,
-  updateContentPostStatusAction,
+  updateContentPostAction,
   updateInquiryStatusAction,
-  updateMenuItemStatusAction,
-  updateSiteBannerStatusAction,
-  updateSitePopupStatusAction,
+  updateMenuItemAction,
+  updateSiteBannerAction,
+  updateSitePopupAction,
 } from "@/app/actions/content";
 import { SectionHeading } from "@/components/section-heading";
 import { Badge } from "@/components/ui/badge";
@@ -282,10 +282,51 @@ export default async function AdminSectionPage({
                   </div>
                   <p className="mt-2 text-sm text-neutral-600">{item.description}</p>
                   <form
-                    action={updateMenuItemStatusAction}
-                    className="mt-4 flex items-center gap-3"
+                    action={updateMenuItemAction}
+                    className="mt-4 grid gap-3 md:grid-cols-2"
                   >
                     <input name="id" type="hidden" value={item.id} />
+                    <Field label="카테고리">
+                      <Select name="category" defaultValue={item.category}>
+                        {menuCategories.map((category) => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))}
+                      </Select>
+                    </Field>
+                    <Field label="메뉴명">
+                      <Input name="name" defaultValue={item.name} required />
+                    </Field>
+                    <Field label="설명">
+                      <Textarea name="description" defaultValue={item.description} />
+                    </Field>
+                    <div className="grid gap-3">
+                      <Field label="가격">
+                        <Input
+                          name="price"
+                          defaultValue={item.price}
+                          min={0}
+                          required
+                          type="number"
+                        />
+                      </Field>
+                      <Field label="정렬순서">
+                        <Input
+                          name="sortOrder"
+                          defaultValue={item.sortOrder ?? 0}
+                          type="number"
+                        />
+                      </Field>
+                    </div>
+                    <label className="flex items-center gap-2 text-sm font-semibold text-neutral-800">
+                      <input
+                        name="featured"
+                        defaultChecked={item.featured}
+                        type="checkbox"
+                      />
+                      대표 노출
+                    </label>
                     <label className="flex items-center gap-2 text-sm font-semibold text-neutral-800">
                       <input
                         name="isActive"
@@ -294,9 +335,11 @@ export default async function AdminSectionPage({
                       />
                       공개
                     </label>
-                    <Button type="submit" variant="outline">
-                      저장
-                    </Button>
+                    <div className="md:col-span-2">
+                      <Button type="submit" variant="outline">
+                        수정 저장
+                      </Button>
+                    </div>
                   </form>
                 </div>
               ))}
@@ -361,22 +404,35 @@ export default async function AdminSectionPage({
                     {post.body}
                   </p>
                   <form
-                    action={updateContentPostStatusAction}
-                    className="mt-4 flex items-center gap-2"
+                    action={updateContentPostAction}
+                    className="mt-4 grid gap-3"
                   >
                     <input name="id" type="hidden" value={post.id} />
                     <input name="type" type="hidden" value={type} />
-                    <Select
-                      name="status"
-                      aria-label={`${post.title} 상태`}
-                      defaultValue={post.status}
-                    >
-                      <option value="published">공개</option>
-                      <option value="draft">초안</option>
-                      <option value="archived">보관</option>
-                    </Select>
-                    <Button type="submit" variant="outline">
-                      저장
+                    <Field label="제목">
+                      <Input name="title" defaultValue={post.title} required />
+                    </Field>
+                    <Field label="내용">
+                      <Textarea name="body" defaultValue={post.body} required />
+                    </Field>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <Field label="상태">
+                        <Select name="status" defaultValue={post.status}>
+                          <option value="published">공개</option>
+                          <option value="draft">초안</option>
+                          <option value="archived">보관</option>
+                        </Select>
+                      </Field>
+                      <Field label="정렬순서">
+                        <Input
+                          name="sortOrder"
+                          defaultValue={post.sortOrder}
+                          type="number"
+                        />
+                      </Field>
+                    </div>
+                    <Button type="submit" variant="outline" className="w-full sm:w-fit">
+                      수정 저장
                     </Button>
                   </form>
                 </div>
@@ -519,14 +575,49 @@ export default async function AdminSectionPage({
                   </div>
                   <p className="mt-2 text-sm text-neutral-600">{item.body}</p>
                   <form
-                    action={
-                      isBanner
-                        ? updateSiteBannerStatusAction
-                        : updateSitePopupStatusAction
-                    }
-                    className="mt-4 flex items-center gap-3"
+                    action={isBanner ? updateSiteBannerAction : updateSitePopupAction}
+                    className="mt-4 grid gap-3"
                   >
                     <input name="id" type="hidden" value={item.id} />
+                    <Field label="제목">
+                      <Input name="title" defaultValue={item.title} required />
+                    </Field>
+                    <Field label="내용">
+                      <Textarea name="body" defaultValue={item.body} />
+                    </Field>
+                    {isBanner ? (
+                      <div className="grid gap-3 md:grid-cols-2">
+                        <Field label="이미지 URL">
+                          <Input
+                            name="imageUrl"
+                            defaultValue={
+                              (item as { imageUrl?: string }).imageUrl ?? ""
+                            }
+                            placeholder="https://..."
+                          />
+                        </Field>
+                        <Field label="노출 위치">
+                          <Input
+                            name="placement"
+                            defaultValue={
+                              (item as { placement?: string }).placement ?? "home"
+                            }
+                          />
+                        </Field>
+                      </div>
+                    ) : null}
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <Field label="연결 URL">
+                        <Input name="href" defaultValue={item.href ?? ""} />
+                      </Field>
+                      <Field label="정렬순서">
+                        <Input
+                          name="sortOrder"
+                          defaultValue={item.sortOrder}
+                          type="number"
+                        />
+                      </Field>
+                    </div>
                     <label className="flex items-center gap-2 text-sm font-semibold text-neutral-800">
                       <input
                         name="isActive"
@@ -535,8 +626,8 @@ export default async function AdminSectionPage({
                       />
                       활성
                     </label>
-                    <Button type="submit" variant="outline">
-                      저장
+                    <Button type="submit" variant="outline" className="w-full sm:w-fit">
+                      수정 저장
                     </Button>
                   </form>
                 </div>

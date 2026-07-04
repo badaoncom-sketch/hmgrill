@@ -97,6 +97,41 @@ export async function updateMenuItemStatusAction(formData: FormData) {
   revalidatePath("/admin/menu");
 }
 
+export async function updateMenuItemAction(formData: FormData) {
+  await requireContentAdmin();
+  const id = readString(formData, "id");
+  const category = readString(formData, "category");
+  const name = readString(formData, "name");
+  const description = readString(formData, "description");
+  const price = readInteger(formData, "price");
+
+  if (!id || !menuCategories.has(category) || !name || price < 0) {
+    throw new Error("메뉴 수정값을 확인해 주세요.");
+  }
+
+  const { error } = await createAdminClient()
+    .from("menu_items")
+    .update({
+      category,
+      name,
+      description,
+      price,
+      featured: readBoolean(formData, "featured"),
+      is_active: readBoolean(formData, "isActive"),
+      sort_order: readInteger(formData, "sortOrder"),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+
+  revalidatePath("/");
+  revalidatePath("/menu");
+  revalidatePath("/admin/menu");
+}
+
 export async function createContentPostAction(formData: FormData) {
   const user = await requireContentAdmin();
   const type = readString(formData, "type") as ContentPostType;
@@ -143,6 +178,40 @@ export async function updateContentPostStatusAction(formData: FormData) {
     .update({
       status,
       published_at: status === "published" ? new Date().toISOString() : null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+
+  revalidatePath(type === "event" ? "/events" : "/notices");
+  revalidatePath(type === "event" ? "/admin/events" : "/admin/notices");
+}
+
+export async function updateContentPostAction(formData: FormData) {
+  await requireContentAdmin();
+  const id = readString(formData, "id");
+  const type = readString(formData, "type") as ContentPostType;
+  const status = readString(formData, "status") as ContentStatus;
+  const title = readString(formData, "title");
+  const body = readString(formData, "body");
+
+  if (!id || !contentTypes.has(type) || !contentStatuses.has(status) || !title) {
+    throw new Error("콘텐츠 수정값을 확인해 주세요.");
+  }
+
+  const { error } = await createAdminClient()
+    .from("content_posts")
+    .update({
+      title,
+      body,
+      status,
+      published_at: status === "published" ? new Date().toISOString() : null,
+      starts_at: nullable(readString(formData, "startsAt")),
+      ends_at: nullable(readString(formData, "endsAt")),
+      sort_order: readInteger(formData, "sortOrder"),
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);
@@ -258,6 +327,39 @@ export async function updateSiteBannerStatusAction(formData: FormData) {
   revalidatePath("/admin/banners");
 }
 
+export async function updateSiteBannerAction(formData: FormData) {
+  await requireContentAdmin();
+  const id = readString(formData, "id");
+  const title = readString(formData, "title");
+
+  if (!id || !title) {
+    throw new Error("배너 수정값을 확인해 주세요.");
+  }
+
+  const { error } = await createAdminClient()
+    .from("site_banners")
+    .update({
+      title,
+      body: readString(formData, "body"),
+      image_url: nullable(readString(formData, "imageUrl")),
+      href: nullable(readString(formData, "href")),
+      placement: readString(formData, "placement") || "home",
+      is_active: readBoolean(formData, "isActive"),
+      starts_at: nullable(readString(formData, "startsAt")),
+      ends_at: nullable(readString(formData, "endsAt")),
+      sort_order: readInteger(formData, "sortOrder"),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+
+  revalidatePath("/");
+  revalidatePath("/admin/banners");
+}
+
 export async function createSitePopupAction(formData: FormData) {
   const user = await requireContentAdmin();
   const title = readString(formData, "title");
@@ -297,6 +399,37 @@ export async function updateSitePopupStatusAction(formData: FormData) {
     .from("site_popups")
     .update({
       is_active: readBoolean(formData, "isActive"),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+
+  revalidatePath("/");
+  revalidatePath("/admin/popups");
+}
+
+export async function updateSitePopupAction(formData: FormData) {
+  await requireContentAdmin();
+  const id = readString(formData, "id");
+  const title = readString(formData, "title");
+
+  if (!id || !title) {
+    throw new Error("팝업 수정값을 확인해 주세요.");
+  }
+
+  const { error } = await createAdminClient()
+    .from("site_popups")
+    .update({
+      title,
+      body: readString(formData, "body"),
+      href: nullable(readString(formData, "href")),
+      is_active: readBoolean(formData, "isActive"),
+      starts_at: nullable(readString(formData, "startsAt")),
+      ends_at: nullable(readString(formData, "endsAt")),
+      sort_order: readInteger(formData, "sortOrder"),
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);

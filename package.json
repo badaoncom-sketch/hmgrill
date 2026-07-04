@@ -10,7 +10,8 @@
     "db:push": "node --env-file=.env.local scripts/supabase-migrate.mjs",
     "db:push:dry-run": "node --env-file=.env.local scripts/supabase-migrate.mjs --dry-run",
     "admin:promote": "node --env-file=.env.local scripts/promote-user.mjs",
-    "test:e2e:coupon": "node --env-file=.env.local scripts/e2e-coupon-flow.mjs"
+    "test:e2e:coupon": "node --env-file=.env.local scripts/e2e-coupon-flow.mjs",
+    "test:e2e:content": "node --env-file=.env.local scripts/e2e-content-management.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",
