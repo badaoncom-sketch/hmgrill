@@ -18,6 +18,10 @@ function getProjectRefFromUrl() {
 }
 
 function getDatabaseUrl() {
+  if (process.env.SUPABASE_POOLER_DB_URL) {
+    return process.env.SUPABASE_POOLER_DB_URL;
+  }
+
   if (process.env.SUPABASE_DB_URL) {
     return process.env.SUPABASE_DB_URL;
   }
@@ -51,7 +55,7 @@ if (!dbUrl) {
   console.error(
     [
       "Missing Supabase migration credentials.",
-      "Set SUPABASE_DB_URL, or set SUPABASE_PROJECT_REF and SUPABASE_DB_PASSWORD in .env.local.",
+      "Set SUPABASE_POOLER_DB_URL, SUPABASE_DB_URL, or set SUPABASE_PROJECT_REF and SUPABASE_DB_PASSWORD in .env.local.",
     ].join("\n"),
   );
   process.exit(1);

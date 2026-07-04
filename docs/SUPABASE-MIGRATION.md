@@ -11,22 +11,30 @@
 
 ## 필요한 환경변수
 
-`.env.local`에 아래 둘 중 하나를 추가해야 Codex가 직접 적용할 수 있다.
+`.env.local`에 아래 값 중 하나를 추가해야 Codex가 직접 적용할 수 있다.
 
 권장:
+
+```bash
+SUPABASE_POOLER_DB_URL=
+```
+
+`SUPABASE_POOLER_DB_URL`은 Supabase Dashboard의 `Connect > Transaction pooler` URI를 사용한다. 직접 DB URL인 `db.<project-ref>.supabase.co:5432`는 IPv6 직접 접속이 필요할 수 있어 현재 실행 환경에서 실패할 수 있다.
+
+대안 1:
 
 ```bash
 SUPABASE_DB_URL=
 ```
 
-대안:
+대안 2:
 
 ```bash
 SUPABASE_PROJECT_REF=
 SUPABASE_DB_PASSWORD=
 ```
 
-`SUPABASE_DB_URL`은 Supabase Dashboard의 Database connection string을 사용한다. 비밀번호가 포함되므로 Git에 커밋하지 않는다.
+DB 접속 문자열에는 비밀번호가 포함되므로 Git에 커밋하지 않는다.
 
 ## 실행 명령
 
