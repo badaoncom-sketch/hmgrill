@@ -1,8 +1,7 @@
 import Link from "next/link";
+import { LoginForm, ResendVerificationForm } from "@/components/auth/auth-forms";
 import { SectionHeading } from "@/components/section-heading";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Field, Input } from "@/components/ui/field";
 
 export default function LoginPage() {
   return (
@@ -14,17 +13,7 @@ export default function LoginPage() {
       />
       <Card>
         <CardContent>
-          <form className="grid gap-4">
-            <Field label="이메일">
-              <Input name="email" type="email" placeholder="member@example.com" required />
-            </Field>
-            <Field label="비밀번호">
-              <Input name="password" type="password" required />
-            </Field>
-            <Button type="submit" className="w-full">
-              로그인
-            </Button>
-          </form>
+          <LoginForm />
           <div className="mt-4 flex justify-between text-sm text-neutral-600">
             <Link href="/signup" className="hover:text-neutral-950">
               회원가입
@@ -32,6 +21,9 @@ export default function LoginPage() {
             <Link href="/mypage" className="hover:text-neutral-950">
               마이페이지
             </Link>
+          </div>
+          <div className="mt-6 border-t border-neutral-100 pt-6">
+            <ResendVerificationForm />
           </div>
         </CardContent>
       </Card>

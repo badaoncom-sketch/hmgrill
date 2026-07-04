@@ -1,10 +1,34 @@
 import { MailCheck, Ticket } from "lucide-react";
+import { redirect } from "next/navigation";
+import { logoutAction } from "@/app/actions/auth";
 import { SectionHeading } from "@/components/section-heading";
 import { Badge } from "@/components/ui/badge";
-import { ButtonLink } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { createClient } from "@/lib/supabase/server";
 
-export default function MyPage() {
+export default async function MyPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data: profile } = user
+    ? await supabase
+        .from("profiles")
+        .select("name,email,email_verified,role")
+        .eq("id", user.id)
+        .maybeSingle()
+    : { data: null };
+
+  if (!profile?.email_verified) {
+    redirect("/login");
+  }
+
   return (
     <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
       <SectionHeading
@@ -23,9 +47,13 @@ export default function MyPage() {
               인증 완료
             </Badge>
             <p className="mt-3 text-sm text-neutral-600">
-              실제 구현에서는 Supabase Auth와 사용자 테이블의 인증 상태를 함께
-              확인합니다.
+              {profile.name} / {profile.email}
             </p>
+            <form action={logoutAction} className="mt-5">
+              <Button type="submit" variant="outline">
+                로그아웃
+              </Button>
+            </form>
           </CardContent>
         </Card>
         <Card>

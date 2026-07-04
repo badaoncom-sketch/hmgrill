@@ -1,50 +1,37 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
-import { VerificationEmail } from "@/emails/verification-email";
+import { createAndSendVerificationEmail } from "@/lib/auth/verification";
 
 export async function POST(request: Request) {
-  const resendApiKey = process.env.RESEND_API_KEY;
-  const emailFrom = process.env.EMAIL_FROM;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-
-  if (!resendApiKey || !emailFrom) {
-    return NextResponse.json(
-      { error: "Email environment variables are not configured." },
-      { status: 500 },
-    );
-  }
-
   const body = (await request.json()) as {
     email?: string;
     name?: string;
-    token?: string;
+    userId?: string;
   };
 
-  if (!body.email || !body.name || !body.token) {
+  if (!body.email || !body.name || !body.userId) {
     return NextResponse.json(
-      { error: "email, name, token are required." },
+      { error: "email, name, userId are required." },
       { status: 400 },
     );
   }
 
-  const resend = new Resend(resendApiKey);
-  const verificationUrl = `${siteUrl}/auth/verify?token=${encodeURIComponent(
-    body.token,
-  )}`;
-
-  const result = await resend.emails.send({
-    from: emailFrom,
-    to: body.email,
-    subject: "화목 이메일 인증을 완료해 주세요",
-    react: VerificationEmail({
+  try {
+    const id = await createAndSendVerificationEmail({
+      userId: body.userId,
+      email: body.email,
       name: body.name,
-      verificationUrl,
-    }),
-  });
+    });
 
-  if (result.error) {
-    return NextResponse.json({ error: result.error.message }, { status: 502 });
+    return NextResponse.json({ id });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Verification email failed.",
+      },
+      { status: 502 },
+    );
   }
-
-  return NextResponse.json({ id: result.data?.id });
 }

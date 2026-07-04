@@ -1,7 +1,6 @@
+import { SignupForm } from "@/components/auth/auth-forms";
 import { SectionHeading } from "@/components/section-heading";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Field, Input } from "@/components/ui/field";
 
 export default function SignupPage() {
   return (
@@ -13,23 +12,7 @@ export default function SignupPage() {
       />
       <Card>
         <CardContent>
-          <form className="grid gap-4">
-            <Field label="이름">
-              <Input name="name" placeholder="홍길동" required />
-            </Field>
-            <Field label="휴대폰번호">
-              <Input name="phone" placeholder="010-0000-0000" required />
-            </Field>
-            <Field label="이메일">
-              <Input name="email" type="email" placeholder="member@example.com" required />
-            </Field>
-            <Field label="비밀번호">
-              <Input name="password" type="password" required />
-            </Field>
-            <Button type="submit" className="w-full">
-              회원가입
-            </Button>
-          </form>
+          <SignupForm />
         </CardContent>
       </Card>
     </main>

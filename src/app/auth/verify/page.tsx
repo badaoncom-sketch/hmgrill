@@ -1,6 +1,8 @@
 import { MailCheck } from "lucide-react";
 import { SectionHeading } from "@/components/section-heading";
+import { ButtonLink } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { verifyEmailToken } from "@/lib/auth/verification";
 
 export default async function VerifyEmailPage({
   searchParams,
@@ -8,6 +10,9 @@ export default async function VerifyEmailPage({
   searchParams: Promise<{ token?: string }>;
 }) {
   const { token } = await searchParams;
+  const result = token
+    ? await verifyEmailToken(token)
+    : { ok: false, message: "인증 토큰이 없습니다." };
 
   return (
     <main className="mx-auto grid max-w-xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
@@ -18,13 +23,20 @@ export default async function VerifyEmailPage({
       />
       <Card>
         <CardContent>
-          <MailCheck className="text-emerald-700" size={32} aria-hidden="true" />
+          <MailCheck
+            className={result.ok ? "text-emerald-700" : "text-red-700"}
+            size={32}
+            aria-hidden="true"
+          />
           <h2 className="mt-4 text-xl font-bold text-neutral-950">
-            인증 요청이 접수되었습니다
+            {result.ok ? "인증 완료" : "인증 실패"}
           </h2>
-          <p className="mt-3 break-all text-sm leading-6 text-neutral-600">
-            토큰: {token ?? "토큰 없음"}
+          <p className="mt-3 text-sm leading-6 text-neutral-600">
+            {result.message}
           </p>
+          <ButtonLink href="/login" className="mt-5">
+            로그인으로 이동
+          </ButtonLink>
         </CardContent>
       </Card>
     </main>

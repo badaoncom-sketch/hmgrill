@@ -12,14 +12,15 @@
 - 직원모드 QR 스캔 입력 화면 구성
 - 관리자 대시보드와 쿠폰 발행 화면 구성
 - Supabase SSR 클라이언트 준비
+- Supabase Auth 회원가입, 로그인, 로그아웃 서버 액션 연결
 - Resend 이메일 인증 API 라우트와 이메일 템플릿 준비
+- Resend 이메일 인증 토큰 생성, 재발송, 검증 흐름 연결
 - Supabase 초기 스키마와 RLS 초안 작성
 - Supabase CLI 프로젝트 설정과 표준 마이그레이션 파일 구성
 - 환경변수 예시 파일 작성
 
 ## 아직 실제 연동 전인 항목
 
-- Supabase Auth 회원가입, 로그인 서버 액션 연결
 - 쿠폰 발행, 다운로드, 사용완료의 DB 트랜잭션 구현
 - 관리자, 직원 권한 검증 미들웨어 또는 서버 가드 구현
 - 실제 QR 이미지 생성 라이브러리 연동
@@ -43,10 +44,13 @@
 - 직접 DB URL dry-run: IPv6 직접 접속 문제로 실패. Transaction Pooler IPv4 접속 문자열 필요
 - Transaction Pooler dry-run: region-only host는 자동 보정했으나 `tenant/user not found`로 실패. Dashboard에서 복사한 정확한 pooler URI 필요
 - Supabase 원격 마이그레이션 적용: `20260704185722`, `20260704192827` 적용 완료
+- Supabase 원격 마이그레이션 적용: `20260704193516` 적용 완료
 - Supabase advisors: 이슈 없음
-- RLS 확인: `profiles`, `coupon_issues`, `member_coupons`, `coupon_events` 모두 활성화
+- RLS 확인: `profiles`, `coupon_issues`, `member_coupons`, `coupon_events`, `email_verification_tokens` 모두 활성화
 - 정책 확인: 4개 SELECT 정책 적용 확인
 - GRANT 확인: `anon`은 `coupon_issues` SELECT만 허용, `authenticated`는 필요한 SELECT만 허용, `service_role`은 운영 권한 허용
+- 인증 구현 확인: 회원가입, 로그인, 로그아웃, 인증 메일 재발송, 이메일 인증 링크 검증, 마이페이지 접근 제한 연결
+- 라우트 응답 확인: `/signup`, `/login`, `/auth/verify`는 `200 OK`, `/mypage`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 
 ## Supabase 마이그레이션 운영 기준
 
