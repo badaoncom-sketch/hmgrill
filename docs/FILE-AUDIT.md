@@ -27,6 +27,7 @@
 | `src/components/auth/*` | 신규 작성 | 회원가입, 로그인, 인증 메일 재발송 클라이언트 폼을 구성했다. |
 | `src/components/coupon-download-form.tsx` | 신규 작성 | 회원 쿠폰 다운로드 서버 액션 폼을 구성했다. |
 | `src/app/actions/staff.ts` | 신규 작성 | 직원모드 쿠폰 조회와 사용완료 서버 액션을 구성했다. |
+| `src/app/actions/admin-users.ts` | 신규 작성 | 관리자 회원/직원 권한 변경 서버 액션을 구성했다. |
 | `src/lib/*` | 신규 작성 | 타입, 샘플 데이터, 쿠폰 정책, Supabase 클라이언트, 환경변수 유틸을 구성했다. |
 | `src/lib/auth/*` | 신규 작성 | 이메일 인증 토큰 생성, 해시, Resend 발송, 토큰 검증 로직을 구성했다. |
 | `src/lib/coupons/*` | 신규 작성 | Supabase 쿠폰 row를 화면 타입으로 변환하는 매퍼를 구성했다. |
