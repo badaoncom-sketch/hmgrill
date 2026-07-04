@@ -27,6 +27,8 @@
 - 관리자 메뉴, 이벤트, 공지, 문의, 배너, 팝업 운영 테이블과 서버 액션 연결
 - 관리자 메뉴, 이벤트, 공지, 배너, 팝업 기존 항목 수정 폼 연결
 - 임시 운영 콘텐츠를 생성, 수정, 검증, 정리하는 E2E 스크립트 준비
+- Resend 발신 도메인 점검 스크립트 준비
+- Vercel 배포 준비 점검 스크립트와 배포 점검표 준비
 - 공개 홈, 메뉴, 이벤트, 공지, 고객센터를 Supabase 운영 데이터 조회로 연결
 - 쿠폰 다운로드 목록, 내 쿠폰, 사용내역, 관리자 쿠폰 화면 DB 조회 연결
 - Supabase 초기 스키마와 RLS 초안 작성
@@ -35,7 +37,7 @@
 
 ## 아직 실제 연동 전인 항목
 
-- Resend 발신 도메인 검증
+- Resend 실제 발신 도메인 DNS 검증
 - Vercel 프로젝트 연결과 운영 환경변수 등록
 - 실제 QR 리더기 물리 장비 테스트
 
@@ -47,42 +49,33 @@
 
 - `npm run lint`: 통과
 - `npm run build`: 통과
-- `npm run db:push:dry-run`: 원격 DB 최신 상태 확인
+- `npm run db:push:dry-run`: 통과. 원격 DB가 로컬 마이그레이션과 최신 상태임을 확인
 - `npm run admin:promote`: 인자 누락 시 사용법 출력 확인
 - `npm run test:e2e:coupon`: 통과. 임시 관리자, 회원, 직원, 쿠폰을 생성해 발행, 발행중단, 재발행, 다운로드, 사용완료, 이벤트 기록을 검증하고 정리 완료
 - `npm run test:e2e:content`: 통과. 임시 메뉴, 공지, 문의, 배너, 팝업을 생성, 수정, 검증하고 정리 완료
+- `npm run ops:resend`: 차단. `EMAIL_FROM` 도메인 `hmgrill.com`이 Resend Domains에 아직 등록되어 있지 않음. 현재 Resend 계정에는 `fmgrill.com`만 있으며 상태는 `pending`
+- `npm run ops:vercel`: 차단. 필수 환경변수는 존재하지만 `NEXT_PUBLIC_SITE_URL`이 운영 URL이 아니고, Vercel CLI와 `.vercel/project.json` 프로젝트 연결이 없음
 - `npm audit --audit-level=moderate`: Next.js 내부 PostCSS moderate 2건 유지. 강제 수정 제안은 Next.js 9 다운그레이드라 미적용
-- 개발 서버: `http://localhost:3000`
-- 라우트 응답 확인: `/`, `/coupons`, `/staff`, `/admin/coupons` 모두 `200 OK`
+- 로컬 서버: `http://localhost:3000`
+- 공개 라우트 응답 확인: `/`, `/menu`, `/events`, `/notices`, `/support`, `/coupons`, `/signup`, `/login` 모두 `200 OK`
+- 보호 라우트 응답 확인: `/mypage`, `/staff`, `/admin`, `/admin/coupons`, `/admin/menu`, `/admin/banners` 모두 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - `.env.local` 필수 키 존재 확인: 통과
 - Supabase CLI 확인: `2.108.0`
-- Supabase CLI/MCP 계정 프로젝트 확인: 현재 연결 계정에는 `.env.local`의 hmgrill project ref가 표시되지 않음
-- `npm run db:push:dry-run`: DB 마이그레이션 접속정보가 없어 안전하게 중단됨
-- 직접 DB URL dry-run: IPv6 직접 접속 문제로 실패. Transaction Pooler IPv4 접속 문자열 필요
-- Transaction Pooler dry-run: region-only host는 자동 보정했으나 `tenant/user not found`로 실패. Dashboard에서 복사한 정확한 pooler URI 필요
 - Supabase 원격 마이그레이션 적용: `20260704185722`, `20260704192827` 적용 완료
 - Supabase 원격 마이그레이션 적용: `20260704193516` 적용 완료
 - Supabase 원격 마이그레이션 적용: `20260704194707` 적용 완료
 - Supabase 원격 마이그레이션 적용: `20260704195812` 적용 완료
 - Supabase 원격 마이그레이션 적용: `20260704203904`, `20260704204545` 적용 완료
 - Supabase 원격 마이그레이션 적용: `20260704205054` 적용 완료
+- Supabase 원격 마이그레이션 목록 확인: 로컬과 원격 모두 `20260704185722`부터 `20260704205054`까지 동일
 - Supabase advisors: 이슈 없음
 - RLS 확인: `profiles`, `coupon_issues`, `member_coupons`, `coupon_events`, `email_verification_tokens`, `menu_items`, `content_posts`, `inquiries`, `site_banners`, `site_popups` 모두 활성화
 - 정책 확인: 쿠폰/프로필 공개 정책과 운영 콘텐츠 공개 SELECT 정책 적용 확인
 - GRANT 확인: 공개 운영 테이블은 `anon`, `authenticated` SELECT만 허용하고, `inquiries`와 관리자 쓰기 권한은 `service_role`만 허용
 - 인증 구현 확인: 회원가입, 로그인, 로그아웃, 인증 메일 재발송, 이메일 인증 링크 검증, 마이페이지 접근 제한 연결
 - 쿠폰 RPC 확인: `issue_coupon`, `download_coupon`, `use_coupon`, `stop_coupon_issue`, `resume_coupon_issue` 함수는 `service_role`만 실행 가능
-- 쿠폰 화면 확인: `/coupons`는 `200 OK`, `/coupons/my`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
-- 직원모드 화면 확인: `/staff`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
-- 관리자 화면 확인: `/admin`, `/admin/coupons`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
-- 관리자 세부 화면 확인: `/admin/members`, `/admin/staff`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
-- 공개 운영 화면 확인: `/`, `/menu`, `/events`, `/notices`, `/support`는 `200 OK`
-- 관리자 운영 화면 확인: `/admin/menu`, `/admin/events`, `/admin/inquiries`, `/admin/banners`, `/admin/popups`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
-- 관리자 쿠폰 상세 화면 확인: `/admin/coupons/[id]`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - E2E 정리 확인: `hmgrill-e2e-%` 프로필, `E2E 쿠폰 %` 발행, `cpn_e2e_%` 회원 쿠폰 모두 0건
 - 콘텐츠 E2E 정리 확인: `E2E 메뉴%`, `E2E 공지%`, `hmgrill-content-e2e-%`, `E2E 배너%`, `E2E 팝업%` 모두 0건
-- 관리자 수정 화면 확인: `/admin/menu`, `/admin/banners`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
-- 라우트 응답 확인: `/signup`, `/login`, `/auth/verify`는 `200 OK`, `/mypage`는 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 
 ## Supabase 마이그레이션 운영 기준
 

@@ -39,6 +39,9 @@
 | `scripts/promote-user.mjs` | 신규 작성 | 기존 가입 계정을 관리자 또는 직원 권한으로 승격하는 운영 스크립트다. |
 | `scripts/e2e-coupon-flow.mjs` | 신규 작성 | 임시 계정과 쿠폰으로 쿠폰 발행부터 사용완료까지 검증하고 정리하는 E2E 스크립트다. |
 | `scripts/e2e-content-management.mjs` | 신규 작성 | 임시 운영 콘텐츠로 생성, 수정, 검증, 정리를 수행하는 E2E 스크립트다. |
+| `scripts/resend-domain-check.mjs` | 신규 작성 | `EMAIL_FROM` 도메인이 Resend에서 발신 가능 상태인지 점검하는 스크립트다. |
+| `scripts/vercel-readiness.mjs` | 신규 작성 | Vercel 배포 전 환경변수, 사이트 URL, 프로젝트 연결 상태를 점검하는 스크립트다. |
+| `docs/DEPLOYMENT-CHECKLIST.md` | 신규 작성 | Resend와 Vercel 운영 배포 전 확인 절차를 정리했다. |
 | `supabase/config.toml` | 신규 작성 | Supabase CLI 프로젝트 설정을 초기화했다. |
 | `supabase/migrations/20260704185722_initial_schema.sql` | 신규 작성 | 쿠폰 운영을 위한 초기 테이블, enum, 명시적 GRANT, RLS 초안을 작성했다. |
 | `supabase/migrations/20260704193516_add_email_verification_tokens.sql` | 신규 작성 | Resend 이메일 인증을 위한 토큰 테이블과 service role 전용 권한을 작성했다. |
