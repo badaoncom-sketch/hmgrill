@@ -13,6 +13,7 @@
   --hm-subtext: #bdbdbd;
   --hm-border: rgba(255, 255, 255, 0.08);
   --hm-border-soft: rgba(255, 255, 255, 0.06);
+  --hm-warm-border: rgba(184, 130, 30, 0.1);
   --hm-divider: rgba(255, 255, 255, 0.05);
   --hm-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
   --hm-shadow-strong: 0 28px 90px rgba(0, 0, 0, 0.42);
@@ -86,8 +87,18 @@ button {
 
 .hm-section-band {
   background:
-    radial-gradient(circle at 50% 0%, rgba(184, 130, 30, 0.07), transparent 34%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 42%);
+    radial-gradient(circle at 50% 0%, rgba(184, 130, 30, 0.055), transparent 36%),
+    linear-gradient(180deg, rgba(34, 22, 12, 0.22), rgba(13, 13, 13, 0.98) 46%, rgba(13, 13, 13, 1));
+}
+
+.hm-section-deep {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(247, 230, 193, 0.028), transparent 32%),
+    linear-gradient(180deg, #0d0d0d 0%, #100e0b 52%, #0d0d0d 100%);
+}
+
+.hm-section-separator {
+  border-top: 1px solid var(--hm-warm-border);
 }
 
 .hm-card-hover {

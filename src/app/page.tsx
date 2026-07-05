@@ -241,7 +241,7 @@ export default async function HomePage() {
       </section>
 
       {activePopup ? (
-        <section className="border-y border-[var(--hm-border-soft)] bg-[var(--hm-surface)]">
+        <section className="hm-section-separator bg-[#100e0b]">
           <Container className="flex flex-col gap-3 py-5 text-sm text-[var(--hm-subtext)] sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="font-bold text-[var(--hm-text)]">{activePopup.title}</p>
@@ -301,7 +301,7 @@ export default async function HomePage() {
         </Container>
       </Section>
 
-      <Section className="border-y border-[var(--hm-divider)] bg-[rgba(255,255,255,.012)]">
+      <Section className="hm-section-deep hm-section-separator">
         <Container>
           <SectionHeader
             eyebrow="SIGNATURE MENU"
@@ -393,7 +393,7 @@ export default async function HomePage() {
         </Container>
       </Section>
 
-      <Section className="border-y border-[var(--hm-divider)] bg-[rgba(255,255,255,.012)]">
+      <Section className="hm-section-deep hm-section-separator">
         <Container>
           <SectionHeader
             eyebrow="STORE"
