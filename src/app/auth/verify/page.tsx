@@ -15,7 +15,7 @@ export default async function VerifyEmailPage({
     : { ok: false, message: "인증 토큰이 없습니다." };
 
   return (
-    <main className="mx-auto grid max-w-xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+    <main className="hm-page-shell hm-page-shell-narrow">
       <SectionHeading
         eyebrow="VERIFY"
         title="이메일 인증"

@@ -102,7 +102,7 @@ function AdminShell({
   children: ReactNode;
 }) {
   return (
-    <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+    <main className="hm-page-shell">
       <SectionHeading eyebrow="ADMIN" title={title} description={description} />
       {children}
     </main>
@@ -124,7 +124,7 @@ export default async function AdminSectionPage({
 
   if (!canAccess) {
     return (
-      <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+      <main className="hm-page-shell">
         <SectionHeading
           eyebrow="ADMIN"
           title={title}
@@ -153,7 +153,7 @@ export default async function AdminSectionPage({
     const profiles = (rows ?? []) as ProfileRow[];
 
     return (
-      <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+      <main className="hm-page-shell">
         <SectionHeading
           eyebrow="ADMIN"
           title={title}
@@ -655,7 +655,7 @@ export default async function AdminSectionPage({
   }
 
   return (
-    <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+    <main className="hm-page-shell">
       <SectionHeading
         eyebrow="ADMIN"
         title={title}

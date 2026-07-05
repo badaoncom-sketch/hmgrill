@@ -30,7 +30,7 @@ export default async function AdminPage() {
 
   if (!canAccess) {
     return (
-      <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+      <main className="hm-page-shell">
         <SectionHeading
           eyebrow="ADMIN"
           title="관리자 대시보드"
@@ -90,7 +90,7 @@ export default async function AdminPage() {
   );
 
   return (
-    <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+    <main className="hm-page-shell">
       <SectionHeading
         eyebrow="ADMIN"
         title="관리자 대시보드"

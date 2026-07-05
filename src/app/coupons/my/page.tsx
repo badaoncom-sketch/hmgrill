@@ -32,7 +32,7 @@ export default async function MyCouponsPage() {
   const memberCoupons = (rows ?? []).map(mapMemberCoupon);
 
   return (
-    <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+    <main className="hm-page-shell">
       <SectionHeading
         eyebrow="MY COUPON"
         title="내 쿠폰"

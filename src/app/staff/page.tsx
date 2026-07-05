@@ -19,7 +19,7 @@ export default async function StaffPage() {
   const recentEvents = (rows ?? []).map(mapCouponEvent);
 
   return (
-    <main className="mx-auto grid max-w-5xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+    <main className="hm-page-shell hm-page-shell-staff">
       <SectionHeading
         eyebrow="STAFF MODE"
         title="직원모드"

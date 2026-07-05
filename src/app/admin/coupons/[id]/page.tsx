@@ -45,7 +45,7 @@ export default async function AdminCouponDetailPage({
 
   if (!canAccess) {
     return (
-      <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+      <main className="hm-page-shell">
         <SectionHeading
           eyebrow="COUPON ADMIN"
           title="쿠폰 상세"
@@ -88,7 +88,7 @@ export default async function AdminCouponDetailPage({
   const remainingCount = issue.quantity - issue.downloadedCount;
 
   return (
-    <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+    <main className="hm-page-shell">
       <SectionHeading
         eyebrow="COUPON ADMIN"
         title={issue.name}

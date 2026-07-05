@@ -200,6 +200,23 @@ button {
   max-width: 1200px;
 }
 
+.hm-page-shell {
+  display: grid;
+  gap: 2rem;
+  margin-inline: auto;
+  max-width: 80rem;
+  padding: 96px 1rem 112px;
+  width: 100%;
+}
+
+.hm-page-shell-narrow {
+  max-width: 36rem;
+}
+
+.hm-page-shell-staff {
+  max-width: 64rem;
+}
+
 .hm-section {
   padding-block: 150px;
 }
@@ -274,6 +291,22 @@ button {
 
   .hm-section {
     padding-block: 88px;
+  }
+
+  .hm-page-shell {
+    padding-block: 80px 96px;
+  }
+}
+
+@media (min-width: 640px) {
+  .hm-page-shell {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hm-page-shell {
+    padding: 120px 2rem;
   }
 }
 

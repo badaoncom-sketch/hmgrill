@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function LoginPage() {
   return (
-    <main className="mx-auto grid max-w-xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+    <main className="hm-page-shell hm-page-shell-narrow">
       <SectionHeading
         eyebrow="MEMBER"
         title="로그인"
