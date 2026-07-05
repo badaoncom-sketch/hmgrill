@@ -1,4 +1,5 @@
 import { ArrowRight, ScanLine, ShieldCheck, Ticket } from "lucide-react";
+import { MenuImage } from "@/components/menu-image";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -179,17 +180,16 @@ export default async function HomePage() {
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           {featuredMenu.map((item) => (
             <Card key={item.id}>
-              <CardContent>
+              <CardContent className="grid gap-4">
+                <MenuImage src={item.imageUrl} alt={item.name} />
                 <p className="text-sm font-semibold text-red-700">
                   {item.category}
                 </p>
-                <h3 className="mt-2 text-xl font-bold text-neutral-950">
-                  {item.name}
-                </h3>
-                <p className="mt-2 text-sm text-neutral-600">
+                <h3 className="text-xl font-bold text-neutral-950">{item.name}</h3>
+                <p className="text-sm text-neutral-600">
                   {item.description}
                 </p>
-                <p className="mt-4 font-semibold text-neutral-950">
+                <p className="font-semibold text-neutral-950">
                   {formatCurrency(item.price)}
                 </p>
               </CardContent>

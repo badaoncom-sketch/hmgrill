@@ -1,3 +1,4 @@
+import { MenuImage } from "@/components/menu-image";
 import { SectionHeading } from "@/components/section-heading";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,17 +32,16 @@ export default async function MenuPage() {
       <div className="grid gap-4 md:grid-cols-2">
         {menuItems.map((item) => (
           <Card key={item.id}>
-            <CardContent>
+            <CardContent className="grid gap-4">
+              <MenuImage src={item.imageUrl} alt={item.name} />
               <Badge tone={item.featured ? "red" : "neutral"}>
                 {item.category}
               </Badge>
-              <h2 className="mt-3 text-xl font-bold text-neutral-950">
-                {item.name}
-              </h2>
-              <p className="mt-2 text-sm text-neutral-600">
+              <h2 className="text-xl font-bold text-neutral-950">{item.name}</h2>
+              <p className="text-sm text-neutral-600">
                 {item.description}
               </p>
-              <p className="mt-4 text-lg font-bold text-neutral-950">
+              <p className="text-lg font-bold text-neutral-950">
                 {formatCurrency(item.price)}
               </p>
             </CardContent>

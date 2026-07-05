@@ -20,12 +20,14 @@
 | `docs/IMPLEMENTATION-ROADMAP.md` | 신규 작성 | 기획설계서를 기준으로 개발 단계와 검증 기준을 정리했다. |
 | `docs/IMPLEMENTATION-STATUS.md` | 신규 작성 | 1차 구현 완료 범위와 남은 실제 연동 항목을 기록했다. |
 | `docs/SUPABASE-MIGRATION.md` | 신규 작성 | Codex가 직접 Supabase 마이그레이션을 적용하기 위한 환경변수와 명령을 정리했다. |
+| `docs/MENU-IMAGES.md` | 신규 작성 | 메뉴 이미지 저장 위치와 관리자 입력 경로를 정리했다. |
 | `package.json` | 신규 작성 | Next.js, React, Supabase, Resend, UI 유틸 의존성과 실행 스크립트를 정의했다. |
 | `.env.example` | 신규 작성 | Supabase, Resend, 사이트 URL 환경변수 예시를 정의했다. |
 | `src/app/*` | 신규 작성 | 공개, 회원, 쿠폰, 직원모드, 관리자 라우트 화면을 구성했다. |
 | `src/components/*` | 신규 작성 | 재사용 UI, 쿠폰 카드, 실제 QR 쿠폰, 직원 스캐너, 관리자 쿠폰 발행 폼을 구성했다. |
 | `src/components/auth/*` | 신규 작성 | 회원가입, 로그인, 인증 메일 재발송 클라이언트 폼을 구성했다. |
 | `src/components/coupon-download-form.tsx` | 신규 작성 | 회원 쿠폰 다운로드 서버 액션 폼을 구성했다. |
+| `src/components/menu-image.tsx` | 신규 작성 | 메뉴 이미지가 있으면 표시하고 없으면 안정적인 플레이스홀더를 표시한다. |
 | `src/app/actions/staff.ts` | 신규 작성 | 직원모드 쿠폰 조회와 사용완료 서버 액션을 구성했다. |
 | `src/app/actions/admin-users.ts` | 신규 작성 | 관리자 회원/직원 권한 변경 서버 액션을 구성했다. |
 | `src/app/actions/content.ts` | 신규 작성 | 메뉴, 이벤트, 공지, 문의, 배너, 팝업 운영 서버 액션을 구성했다. |
@@ -41,6 +43,7 @@
 | `scripts/e2e-content-management.mjs` | 신규 작성 | 임시 운영 콘텐츠로 생성, 수정, 검증, 정리를 수행하는 E2E 스크립트다. |
 | `scripts/resend-domain-check.mjs` | 신규 작성 | `EMAIL_FROM` 도메인이 Resend에서 발신 가능 상태인지 점검하는 스크립트다. |
 | `scripts/vercel-readiness.mjs` | 신규 작성 | Vercel 배포 전 환경변수, 사이트 URL, 프로젝트 연결 상태를 점검하는 스크립트다. |
+| `public/images/menu/*` | 신규 추가 | 메뉴 화면에서 사용할 정적 메뉴 이미지를 저장한다. |
 | `docs/DEPLOYMENT-CHECKLIST.md` | 신규 작성 | Resend와 Vercel 운영 배포 전 확인 절차를 정리했다. |
 | `supabase/config.toml` | 신규 작성 | Supabase CLI 프로젝트 설정을 초기화했다. |
 | `supabase/migrations/20260704185722_initial_schema.sql` | 신규 작성 | 쿠폰 운영을 위한 초기 테이블, enum, 명시적 GRANT, RLS 초안을 작성했다. |
@@ -50,6 +53,7 @@
 | `supabase/migrations/20260704203904_add_content_management_tables.sql` | 신규 작성 | 메뉴, 이벤트, 공지, 문의, 배너, 팝업 운영 테이블과 RLS 정책을 작성했다. |
 | `supabase/migrations/20260704204545_restrict_content_table_grants.sql` | 신규 작성 | 운영 콘텐츠 테이블의 공개 권한을 SELECT 중심으로 정리했다. |
 | `supabase/migrations/20260704205054_add_coupon_issue_status_rpcs.sql` | 신규 작성 | 쿠폰 발행중단과 재발행 RPC 함수를 작성했다. |
+| `supabase/migrations/20260705033046_add_menu_item_image_url.sql` | 신규 작성 | 메뉴 이미지 경로 저장을 위한 `menu_items.image_url` 컬럼을 추가했다. |
 
 ## 확인한 사항
 

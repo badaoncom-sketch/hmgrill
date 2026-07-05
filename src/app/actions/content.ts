@@ -33,6 +33,20 @@ function nullable(value: string) {
   return value ? value : null;
 }
 
+function readLocalImagePath(formData: FormData, key: string) {
+  const value = readString(formData, key);
+
+  if (!value) {
+    return null;
+  }
+
+  if (!value.startsWith("/images/")) {
+    throw new Error("이미지 경로는 /images/ 로 시작해야 합니다.");
+  }
+
+  return value;
+}
+
 async function requireContentAdmin() {
   const { user, canAccess } = await requireAdminAccess();
 
@@ -49,6 +63,7 @@ export async function createMenuItemAction(formData: FormData) {
   const name = readString(formData, "name");
   const description = readString(formData, "description");
   const price = readInteger(formData, "price");
+  const imageUrl = readLocalImagePath(formData, "imageUrl");
 
   if (!menuCategories.has(category) || !name || price < 0) {
     throw new Error("메뉴 입력값을 확인해 주세요.");
@@ -59,6 +74,7 @@ export async function createMenuItemAction(formData: FormData) {
     name,
     description,
     price,
+    image_url: imageUrl,
     featured: readBoolean(formData, "featured"),
     is_active: readBoolean(formData, "isActive"),
     sort_order: readInteger(formData, "sortOrder"),
@@ -104,6 +120,7 @@ export async function updateMenuItemAction(formData: FormData) {
   const name = readString(formData, "name");
   const description = readString(formData, "description");
   const price = readInteger(formData, "price");
+  const imageUrl = readLocalImagePath(formData, "imageUrl");
 
   if (!id || !menuCategories.has(category) || !name || price < 0) {
     throw new Error("메뉴 수정값을 확인해 주세요.");
@@ -116,6 +133,7 @@ export async function updateMenuItemAction(formData: FormData) {
       name,
       description,
       price,
+      image_url: imageUrl,
       featured: readBoolean(formData, "featured"),
       is_active: readBoolean(formData, "isActive"),
       sort_order: readInteger(formData, "sortOrder"),

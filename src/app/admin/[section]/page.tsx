@@ -256,6 +256,12 @@ export default async function AdminSectionPage({
                 <Field label="가격">
                   <Input name="price" min={0} required type="number" />
                 </Field>
+                <Field label="이미지 경로">
+                  <Input
+                    name="imageUrl"
+                    placeholder="/images/menu/1783221304773.png"
+                  />
+                </Field>
                 <Field label="정렬순서">
                   <Input name="sortOrder" defaultValue={0} type="number" />
                 </Field>
@@ -300,6 +306,13 @@ export default async function AdminSectionPage({
                     </Field>
                     <Field label="설명">
                       <Textarea name="description" defaultValue={item.description} />
+                    </Field>
+                    <Field label="이미지 경로">
+                      <Input
+                        name="imageUrl"
+                        defaultValue={item.imageUrl ?? ""}
+                        placeholder="/images/menu/1783221304773.png"
+                      />
                     </Field>
                     <div className="grid gap-3">
                       <Field label="가격">

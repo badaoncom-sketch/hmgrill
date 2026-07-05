@@ -62,6 +62,7 @@ export type MenuItem = {
   name: string;
   description: string;
   price: number;
+  imageUrl?: string;
   featured?: boolean;
   isActive?: boolean;
   sortOrder?: number;

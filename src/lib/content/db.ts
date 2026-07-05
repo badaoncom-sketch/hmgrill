@@ -15,6 +15,7 @@ type MenuItemRow = {
   name: string;
   description: string;
   price: number;
+  image_url: string | null;
   featured: boolean;
   is_active: boolean;
   sort_order: number;
@@ -69,7 +70,7 @@ type SitePopupRow = {
 };
 
 export const menuItemSelect =
-  "id,category,name,description,price,featured,is_active,sort_order";
+  "id,category,name,description,price,image_url,featured,is_active,sort_order";
 
 export const contentPostSelect =
   "id,type,title,body,status,published_at,starts_at,ends_at,sort_order,created_at";
@@ -92,6 +93,7 @@ export function mapMenuItem(row: unknown): MenuItem {
     name: item.name,
     description: item.description,
     price: item.price,
+    imageUrl: item.image_url ?? undefined,
     featured: item.featured,
     isActive: item.is_active,
     sortOrder: item.sort_order,

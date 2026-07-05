@@ -62,6 +62,7 @@ try {
         name: `E2E 메뉴 ${runId}`,
         description: "E2E 생성",
         price: 1000,
+        image_url: "/images/menu/e2e-menu.png",
         featured: false,
         is_active: true,
         sort_order: 990,
@@ -78,6 +79,7 @@ try {
       .update({
         name: `E2E 메뉴 수정 ${runId}`,
         price: 2000,
+        image_url: "/images/menu/e2e-menu-updated.png",
         featured: true,
         is_active: false,
       })
@@ -199,7 +201,7 @@ try {
         "read updated menu",
         await supabase
           .from("menu_items")
-          .select("name,price,featured,is_active")
+          .select("name,price,image_url,featured,is_active")
           .eq("id", created.menuItemId)
           .single(),
       ),
@@ -240,6 +242,7 @@ try {
   const ok =
     updatedMenu.name === `E2E 메뉴 수정 ${runId}` &&
     updatedMenu.price === 2000 &&
+    updatedMenu.image_url === "/images/menu/e2e-menu-updated.png" &&
     updatedMenu.featured === true &&
     updatedMenu.is_active === false &&
     updatedPost.title === `E2E 공지 수정 ${runId}` &&
