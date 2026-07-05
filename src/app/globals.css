@@ -217,6 +217,10 @@ button {
   max-width: 64rem;
 }
 
+.hm-page-main {
+  padding-block: 96px 112px;
+}
+
 .hm-section {
   padding-block: 150px;
 }
@@ -296,6 +300,10 @@ button {
   .hm-page-shell {
     padding-block: 80px 96px;
   }
+
+  .hm-page-main {
+    padding-block: 80px 96px;
+  }
 }
 
 @media (min-width: 640px) {
@@ -307,6 +315,10 @@ button {
 @media (min-width: 1024px) {
   .hm-page-shell {
     padding: 120px 2rem;
+  }
+
+  .hm-page-main {
+    padding-block: 120px;
   }
 }
 

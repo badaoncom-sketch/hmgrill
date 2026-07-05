@@ -30,7 +30,7 @@ export default async function MenuDetailPage({
   const item = mapMenuItem(data);
 
   return (
-    <main className="py-[120px]">
+    <main className="hm-page-main">
       <Container className="grid gap-8">
         <ButtonLink href="/menu" variant="ghost" className="w-fit px-0">
           <ArrowLeft size={16} aria-hidden="true" />

@@ -28,7 +28,7 @@ export default async function NoticeDetailPage({
   const notice = mapContentPost(data);
 
   return (
-    <main className="py-[120px]">
+    <main className="hm-page-main">
       <Container className="grid gap-8">
         <ButtonLink href="/notices" variant="ghost" className="w-fit px-0">
           <ArrowLeft size={16} aria-hidden="true" />

@@ -26,7 +26,7 @@ export default async function NoticesPage() {
   const notices = (rows ?? []).map(mapContentPost);
 
   return (
-    <main className="py-[120px]">
+    <main className="hm-page-main">
       <Container className="grid gap-8">
         <SectionHeading
           eyebrow="NOTICE"

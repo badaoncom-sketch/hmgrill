@@ -13,7 +13,7 @@ const storeInfo = {
 
 export default function StorePage() {
   return (
-    <main className="py-[120px]">
+    <main className="hm-page-main">
       <Container className="grid gap-10">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--hm-accent-gold)]">

@@ -26,7 +26,7 @@ export default async function EventsPage() {
   const events = (rows ?? []).map(mapContentPost);
 
   return (
-    <main className="py-[120px]">
+    <main className="hm-page-main">
       <Container className="grid gap-8">
         <SectionHeading
           eyebrow="EVENT"

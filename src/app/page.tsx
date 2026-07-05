@@ -178,7 +178,7 @@ export default async function HomePage() {
           fill
           priority
           sizes="100vw"
-          className="scale-[1.08] object-cover object-[69%_center]"
+          className="object-cover object-[64%_center] lg:object-[66%_center]"
         />
         <div className="absolute inset-0 bg-[rgba(0,0,0,.38)]" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,.9)_0%,rgba(0,0,0,.72)_33%,rgba(0,0,0,.2)_62%,rgba(0,0,0,.18)_100%)]" />
