@@ -5,7 +5,7 @@ export function Card({ className, ...props }: ComponentPropsWithoutRef<"div">) {
   return (
     <div
       className={cn(
-        "rounded-lg border border-neutral-200 bg-white shadow-sm",
+        "rounded-md border border-[#17130f1f] bg-white/90 shadow-sm shadow-black/5 backdrop-blur-sm",
         className,
       )}
       {...props}
@@ -17,7 +17,12 @@ export function CardHeader({
   className,
   ...props
 }: ComponentPropsWithoutRef<"div">) {
-  return <div className={cn("border-b border-neutral-100 p-5", className)} {...props} />;
+  return (
+    <div
+      className={cn("border-b border-[#17130f14] p-5", className)}
+      {...props}
+    />
+  );
 }
 
 export function CardContent({

@@ -35,7 +35,7 @@ export function StaffScanner() {
       <Card>
         <CardContent className="grid gap-4">
           <form action={lookupFormAction} className="grid gap-4">
-            <label className="grid gap-2 text-sm font-medium text-neutral-800">
+            <label className="grid gap-2 text-sm font-medium text-[#17130f]">
               QR 스캔 입력
               <Input
                 name="token"
@@ -48,7 +48,7 @@ export function StaffScanner() {
                 <ScanLine size={16} aria-hidden="true" />
                 {isLookupPending ? "조회 중" : "쿠폰 조회"}
               </Button>
-              <p className="text-sm text-neutral-500">
+              <p className="text-sm text-[#8a7c6d]">
                 QR 리더기는 키보드 입력 장치처럼 토큰을 입력하는 것을 기준으로
                 합니다.
               </p>
@@ -74,29 +74,29 @@ export function StaffScanner() {
                 <Badge tone={coupon.status === "available" ? "green" : "red"}>
                   {coupon.status === "available" ? "사용 가능" : "사용 불가"}
                 </Badge>
-                <h2 className="mt-3 text-2xl font-bold text-neutral-950">
+                <h2 className="mt-3 text-2xl font-bold text-[#17130f]">
                   {coupon.couponName}
                 </h2>
-                <p className="mt-1 text-xl font-bold text-red-700">
+                <p className="mt-1 text-xl font-bold text-[#B13A1E]">
                   {formatCurrency(coupon.amount)}
                 </p>
               </div>
-              <ScanLine className="text-neutral-400" size={36} aria-hidden="true" />
+              <ScanLine className="text-[#8a7c6d]" size={36} aria-hidden="true" />
             </div>
             <dl className="grid gap-3 text-sm sm:grid-cols-2">
               <div>
-                <dt className="font-semibold text-neutral-950">회원명</dt>
-                <dd className="text-neutral-600">{coupon.memberName || "-"}</dd>
+                <dt className="font-semibold text-[#17130f]">회원명</dt>
+                <dd className="text-[#5f554a]">{coupon.memberName || "-"}</dd>
               </div>
               <div>
-                <dt className="font-semibold text-neutral-950">사용기간</dt>
-                <dd className="text-neutral-600">
+                <dt className="font-semibold text-[#17130f]">사용기간</dt>
+                <dd className="text-[#5f554a]">
                   {formatDate(coupon.validFrom)} - {formatDate(coupon.validUntil)}
                 </dd>
               </div>
               <div className="sm:col-span-2">
-                <dt className="font-semibold text-neutral-950">사용조건</dt>
-                <dd className="whitespace-pre-line text-neutral-600">
+                <dt className="font-semibold text-[#17130f]">사용조건</dt>
+                <dd className="whitespace-pre-line text-[#5f554a]">
                   {coupon.conditionText}
                 </dd>
               </div>
@@ -114,7 +114,7 @@ export function StaffScanner() {
                 </Button>
               </form>
             ) : (
-              <div className="rounded-md bg-red-50 p-4 text-sm text-red-900">
+              <div className="rounded-md bg-[#B13A1E14] p-4 text-sm text-[#5b281a]">
                 이미 사용되었거나 기간이 만료된 쿠폰입니다.
               </div>
             )}
@@ -123,7 +123,7 @@ export function StaffScanner() {
       ) : (
         <Card>
           <CardContent>
-            <p className="text-sm font-semibold text-neutral-700">
+            <p className="text-sm font-semibold text-[#5f554a]">
               스캔한 쿠폰 정보가 여기에 표시됩니다.
             </p>
           </CardContent>

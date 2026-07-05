@@ -9,7 +9,7 @@ export function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="grid gap-2 text-sm font-medium text-neutral-800">
+    <label className="grid gap-2 text-sm font-medium text-[#17130f]">
       {label}
       {children}
     </label>
@@ -23,7 +23,7 @@ export function Input({
   return (
     <input
       className={cn(
-        "min-h-11 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm outline-none transition placeholder:text-neutral-400 focus:border-neutral-950 focus:ring-2 focus:ring-neutral-200",
+        "min-h-11 rounded-md border border-[#17130f33] bg-white px-3 py-2 text-sm outline-none transition placeholder:text-[#8a7c6d] focus:border-[#B13A1E] focus:ring-2 focus:ring-[#B13A1E1f]",
         className,
       )}
       {...props}
@@ -38,7 +38,7 @@ export function Textarea({
   return (
     <textarea
       className={cn(
-        "min-h-28 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm outline-none transition placeholder:text-neutral-400 focus:border-neutral-950 focus:ring-2 focus:ring-neutral-200",
+        "min-h-28 rounded-md border border-[#17130f33] bg-white px-3 py-2 text-sm outline-none transition placeholder:text-[#8a7c6d] focus:border-[#B13A1E] focus:ring-2 focus:ring-[#B13A1E1f]",
         className,
       )}
       {...props}
@@ -53,7 +53,7 @@ export function Select({
   return (
     <select
       className={cn(
-        "min-h-11 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-neutral-950 focus:ring-2 focus:ring-neutral-200",
+        "min-h-11 rounded-md border border-[#17130f33] bg-white px-3 py-2 text-sm outline-none transition focus:border-[#B13A1E] focus:ring-2 focus:ring-[#B13A1E1f]",
         className,
       )}
       {...props}

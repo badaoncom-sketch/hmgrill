@@ -21,6 +21,7 @@
 | `docs/IMPLEMENTATION-STATUS.md` | 신규 작성 | 1차 구현 완료 범위와 남은 실제 연동 항목을 기록했다. |
 | `docs/SUPABASE-MIGRATION.md` | 신규 작성 | Codex가 직접 Supabase 마이그레이션을 적용하기 위한 환경변수와 명령을 정리했다. |
 | `docs/MENU-IMAGES.md` | 신규 작성 | 메뉴 이미지 저장 위치와 관리자 입력 경로를 정리했다. |
+| `docs/BRAND-UI-GUIDE.md` | 신규 작성 | 화목 브랜드 이미지 기반 전역 UI 디자인 기준을 정리했다. |
 | `package.json` | 신규 작성 | Next.js, React, Supabase, Resend, UI 유틸 의존성과 실행 스크립트를 정의했다. |
 | `.env.example` | 신규 작성 | Supabase, Resend, 사이트 URL 환경변수 예시를 정의했다. |
 | `src/app/*` | 신규 작성 | 공개, 회원, 쿠폰, 직원모드, 관리자 라우트 화면을 구성했다. |
@@ -28,6 +29,7 @@
 | `src/components/auth/*` | 신규 작성 | 회원가입, 로그인, 인증 메일 재발송 클라이언트 폼을 구성했다. |
 | `src/components/coupon-download-form.tsx` | 신규 작성 | 회원 쿠폰 다운로드 서버 액션 폼을 구성했다. |
 | `src/components/menu-image.tsx` | 신규 작성 | 메뉴 이미지가 있으면 표시하고 없으면 안정적인 플레이스홀더를 표시한다. |
+| `public/images/brand/*` | 신규 추가 | 화목 브랜드 로고, 매장 외관, 불/간판 분위기 이미지를 전역 UI 기준 이미지로 저장한다. |
 | `src/app/actions/staff.ts` | 신규 작성 | 직원모드 쿠폰 조회와 사용완료 서버 액션을 구성했다. |
 | `src/app/actions/admin-users.ts` | 신규 작성 | 관리자 회원/직원 권한 변경 서버 액션을 구성했다. |
 | `src/app/actions/content.ts` | 신규 작성 | 메뉴, 이벤트, 공지, 문의, 배너, 팝업 운영 서버 액션을 구성했다. |
@@ -63,16 +65,15 @@
 - 현재 브랜치는 `main`이다.
 - 이전 커밋은 원격 `origin/main`과 동기화되어 있었다.
 - 구현 코드와 패키지 설정이 존재한다.
-- Supabase 원격 마이그레이션은 아직 적용하지 않았다.
-- 추후 Supabase SQL 마이그레이션은 사용자가 별도 요청하면 Codex가 직접 적용한다.
+- Supabase 원격 마이그레이션은 `20260705033921`까지 적용 완료 상태였다.
+- 이번 UI 개선은 DB 스키마 변경 없이 정적 이미지, 문서, 화면 컴포넌트 중심으로 진행했다.
 
 ## 미확인 또는 향후 확인 필요
 
-- Supabase 프로젝트 및 환경변수 구성 여부
-- Resend 도메인 및 API Key 구성 여부
 - Vercel 프로젝트 연결 여부
-- 데이터베이스 마이그레이션 원격 적용 여부
-- 인증, 쿠폰, 직원모드, 관리자 기능의 실제 DB 연동 여부
+- 실제 QR 리더기 물리 장비 테스트
+- 실제 매장 주소와 지도 확정
+- 운영 이미지 업로드를 Supabase Storage로 전환할지 여부
 
 ## 다음 점검 기준
 

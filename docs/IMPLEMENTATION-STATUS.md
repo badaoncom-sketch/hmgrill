@@ -29,6 +29,11 @@
 - 관리자 메뉴 이미지 경로 입력, 저장, 공개 메뉴/홈 노출 연결
 - 사용자가 추가한 `public/images/menu/` 메뉴 이미지 정적 자산 반영
 - 메뉴 이미지 10장을 모두 사용하는 추천 메뉴명, 설명, 가격 데이터 반영
+- 화목 브랜드 이미지 `public/images/brand/` 정적 자산 반영
+- 브랜드 UI 가이드 `docs/BRAND-UI-GUIDE.md` 작성
+- 공개 홈 랜딩을 쿠폰 중심에서 장작구이 전문점 브랜드 중심으로 재구성
+- 헤더, 푸터, 버튼, 카드, 배지, 입력 필드의 전역 브랜드 톤 정리
+- 홈, 소개, 메뉴, 쿠폰, 이벤트, 공지, 고객센터, 회원, 직원 주요 화면의 문구와 색상 체계 정리
 - 임시 운영 콘텐츠를 생성, 수정, 검증, 정리하는 E2E 스크립트 준비
 - Resend 발신 도메인 점검 스크립트 준비
 - Vercel 배포 준비 점검 스크립트와 배포 점검표 준비
@@ -64,6 +69,10 @@
 - `npm run test:e2e:content`: 통과. 임시 메뉴, 공지, 문의, 배너, 팝업을 생성, 수정, 검증하고 정리 완료
 - `npm run ops:resend`: 통과. `EMAIL_FROM` 도메인 `hmgrill.com`이 Resend에서 `verified`이고 sending/receiving 모두 `enabled`
 - `npm run ops:vercel`: 차단. 필수 환경변수는 존재하지만 `NEXT_PUBLIC_SITE_URL`이 운영 URL이 아니고, Vercel CLI와 `.vercel/project.json` 프로젝트 연결이 없음
+- 브랜드 UI 개선 후 `npm run lint`, `npm run build`, `npm run db:push:dry-run`, `npm run test:e2e:content`, `npm run test:e2e:coupon`, `npm run ops:resend` 재통과
+- 브랜드 UI 개선 후 라우트 응답 확인: `/`, `/about`, `/menu`, `/coupons`, `/events`, `/notices`, `/support`, `/signup`, `/login` 모두 `200 OK`
+- 브랜드 UI 개선 후 보호 라우트 응답 확인: `/mypage`, `/staff`, `/admin` 모두 비로그인 상태에서 `/login`으로 `307` 리다이렉트
+- 브라우저 플러그인 캡처 검증: 현재 실행 환경에서 `iab` 브라우저를 사용할 수 없어 미수행
 - `npm audit --audit-level=moderate`: Next.js 내부 PostCSS moderate 2건 유지. 강제 수정 제안은 Next.js 9 다운그레이드라 미적용
 - 로컬 서버: `http://localhost:3000`
 - 공개 라우트 응답 확인: `/`, `/menu`, `/events`, `/notices`, `/support`, `/coupons`, `/signup`, `/login` 모두 `200 OK`

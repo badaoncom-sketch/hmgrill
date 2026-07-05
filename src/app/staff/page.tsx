@@ -23,33 +23,33 @@ export default async function StaffPage() {
       <SectionHeading
         eyebrow="STAFF MODE"
         title="직원모드"
-        description="계산대 태블릿 크롬 브라우저에서 QR 스캔, 쿠폰 조회, 사용완료 처리를 수행합니다."
+        description="매장 태블릿에서 QR 스캔, 혜택 조회, 사용완료 처리를 빠르게 수행합니다."
       />
       {canAccess ? (
         <>
           <StaffScanner />
           <Card>
             <CardContent>
-              <h2 className="font-bold text-neutral-950">최근 처리 내역</h2>
+              <h2 className="font-bold text-[#17130f]">최근 처리 내역</h2>
               <div className="mt-4 grid gap-3">
                 {recentEvents.map((event) => (
                   <div
                     key={event.id}
-                    className="rounded-md border border-neutral-200 p-3"
+                    className="rounded-md border border-[#17130f1f] p-3"
                   >
-                    <p className="text-sm font-semibold text-neutral-950">
+                    <p className="text-sm font-semibold text-[#17130f]">
                       {event.eventType === "coupon_used"
                         ? "사용완료"
                         : "기간만료"}{" "}
                       처리
                     </p>
-                    <p className="mt-1 text-sm text-neutral-600">
+                    <p className="mt-1 text-sm text-[#5f554a]">
                       {new Date(event.createdAt).toLocaleString("ko-KR")}
                     </p>
                   </div>
                 ))}
                 {recentEvents.length === 0 ? (
-                  <p className="text-sm font-semibold text-neutral-600">
+                  <p className="text-sm font-semibold text-[#5f554a]">
                     최근 처리한 쿠폰이 없습니다.
                   </p>
                 ) : null}
@@ -58,7 +58,7 @@ export default async function StaffPage() {
           </Card>
         </>
       ) : (
-        <div className="rounded-md border border-red-200 bg-red-50 p-5 text-sm font-semibold text-red-900">
+        <div className="rounded-md border border-[#B13A1E33] bg-[#B13A1E14] p-5 text-sm font-semibold text-[#5b281a]">
           직원 또는 관리자 권한과 이메일 인증이 필요합니다.
         </div>
       )}

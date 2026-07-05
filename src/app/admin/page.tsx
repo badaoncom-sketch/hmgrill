@@ -38,9 +38,9 @@ export default async function AdminPage() {
         />
         <Card>
           <CardContent>
-            <p className="text-sm font-semibold text-red-700">
-              관리자 권한과 이메일 인증이 필요합니다.
-            </p>
+              <p className="text-sm font-semibold text-[#B13A1E]">
+                관리자 권한과 이메일 인증이 필요합니다.
+              </p>
           </CardContent>
         </Card>
       </main>
@@ -99,40 +99,40 @@ export default async function AdminPage() {
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
         <Card>
           <CardContent>
-            <p className="text-sm text-neutral-500">총 발행 수량</p>
-            <p className="mt-2 text-3xl font-bold text-neutral-950">
+            <p className="text-sm text-[#8a7c6d]">총 발행 수량</p>
+            <p className="mt-2 text-3xl font-bold text-[#17130f]">
               {totalIssued}장
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardContent>
-            <p className="text-sm text-neutral-500">다운로드 수량</p>
-            <p className="mt-2 text-3xl font-bold text-neutral-950">
+            <p className="text-sm text-[#8a7c6d]">다운로드 수량</p>
+            <p className="mt-2 text-3xl font-bold text-[#17130f]">
               {totalDownloaded}장
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardContent>
-            <p className="text-sm text-neutral-500">남은 수량</p>
-            <p className="mt-2 text-3xl font-bold text-neutral-950">
+            <p className="text-sm text-[#8a7c6d]">남은 수량</p>
+            <p className="mt-2 text-3xl font-bold text-[#17130f]">
               {totalRemaining}장
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardContent>
-            <p className="text-sm text-neutral-500">사용 완료</p>
-            <p className="mt-2 text-3xl font-bold text-neutral-950">
+            <p className="text-sm text-[#8a7c6d]">사용 완료</p>
+            <p className="mt-2 text-3xl font-bold text-[#17130f]">
               {totalUsed}장
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardContent>
-            <p className="text-sm text-neutral-500">기간 만료</p>
-            <p className="mt-2 text-3xl font-bold text-neutral-950">
+            <p className="text-sm text-[#8a7c6d]">기간 만료</p>
+            <p className="mt-2 text-3xl font-bold text-[#17130f]">
               {totalExpired}장
             </p>
           </CardContent>
@@ -141,24 +141,24 @@ export default async function AdminPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardContent>
-            <p className="text-sm text-neutral-500">총 발행 금액</p>
-            <p className="mt-2 text-2xl font-bold text-neutral-950">
+            <p className="text-sm text-[#8a7c6d]">총 발행 금액</p>
+            <p className="mt-2 text-2xl font-bold text-[#17130f]">
               {formatCurrency(totalIssuedAmount)}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardContent>
-            <p className="text-sm text-neutral-500">총 사용 금액</p>
-            <p className="mt-2 text-2xl font-bold text-red-700">
+            <p className="text-sm text-[#8a7c6d]">총 사용 금액</p>
+            <p className="mt-2 text-2xl font-bold text-[#B13A1E]">
               {formatCurrency(totalUsedAmount)}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardContent>
-            <p className="text-sm text-neutral-500">미사용 다운로드 금액</p>
-            <p className="mt-2 text-2xl font-bold text-neutral-950">
+            <p className="text-sm text-[#8a7c6d]">미사용 다운로드 금액</p>
+            <p className="mt-2 text-2xl font-bold text-[#17130f]">
               {formatCurrency(unusedDownloadedAmount)}
             </p>
           </CardContent>
@@ -168,25 +168,25 @@ export default async function AdminPage() {
         <Card>
           <CardContent>
             <div className="flex items-center gap-2">
-              <TicketCheck className="text-red-700" size={20} aria-hidden="true" />
-              <h2 className="font-bold text-neutral-950">최근 사용 처리</h2>
+              <TicketCheck className="text-[#B13A1E]" size={20} aria-hidden="true" />
+              <h2 className="font-bold text-[#17130f]">최근 사용 처리</h2>
             </div>
             <div className="mt-4 grid gap-3">
               {recentUseEvents.map((event) => (
                 <div
                   key={event.id}
-                  className="rounded-md border border-neutral-200 p-3"
+                  className="rounded-md border border-[#17130f1f] p-3"
                 >
-                  <p className="text-sm font-semibold text-neutral-950">
+                  <p className="text-sm font-semibold text-[#17130f]">
                     {new Date(event.createdAt).toLocaleString("ko-KR")}
                   </p>
-                  <p className="mt-1 text-sm text-neutral-600">
+                  <p className="mt-1 text-sm text-[#5f554a]">
                     처리자: {event.actorName ?? event.actorEmail ?? "-"}
                   </p>
                 </div>
               ))}
               {recentUseEvents.length === 0 ? (
-                <p className="text-sm font-semibold text-neutral-600">
+                <p className="text-sm font-semibold text-[#5f554a]">
                   최근 사용 처리 내역이 없습니다.
                 </p>
               ) : null}
@@ -200,10 +200,10 @@ export default async function AdminPage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-lg border border-neutral-200 bg-white p-5 transition hover:border-neutral-950"
+                className="hm-link-focus rounded-md border border-[#17130f1f] bg-white/90 p-5 transition hover:-translate-y-0.5 hover:border-[#17130f] hover:shadow-md hover:shadow-black/5"
               >
-                <Icon className="text-red-700" size={22} aria-hidden="true" />
-                <p className="mt-3 font-semibold text-neutral-950">{item.label}</p>
+                <Icon className="text-[#B13A1E]" size={22} aria-hidden="true" />
+                <p className="mt-3 font-semibold text-[#17130f]">{item.label}</p>
                 <Badge className="mt-3" tone="green">
                   운영 가능
                 </Badge>

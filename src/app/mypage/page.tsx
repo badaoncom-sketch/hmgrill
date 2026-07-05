@@ -34,19 +34,19 @@ export default async function MyPage() {
       <SectionHeading
         eyebrow="MY PAGE"
         title="마이페이지"
-        description="이메일 인증 상태와 쿠폰 보유 현황을 확인합니다."
+        description="회원 인증 상태와 화목 방문 혜택을 확인합니다."
       />
       <div className="grid gap-5 md:grid-cols-2">
         <Card>
           <CardContent>
             <MailCheck className="text-emerald-700" size={30} aria-hidden="true" />
-            <h2 className="mt-4 text-xl font-bold text-neutral-950">
+            <h2 className="mt-4 text-xl font-bold text-[#17130f]">
               이메일 인증 상태
             </h2>
             <Badge tone="green" className="mt-3">
               인증 완료
             </Badge>
-            <p className="mt-3 text-sm text-neutral-600">
+            <p className="mt-3 text-sm text-[#5f554a]">
               {profile.name} / {profile.email}
             </p>
             <form action={logoutAction} className="mt-5">
@@ -58,11 +58,11 @@ export default async function MyPage() {
         </Card>
         <Card>
           <CardContent>
-            <Ticket className="text-red-700" size={30} aria-hidden="true" />
-            <h2 className="mt-4 text-xl font-bold text-neutral-950">
+            <Ticket className="text-[#B13A1E]" size={30} aria-hidden="true" />
+            <h2 className="mt-4 text-xl font-bold text-[#17130f]">
               내 쿠폰 관리
             </h2>
-            <p className="mt-3 text-sm text-neutral-600">
+            <p className="mt-3 text-sm text-[#5f554a]">
               다운로드한 쿠폰과 사용내역을 확인할 수 있습니다.
             </p>
             <ButtonLink href="/coupons/my" className="mt-5">

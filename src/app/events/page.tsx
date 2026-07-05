@@ -18,16 +18,16 @@ export default async function EventsPage() {
       <SectionHeading
         eyebrow="EVENT"
         title="이벤트"
-        description="매장 이벤트와 쿠폰 캠페인을 노출하는 영역입니다."
+        description="화목의 계절 메뉴, 매장 소식, 회원 혜택을 차분하게 전합니다."
       />
       <div className="grid gap-4">
         {events.map((event) => (
           <Card key={event.id}>
             <CardContent>
-              <h2 className="text-xl font-bold text-neutral-950">
+              <h2 className="text-xl font-bold text-[#17130f]">
                 {event.title}
               </h2>
-              <p className="mt-3 whitespace-pre-line text-sm leading-6 text-neutral-600">
+              <p className="mt-3 whitespace-pre-line text-sm leading-6 text-[#5f554a]">
                 {event.body}
               </p>
             </CardContent>
@@ -36,7 +36,7 @@ export default async function EventsPage() {
         {events.length === 0 ? (
           <Card>
             <CardContent>
-              <p className="text-sm font-semibold text-neutral-600">
+              <p className="text-sm font-semibold text-[#5f554a]">
                 진행 중인 이벤트가 없습니다.
               </p>
             </CardContent>

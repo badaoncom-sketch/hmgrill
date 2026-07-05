@@ -36,14 +36,14 @@ export default async function MyCouponsPage() {
       <SectionHeading
         eyebrow="MY COUPON"
         title="내 쿠폰"
-        description="사용 가능, 사용 완료, 기간 만료 상태별 표시 기준을 반영한 회원 쿠폰 화면입니다."
+        description="방문 시 사용할 수 있는 회원 혜택과 QR 쿠폰 상태를 확인합니다."
       />
       <div className="grid gap-5">
         {memberCoupons.map((coupon) => (
           <QrCoupon key={coupon.id} coupon={coupon} />
         ))}
         {memberCoupons.length === 0 ? (
-          <p className="text-sm text-neutral-500">다운로드한 쿠폰이 없습니다.</p>
+          <p className="text-sm text-[#8a7c6d]">다운로드한 쿠폰이 없습니다.</p>
         ) : null}
       </div>
     </main>

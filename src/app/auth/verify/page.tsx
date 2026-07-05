@@ -19,7 +19,7 @@ export default async function VerifyEmailPage({
       <SectionHeading
         eyebrow="VERIFY"
         title="이메일 인증"
-        description="실제 구현에서는 토큰 검증 후 사용자 인증 상태를 저장합니다."
+        description="인증이 완료되면 회원 혜택과 쿠폰 화면을 이용할 수 있습니다."
       />
       <Card>
         <CardContent>
@@ -28,10 +28,10 @@ export default async function VerifyEmailPage({
             size={32}
             aria-hidden="true"
           />
-          <h2 className="mt-4 text-xl font-bold text-neutral-950">
+          <h2 className="mt-4 text-xl font-bold text-[#17130f]">
             {result.ok ? "인증 완료" : "인증 실패"}
           </h2>
-          <p className="mt-3 text-sm leading-6 text-neutral-600">
+          <p className="mt-3 text-sm leading-6 text-[#5f554a]">
             {result.message}
           </p>
           <ButtonLink href="/login" className="mt-5">

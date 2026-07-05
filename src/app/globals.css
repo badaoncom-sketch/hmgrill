@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafafa;
-  --foreground: #171717;
+  --background: #f6f0e6;
+  --foreground: #17130f;
+  --hm-charcoal: #0d0d0d;
+  --hm-stone: #27231e;
+  --hm-ember: #b13a1e;
+  --hm-flame: #e06a2a;
+  --hm-gold: #f7e6c1;
+  --hm-paper: #f6f0e6;
+  --hm-line: rgba(23, 19, 15, 0.12);
 }
 
 @theme inline {
@@ -16,6 +23,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
 button,
@@ -26,6 +34,32 @@ textarea {
 }
 
 ::selection {
-  background: #dc2626;
+  background: var(--hm-ember);
   color: #ffffff;
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hm-surface {
+  background:
+    radial-gradient(circle at top left, rgba(247, 230, 193, 0.3), transparent 34rem),
+    linear-gradient(180deg, #fffaf1 0%, var(--hm-paper) 100%);
+}
+
+.hm-dark-surface {
+  background:
+    linear-gradient(180deg, rgba(13, 13, 13, 0.88), rgba(13, 13, 13, 0.96)),
+    var(--hm-charcoal);
+}
+
+.hm-link-focus {
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+}
+
+.hm-link-focus:focus-visible {
+  outline-color: var(--hm-flame);
 }

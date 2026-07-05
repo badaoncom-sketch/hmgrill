@@ -6,10 +6,10 @@ type BadgeProps = ComponentPropsWithoutRef<"span"> & {
 };
 
 const tones = {
-  neutral: "bg-neutral-100 text-neutral-700",
+  neutral: "bg-[#17130f0d] text-[#5f554a]",
   green: "bg-emerald-100 text-emerald-800",
-  red: "bg-red-100 text-red-800",
-  amber: "bg-amber-100 text-amber-900",
+  red: "bg-[#B13A1E1a] text-[#8f2e18]",
+  amber: "bg-[#F7E6C1] text-[#6d4b13]",
 };
 
 export function Badge({ className, tone = "neutral", ...props }: BadgeProps) {

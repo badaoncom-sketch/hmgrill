@@ -51,7 +51,7 @@ export default async function CouponHistoryPage() {
       <SectionHeading
         eyebrow="HISTORY"
         title="쿠폰 사용내역"
-        description="회원별 다운로드, 사용일시, 사용 직원 정보를 확인하는 화면입니다."
+        description="받은 혜택의 사용 가능 여부, 사용일시, 만료 상태를 확인합니다."
       />
       <div className="grid gap-4">
         {memberCoupons.map((coupon) => {
@@ -64,18 +64,18 @@ export default async function CouponHistoryPage() {
                   <Badge tone={statusTones[effectiveStatus]}>
                     {statusLabels[effectiveStatus]}
                   </Badge>
-                  <h2 className="mt-3 text-xl font-bold text-neutral-950">
+                  <h2 className="mt-3 text-xl font-bold text-[#17130f]">
                     {coupon.couponName}
                   </h2>
-                  <p className="mt-1 text-sm text-neutral-600">
+                  <p className="mt-1 text-sm text-[#5f554a]">
                     다운로드일 {formatDate(coupon.downloadedAt)}
                   </p>
                 </div>
                 <div className="text-left md:text-right">
-                  <p className="font-bold text-red-700">
+                  <p className="font-bold text-[#B13A1E]">
                     {formatCurrency(coupon.amount)}
                   </p>
-                  <p className="mt-1 text-sm text-neutral-500">
+                  <p className="mt-1 text-sm text-[#8a7c6d]">
                     {coupon.usedAt
                       ? `사용일시 ${new Date(coupon.usedAt).toLocaleString("ko-KR")}`
                       : `유효기간 ${formatDate(coupon.validUntil)}`}
@@ -86,7 +86,7 @@ export default async function CouponHistoryPage() {
           );
         })}
         {memberCoupons.length === 0 ? (
-          <p className="text-sm text-neutral-500">쿠폰 사용내역이 없습니다.</p>
+          <p className="text-sm text-[#8a7c6d]">쿠폰 사용내역이 없습니다.</p>
         ) : null}
       </div>
     </main>

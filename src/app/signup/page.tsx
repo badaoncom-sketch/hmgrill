@@ -8,7 +8,7 @@ export default function SignupPage() {
       <SectionHeading
         eyebrow="JOIN"
         title="회원가입"
-        description="가입 후 Resend 이메일 인증을 완료해야 쿠폰을 다운로드할 수 있습니다."
+        description="이메일 인증을 완료하면 화목 회원 혜택과 쿠폰 기능을 이용할 수 있습니다."
       />
       <Card>
         <CardContent>

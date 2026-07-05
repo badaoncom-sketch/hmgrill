@@ -33,8 +33,8 @@ export default async function CouponsPage() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <SectionHeading
           eyebrow="COUPON"
-          title="쿠폰 다운로드"
-          description="발행중 쿠폰만 회원 다운로드 목록에 표시합니다. 이메일 인증 전에는 실제 다운로드가 제한됩니다."
+          title="방문 혜택"
+          description="화목을 다시 찾는 회원을 위한 혜택입니다. 이메일 인증을 완료하면 사용 가능한 쿠폰을 받을 수 있습니다."
         />
         <div className="flex gap-2">
           <ButtonLink href="/coupons/my" variant="outline">
@@ -54,7 +54,7 @@ export default async function CouponsPage() {
           />
         ))}
         {couponIssues.length === 0 ? (
-          <p className="text-sm text-neutral-500">현재 발행중인 쿠폰이 없습니다.</p>
+          <p className="text-sm text-[#8a7c6d]">현재 제공 중인 혜택이 없습니다.</p>
         ) : null}
       </div>
     </main>

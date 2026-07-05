@@ -40,55 +40,55 @@ export async function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
             <Badge tone={isAvailable ? "green" : "neutral"}>
               {statusLabel[effectiveStatus]}
             </Badge>
-            <h2 className="mt-3 text-2xl font-bold text-neutral-950">
+            <h2 className="mt-3 text-2xl font-bold text-[#17130f]">
               {coupon.couponName}
             </h2>
-            <p className="mt-1 text-xl font-bold text-red-700">
+            <p className="mt-1 text-xl font-bold text-[#B13A1E]">
               {formatCurrency(coupon.amount)}
             </p>
           </div>
-          <dl className="grid gap-2 text-sm text-neutral-600 sm:grid-cols-2">
+          <dl className="grid gap-2 text-sm text-[#5f554a] sm:grid-cols-2">
             <div>
-              <dt className="font-semibold text-neutral-900">사용기간</dt>
+              <dt className="font-semibold text-[#17130f]">사용기간</dt>
               <dd>
                 {formatDate(coupon.validFrom)} - {formatDate(coupon.validUntil)}
               </dd>
             </div>
             {isAvailable ? (
               <div>
-                <dt className="font-semibold text-neutral-900">남은 사용기간</dt>
+                <dt className="font-semibold text-[#17130f]">남은 사용기간</dt>
                 <dd>{getRemainingDaysText(coupon.validUntil)}</dd>
               </div>
             ) : null}
             <div>
-              <dt className="font-semibold text-neutral-900">다운로드일</dt>
+              <dt className="font-semibold text-[#17130f]">다운로드일</dt>
               <dd>{formatDate(coupon.downloadedAt)}</dd>
             </div>
             {coupon.usedAt ? (
               <div>
-                <dt className="font-semibold text-neutral-900">사용일시</dt>
+                <dt className="font-semibold text-[#17130f]">사용일시</dt>
                 <dd>{new Date(coupon.usedAt).toLocaleString("ko-KR")}</dd>
               </div>
             ) : null}
             {coupon.usedByStaffName ? (
               <div>
-                <dt className="font-semibold text-neutral-900">사용 직원</dt>
+                <dt className="font-semibold text-[#17130f]">사용 직원</dt>
                 <dd>{coupon.usedByStaffName}</dd>
               </div>
             ) : null}
           </dl>
-          <div className="rounded-md bg-neutral-50 p-4 text-sm leading-6 text-neutral-700">
-            <p className="font-semibold text-neutral-950">사용조건</p>
+          <div className="rounded-md bg-[#17130f0a] p-4 text-sm leading-6 text-[#5f554a]">
+            <p className="font-semibold text-[#17130f]">사용조건</p>
             <p className="mt-2 whitespace-pre-line">{coupon.conditionText}</p>
           </div>
-          <div className="rounded-md bg-red-50 p-4 text-sm leading-6 text-red-950">
+          <div className="rounded-md bg-[#B13A1E14] p-4 text-sm leading-6 text-[#5b281a]">
             <p className="font-semibold">안내사항</p>
             <p className="mt-2 whitespace-pre-line">{coupon.qrNotice}</p>
           </div>
         </div>
         <div className="grid content-start gap-3">
           {isAvailable ? (
-            <div className="aspect-square rounded-lg border border-neutral-300 bg-white p-5">
+            <div className="aspect-square rounded-md border border-[#17130f1f] bg-white p-5">
               {/* The QR payload intentionally contains only the opaque coupon token. */}
               <Image
                 src={qrDataUrl}
@@ -100,11 +100,11 @@ export async function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
               />
             </div>
           ) : (
-            <div className="grid aspect-square place-items-center rounded-lg border border-neutral-200 bg-neutral-100 p-5 text-center text-sm font-semibold text-neutral-500">
+            <div className="grid aspect-square place-items-center rounded-md border border-[#17130f1f] bg-[#17130f0a] p-5 text-center text-sm font-semibold text-[#8a7c6d]">
               QR 숨김
             </div>
           )}
-          <p className="break-all rounded-md bg-neutral-50 p-3 text-xs text-neutral-500">
+          <p className="break-all rounded-md bg-[#17130f0a] p-3 text-xs text-[#8a7c6d]">
             토큰: {coupon.token}
           </p>
         </div>

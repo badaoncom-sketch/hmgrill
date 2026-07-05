@@ -22,26 +22,29 @@ export default async function MenuPage() {
       <SectionHeading
         eyebrow="MENU"
         title="메뉴"
-        description="대표메뉴, 전체메뉴, 세트메뉴, 사이드, 음료 카테고리를 기획서 기준으로 구성했습니다."
+        description="장작불의 온기, 숙성 고기의 깊이, 구운 채소와 곁들임의 균형을 담은 화목의 메뉴입니다."
       />
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => (
           <Badge key={category}>{category}</Badge>
         ))}
       </div>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {menuItems.map((item) => (
-          <Card key={item.id}>
+          <Card
+            key={item.id}
+            className="group overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/10"
+          >
             <CardContent className="grid gap-4">
               <MenuImage src={item.imageUrl} alt={item.name} />
               <Badge tone={item.featured ? "red" : "neutral"}>
                 {item.category}
               </Badge>
-              <h2 className="text-xl font-bold text-neutral-950">{item.name}</h2>
-              <p className="text-sm text-neutral-600">
+              <h2 className="text-xl font-bold text-[#17130f]">{item.name}</h2>
+              <p className="text-sm leading-6 text-[#5f554a]">
                 {item.description}
               </p>
-              <p className="text-lg font-bold text-neutral-950">
+              <p className="text-lg font-bold text-[#17130f]">
                 {formatCurrency(item.price)}
               </p>
             </CardContent>
@@ -50,7 +53,7 @@ export default async function MenuPage() {
         {menuItems.length === 0 ? (
           <Card>
             <CardContent>
-              <p className="text-sm font-semibold text-neutral-600">
+              <p className="text-sm font-semibold text-[#5f554a]">
                 등록된 메뉴가 없습니다.
               </p>
             </CardContent>

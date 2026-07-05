@@ -24,18 +24,18 @@ export function CouponCard({
             <Badge tone={issue.status === "issuing" ? "green" : "neutral"}>
               {issue.status === "issuing" ? "발행중" : "발행종료"}
             </Badge>
-            <h2 className="mt-3 text-xl font-bold text-neutral-950">
+            <h2 className="mt-3 text-xl font-bold text-[#17130f]">
               {issue.name}
             </h2>
-            <p className="mt-1 text-2xl font-bold text-red-700">
+            <p className="mt-1 text-2xl font-bold text-[#B13A1E]">
               {formatCurrency(issue.amount)}
             </p>
           </div>
-          <div className="grid h-12 w-12 place-items-center rounded-md bg-red-50 text-red-700">
+          <div className="grid h-12 w-12 place-items-center rounded-md bg-[#B13A1E14] text-[#B13A1E]">
             <Ticket size={24} aria-hidden="true" />
           </div>
         </div>
-        <div className="grid gap-2 text-sm text-neutral-600">
+        <div className="grid gap-2 text-sm text-[#5f554a]">
           <p className="flex items-center gap-2">
             <CalendarDays size={16} aria-hidden="true" />
             다운로드 후 {issue.validityDays}일 사용 가능
@@ -46,7 +46,7 @@ export function CouponCard({
           <p className="whitespace-pre-line">{issue.conditionText}</p>
         </div>
         <CouponDownloadForm issueId={issue.id} disabled={!decision.allowed} />
-        <p className="text-xs text-neutral-500">{decision.reason}</p>
+        <p className="text-xs text-[#8a7c6d]">{decision.reason}</p>
       </CardContent>
     </Card>
   );

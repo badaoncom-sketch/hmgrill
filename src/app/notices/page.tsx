@@ -19,19 +19,19 @@ export default async function NoticesPage() {
       <SectionHeading
         eyebrow="NOTICE"
         title="공지사항"
-        description="매장 운영과 쿠폰 사용에 필요한 공지를 제공합니다."
+        description="영업 안내, 이용 공지, 방문 전 확인할 정보를 정리합니다."
       />
       <div className="grid gap-4">
         {notices.map((notice) => (
           <Card key={notice.id}>
             <CardContent>
-              <p className="text-sm text-neutral-500">
+              <p className="text-sm text-[#8a7c6d]">
                 {formatDate(notice.publishedAt ?? notice.createdAt)}
               </p>
-              <h2 className="mt-2 text-xl font-bold text-neutral-950">
+              <h2 className="mt-2 text-xl font-bold text-[#17130f]">
                 {notice.title}
               </h2>
-              <p className="mt-3 text-sm leading-6 text-neutral-600">
+              <p className="mt-3 text-sm leading-6 text-[#5f554a]">
                 {notice.body}
               </p>
             </CardContent>
@@ -40,7 +40,7 @@ export default async function NoticesPage() {
         {notices.length === 0 ? (
           <Card>
             <CardContent>
-              <p className="text-sm font-semibold text-neutral-600">
+              <p className="text-sm font-semibold text-[#5f554a]">
                 등록된 공지사항이 없습니다.
               </p>
             </CardContent>

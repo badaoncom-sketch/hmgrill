@@ -9,20 +9,20 @@ export default function LoginPage() {
       <SectionHeading
         eyebrow="MEMBER"
         title="로그인"
-        description="이메일 인증 완료 회원만 쿠폰 다운로드와 마이페이지 접근이 가능합니다."
+        description="회원 인증 후 방문 혜택과 마이페이지를 이용할 수 있습니다."
       />
       <Card>
         <CardContent>
           <LoginForm />
-          <div className="mt-4 flex justify-between text-sm text-neutral-600">
-            <Link href="/signup" className="hover:text-neutral-950">
+          <div className="mt-4 flex justify-between text-sm text-[#5f554a]">
+            <Link href="/signup" className="hm-link-focus rounded-sm hover:text-[#17130f]">
               회원가입
             </Link>
-            <Link href="/mypage" className="hover:text-neutral-950">
+            <Link href="/mypage" className="hm-link-focus rounded-sm hover:text-[#17130f]">
               마이페이지
             </Link>
           </div>
-          <div className="mt-6 border-t border-neutral-100 pt-6">
+          <div className="mt-6 border-t border-[#17130f14] pt-6">
             <ResendVerificationForm />
           </div>
         </CardContent>

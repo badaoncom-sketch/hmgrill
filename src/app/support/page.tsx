@@ -17,15 +17,15 @@ export default async function SupportPage({
       <SectionHeading
         eyebrow="SUPPORT"
         title="고객센터"
-        description="FAQ와 문의하기 화면을 기획서 메뉴 기준으로 구성했습니다."
+        description="방문 전 궁금한 내용과 매장 이용 문의를 남길 수 있습니다."
       />
       <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="grid gap-4">
           {faqs.map((item) => (
             <Card key={item.question}>
               <CardContent>
-                <h2 className="font-bold text-neutral-950">{item.question}</h2>
-                <p className="mt-2 text-sm leading-6 text-neutral-600">
+                <h2 className="font-bold text-[#17130f]">{item.question}</h2>
+                <p className="mt-2 text-sm leading-6 text-[#5f554a]">
                   {item.answer}
                 </p>
               </CardContent>
