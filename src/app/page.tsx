@@ -192,19 +192,19 @@ export default async function HomePage() {
         <div className="absolute inset-x-0 bottom-0 h-52 bg-[linear-gradient(180deg,transparent,rgba(13,13,13,.82)_72%,#0d0d0d)]" />
         <Container className="relative flex min-h-screen flex-col pb-10 pt-20 lg:min-h-[860px]">
           <div className="flex flex-1 items-center pt-4">
-            <div className="hm-hero-shadow hm-reveal w-full max-w-[45rem] py-16 lg:w-[54%]">
-              <h1 className="hm-serif text-[44px] font-bold leading-[1.28] tracking-normal text-[var(--hm-primary)] md:text-[64px] lg:text-[70px] xl:text-[76px]">
+            <div className="hm-hero-shadow hm-reveal w-full max-w-[48rem] py-16 lg:w-[54%]">
+              <h1 className="hm-display-title">
                 참나무 장작의 깊은 향,
                 <br />
                 화목의 시간
               </h1>
-              <p className="mt-8 max-w-md text-lg leading-[1.8] text-white/78 lg:text-[20px]">
+              <p className="hm-body-lg mt-8 max-w-[29rem] text-white/74">
                 좋은 사람과 함께하는 시간.
                 <br />
                 정성으로 구워낸 특별한 맛을 전합니다.
               </p>
-              <div className="mt-11">
-                <ButtonLink href="/menu" className="min-h-14 rounded-[14px] px-7 py-4 text-[15px]">
+              <div className="mt-12">
+                <ButtonLink href="/menu" className="min-h-14 rounded-[14px] px-7 py-4 text-[15px] font-bold">
                   화목 둘러보기
                   <ArrowRight size={17} aria-hidden="true" />
                 </ButtonLink>
@@ -220,11 +220,11 @@ export default async function HomePage() {
                   key={item.title}
                   className="hm-card-hover rounded-[20px] border border-[var(--hm-border)] bg-[rgba(18,18,18,.78)] p-8 text-center shadow-[0_24px_70px_rgba(0,0,0,.3)]"
                 >
-                  <Icon className="mx-auto text-[var(--hm-accent-gold)]" size={40} aria-hidden="true" />
-                  <h2 className="mt-6 text-[20px] font-bold text-[var(--hm-primary)]">
+                  <Icon className="mx-auto text-[var(--hm-accent-gold)]" size={42} aria-hidden="true" />
+                  <h2 className="hm-card-title mt-6">
                     {item.title}
                   </h2>
-                  <p className="mt-3 text-[15px] leading-7 text-white/66">{item.description}</p>
+                  <p className="hm-caption mt-3 text-white/60">{item.description}</p>
                 </div>
               );
             })}
@@ -236,17 +236,17 @@ export default async function HomePage() {
         <Container>
           <div className="grid gap-16 lg:grid-cols-[0.42fr_0.58fr] lg:items-center">
             <div className="hm-reveal">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--hm-accent-gold)]">
+              <p className="hm-eyebrow">
                 ABOUT HWAMOK
               </p>
-              <h2 className="hm-serif mt-5 text-[34px] font-bold leading-tight text-[var(--hm-primary)] sm:text-[48px]">
+              <h2 className="hm-section-title mt-5">
                 화목, 그 특별한 이야기
               </h2>
-              <p className="mt-7 max-w-md text-[17px] leading-9 text-[var(--hm-subtext)]">
+              <p className="hm-body mt-7 max-w-md text-[var(--hm-subtext)]">
                 화목은 참나무 장작구이를 통해 음식 본연의 맛과 향을 살리고,
                 좋은 사람들과 함께하는 소중한 시간을 만들어가는 공간입니다.
               </p>
-              <ButtonLink href="/about" variant="ghost" className="mt-8 px-0 text-[15px] text-[var(--hm-primary)]">
+              <ButtonLink href="/about" variant="ghost" className="mt-8 px-0 text-[15px] font-bold text-[var(--hm-primary)]">
                 더 알아보기
                 <ArrowRight size={16} aria-hidden="true" />
               </ButtonLink>
@@ -303,11 +303,11 @@ export default async function HomePage() {
                 </div>
                 <div className="grid gap-3 p-6">
                   <Badge tone="neutral" className="w-fit">{item.category}</Badge>
-                  <h3 className="text-[20px] font-bold text-[var(--hm-text)]">{item.name}</h3>
-                  <p className="min-h-14 text-[15px] leading-7 text-[var(--hm-subtext)]">
+                  <h3 className="hm-card-title">{item.name}</h3>
+                  <p className="hm-caption min-h-14 text-[var(--hm-subtext)]">
                     {item.description}
                   </p>
-                  <p className="pt-1 text-[18px] font-bold text-[var(--hm-primary)]">
+                  <p className="pt-1 text-[19px] font-bold leading-none text-[var(--hm-primary)]">
                     {formatCurrency(item.price)}
                   </p>
                 </div>
@@ -342,9 +342,9 @@ export default async function HomePage() {
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,.48))]" />
                 </div>
                 <div className="p-7">
-                  <h3 className="text-[21px] font-bold text-[var(--hm-primary)]">{item.title}</h3>
-                  <p className="mt-3 min-h-14 text-[15px] leading-7 text-[var(--hm-subtext)]">{item.body}</p>
-                  <ButtonLink href={item.href} variant="ghost" className="mt-5 h-auto min-h-0 px-0 py-0 text-[var(--hm-primary)]">
+                  <h3 className="hm-card-title text-[var(--hm-primary)]">{item.title}</h3>
+                  <p className="hm-caption mt-3 min-h-14 text-[var(--hm-subtext)]">{item.body}</p>
+                  <ButtonLink href={item.href} variant="ghost" className="mt-5 h-auto min-h-0 px-0 py-0 text-[15px] font-bold text-[var(--hm-primary)]">
                     자세히 보기
                     <ArrowRight size={14} aria-hidden="true" />
                   </ButtonLink>
@@ -356,11 +356,11 @@ export default async function HomePage() {
                 <div className="grid h-20 w-20 place-items-center rounded-[20px] bg-[var(--hm-primary)] text-[var(--hm-background)]">
                   <Gift size={32} aria-hidden="true" />
                 </div>
-                <h3 className="mt-6 text-[21px] font-bold text-[var(--hm-primary)]">{activeCoupon.name}</h3>
-                <p className="mt-3 text-3xl font-bold text-white">
+                <h3 className="hm-card-title mt-6 text-[var(--hm-primary)]">{activeCoupon.name}</h3>
+                <p className="mt-3 text-[30px] font-bold leading-tight text-white">
                   {formatCurrency(activeCoupon.amount)}
                 </p>
-                <p className="mt-4 text-[15px] leading-7 text-[var(--hm-subtext)]">
+                <p className="hm-caption mt-4 text-[var(--hm-subtext)]">
                   다운로드 후 {activeCoupon.validityDays}일 사용 가능
                 </p>
               </article>
@@ -394,12 +394,12 @@ export default async function HomePage() {
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,.46))]" />
                 </div>
                 <div className="grid gap-3 p-6">
-                  <h3 className="text-[19px] font-bold text-[var(--hm-primary)]">{store.name}</h3>
-                  <p className="flex gap-2 text-[14px] leading-6 text-[var(--hm-subtext)]">
+                  <h3 className="hm-card-title text-[var(--hm-primary)]">{store.name}</h3>
+                  <p className="hm-caption flex gap-2 text-[var(--hm-subtext)]">
                     <MapPin size={16} aria-hidden="true" />
                     {store.address}
                   </p>
-                  <p className="text-[14px] text-[var(--hm-subtext)]">{store.phone}</p>
+                  <p className="hm-caption text-[var(--hm-subtext)]">{store.phone}</p>
                 </div>
               </article>
             ))}
@@ -411,10 +411,10 @@ export default async function HomePage() {
         <Container>
           <div className="mx-auto max-w-xl text-center">
             <Camera className="mx-auto text-[var(--hm-accent-gold)]" size={30} aria-hidden="true" />
-            <p className="mt-4 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--hm-accent-gold)]">
+            <p className="hm-eyebrow mt-4">
               INSTAGRAM
             </p>
-            <h2 className="hm-serif mt-4 text-[30px] font-bold text-[var(--hm-primary)] sm:text-[40px]">
+            <h2 className="hm-section-title mt-4">
               화목의 일상을 만나보세요
             </h2>
           </div>
@@ -461,14 +461,14 @@ function SectionHeader({
   return (
     <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--hm-accent-gold)]">
+        <p className="hm-eyebrow">
           {eyebrow}
         </p>
-        <h2 className="hm-serif mt-4 text-[34px] font-bold leading-tight text-[var(--hm-primary)] sm:text-[48px]">
+        <h2 className="hm-section-title mt-4">
           {title}
         </h2>
       </div>
-      <ButtonLink href={href} variant="ghost" className="px-0 text-[var(--hm-primary)]">
+      <ButtonLink href={href} variant="ghost" className="px-0 text-[15px] font-bold text-[var(--hm-primary)]">
         {linkLabel}
         <ArrowRight size={16} aria-hidden="true" />
       </ButtonLink>

@@ -113,7 +113,7 @@ export default async function RootLayout({
         </header>
         <div className="hm-surface min-h-screen pt-20">{children}</div>
         <footer className="border-t border-[var(--hm-border-soft)] bg-[var(--hm-background)] text-[#f7e6c1cc]">
-          <div className="hm-container grid gap-12 py-20 text-sm md:grid-cols-[1.15fr_.8fr_.8fr_.8fr_1.25fr] lg:gap-16">
+          <div className="hm-container grid gap-12 py-20 md:grid-cols-[1.15fr_.8fr_.8fr_.8fr_1.25fr] lg:gap-16">
             <div className="pt-1">
               <span className="relative block h-[172px] w-[148px]">
                 <Image
@@ -126,36 +126,36 @@ export default async function RootLayout({
               </span>
             </div>
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.08em] text-[#8b7a62]">Company</p>
-              <div className="mt-7 grid gap-4 text-[15px] font-semibold text-white/50">
-                <Link href="/about" className="hm-link-focus hover:text-[var(--hm-primary)]">화목 소개</Link>
-                <Link href="/store" className="hm-link-focus hover:text-[var(--hm-primary)]">인사말</Link>
-                <Link href="/menu" className="hm-link-focus hover:text-[var(--hm-primary)]">매장 안내</Link>
-                <Link href="/support" className="hm-link-focus hover:text-[var(--hm-primary)]">오시는 길</Link>
+              <p className="hm-footer-heading">Company</p>
+              <div className="mt-7 grid gap-4">
+                <Link href="/about" className="hm-link-focus hm-footer-link">화목 소개</Link>
+                <Link href="/store" className="hm-link-focus hm-footer-link">인사말</Link>
+                <Link href="/menu" className="hm-link-focus hm-footer-link">매장 안내</Link>
+                <Link href="/support" className="hm-link-focus hm-footer-link">오시는 길</Link>
               </div>
             </div>
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.08em] text-[#8b7a62]">Customer</p>
-              <div className="mt-7 grid gap-4 text-[15px] font-semibold text-white/50">
-                <Link href="/notices" className="hm-link-focus hover:text-[var(--hm-primary)]">공지사항</Link>
-                <Link href="/events" className="hm-link-focus hover:text-[var(--hm-primary)]">이벤트</Link>
-                <Link href="/support" className="hm-link-focus hover:text-[var(--hm-primary)]">자주 묻는 질문</Link>
-                <Link href="/support" className="hm-link-focus hover:text-[var(--hm-primary)]">1:1 문의</Link>
+              <p className="hm-footer-heading">Customer</p>
+              <div className="mt-7 grid gap-4">
+                <Link href="/notices" className="hm-link-focus hm-footer-link">공지사항</Link>
+                <Link href="/events" className="hm-link-focus hm-footer-link">이벤트</Link>
+                <Link href="/support" className="hm-link-focus hm-footer-link">자주 묻는 질문</Link>
+                <Link href="/support" className="hm-link-focus hm-footer-link">1:1 문의</Link>
               </div>
             </div>
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.08em] text-[#8b7a62]">Policy</p>
-              <div className="mt-7 grid gap-4 text-[15px] font-semibold text-white/50">
-                <Link href="/support" className="hm-link-focus hover:text-[var(--hm-primary)]">이용약관</Link>
-                <Link href="/support" className="hm-link-focus hover:text-[var(--hm-primary)]">개인정보처리방침</Link>
-                <Link href="/coupons" className="hm-link-focus hover:text-[var(--hm-primary)]">쿠폰 이용 안내</Link>
-                <Link href="/notices" className="hm-link-focus hover:text-[var(--hm-primary)]">멤버십 안내</Link>
+              <p className="hm-footer-heading">Policy</p>
+              <div className="mt-7 grid gap-4">
+                <Link href="/support" className="hm-link-focus hm-footer-link">이용약관</Link>
+                <Link href="/support" className="hm-link-focus hm-footer-link">개인정보처리방침</Link>
+                <Link href="/coupons" className="hm-link-focus hm-footer-link">쿠폰 이용 안내</Link>
+                <Link href="/notices" className="hm-link-focus hm-footer-link">멤버십 안내</Link>
               </div>
             </div>
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.08em] text-[#8b7a62]">Customer Center</p>
-              <p className="mt-5 text-[34px] font-bold leading-none text-white">02-1234-5678</p>
-              <p className="mt-4 text-[15px] font-semibold leading-7 text-white/45">
+              <p className="hm-footer-heading">Customer Center</p>
+              <p className="mt-5 text-[34px] font-bold leading-none tracking-normal text-white">02-1234-5678</p>
+              <p className="hm-caption mt-4 text-white/45">
                 평일 10:00 - 22:00
                 <br />
                 주말/공휴일 11:00 - 22:00

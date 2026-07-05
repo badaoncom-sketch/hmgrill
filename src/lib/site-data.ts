@@ -44,9 +44,9 @@ export const couponIssues: CouponIssue[] = [
     expiredCount: 2,
     validityDays: 10,
     conditionText:
-      "300,000원 이상 결제 시 사용 가능합니다.\n타 쿠폰과 중복 사용이 불가능합니다.\n계산 전 직원에게 QR쿠폰을 제시해 주세요.",
+      "300,000원 이상 결제 시 사용 가능합니다.\n타 쿠폰과 중복 사용이 불가능합니다.",
     qrNotice:
-      "계산 전에 직원에게 QR코드를 제시해 주세요.\n직원 확인 또는 자동 처리 후 쿠폰이 사용 완료됩니다.\n사용 완료된 쿠폰은 다시 사용할 수 없습니다.",
+      "쿠폰 화면의 QR코드 확인 후 사용 처리됩니다.\n사용 완료된 쿠폰은 다시 사용할 수 없습니다.",
     redownloadPolicy: "after_use_allowed",
     useFlow: "staff_confirm",
     status: "issuing",
@@ -61,7 +61,7 @@ export const couponIssues: CouponIssue[] = [
     expiredCount: 7,
     validityDays: 7,
     conditionText: "평일 방문 시 사용 가능합니다.",
-    qrNotice: "계산 전에 직원에게 QR코드를 제시해 주세요.",
+    qrNotice: "쿠폰 화면의 QR코드 확인 후 사용 처리됩니다.",
     redownloadPolicy: "once_per_member",
     useFlow: "staff_confirm",
     status: "ended",
@@ -84,7 +84,7 @@ export const memberCoupons: MemberCoupon[] = [
     conditionText:
       "300,000원 이상 결제 시 사용 가능합니다.\n타 쿠폰과 중복 사용이 불가능합니다.",
     qrNotice:
-      "계산 전에 직원에게 QR코드를 제시해 주세요.\n직원 확인 또는 자동 처리 후 쿠폰이 사용 완료됩니다.\n사용 완료된 쿠폰은 다시 사용할 수 없습니다.\n동일 쿠폰은 사용 완료 후 다시 다운로드할 수 있습니다.",
+      "쿠폰 화면의 QR코드 확인 후 사용 처리됩니다.\n사용 완료된 쿠폰은 다시 사용할 수 없습니다.\n동일 쿠폰은 사용 완료 후 다시 다운로드할 수 있습니다.",
   },
   {
     id: "member-coupon-2",
@@ -100,7 +100,7 @@ export const memberCoupons: MemberCoupon[] = [
     usedAt: "2026-06-24T12:30:00+09:00",
     usedByStaffName: "직원 A",
     conditionText: "평일 방문 시 사용 가능합니다.",
-    qrNotice: "계산 전에 직원에게 QR코드를 제시해 주세요.",
+    qrNotice: "쿠폰 화면의 QR코드 확인 후 사용 처리됩니다.",
   },
 ];
 
@@ -109,7 +109,7 @@ export const notices = [
     id: "notice-1",
     title: "QR 쿠폰 사용 안내",
     date: "2026-07-05",
-    body: "쿠폰은 계산 전 직원에게 QR코드를 제시한 뒤 사용할 수 있습니다.",
+    body: "쿠폰 화면의 QR코드 확인 후 사용 처리됩니다.",
   },
   {
     id: "notice-2",

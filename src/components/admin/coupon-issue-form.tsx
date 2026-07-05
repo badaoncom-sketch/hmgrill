@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Field, Input, Select, Textarea } from "@/components/ui/field";
 
 const defaultCondition =
-  "300,000원 이상 결제 시 사용 가능합니다.\n타 쿠폰과 중복 사용이 불가능합니다.\n계산 전 직원에게 QR쿠폰을 제시해 주세요.";
+  "300,000원 이상 결제 시 사용 가능합니다.\n타 쿠폰과 중복 사용이 불가능합니다.";
 
 const defaultQrNotice =
-  "계산 전에 직원에게 QR코드를 제시해 주세요.\n직원 확인 또는 자동 처리 후 쿠폰이 사용 완료됩니다.\n사용 완료된 쿠폰은 다시 사용할 수 없습니다.";
+  "쿠폰 화면의 QR코드 확인 후 사용 처리됩니다.\n사용 완료된 쿠폰은 다시 사용할 수 없습니다.";
 
 const initialState = {
   ok: false,
