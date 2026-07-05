@@ -163,6 +163,32 @@ button {
   color: var(--hm-primary);
 }
 
+.hm-social-link {
+  align-items: center;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(247, 230, 193, 0.16), transparent 42%),
+    #15120e;
+  border: 1px solid var(--hm-warm-border);
+  border-radius: 999px;
+  color: #9d8867;
+  display: inline-flex;
+  height: 38px;
+  justify-content: center;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+  width: 38px;
+}
+
+.hm-social-link:hover {
+  border-color: rgba(247, 230, 193, 0.32);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+  color: var(--hm-primary);
+  transform: translateY(-2px);
+}
+
 .hm-container {
   margin-inline: auto;
   max-width: 1200px;
@@ -234,7 +260,7 @@ button {
 
 @media (max-width: 640px) {
   :root {
-    --hm-type-hero: clamp(40px, 11.5vw, 52px);
+    --hm-type-hero: clamp(38px, 10.6vw, 46px);
     --hm-type-section: 32px;
     --hm-type-subsection: 26px;
     --hm-type-card-title: 19px;

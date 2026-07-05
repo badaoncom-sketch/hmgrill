@@ -187,9 +187,13 @@ export default async function HomePage() {
           <div className="flex flex-1 items-center pt-4">
             <div className="hm-hero-shadow hm-reveal w-full max-w-[48rem] py-16 lg:w-[54%]">
               <h1 className="hm-display-title">
-                참나무 장작의 깊은 향,
-                <br />
-                화목의 시간
+                <span className="hidden whitespace-nowrap xl:block">참나무 장작의 깊은 향,</span>
+                <span className="block xl:hidden">
+                  참나무 장작의
+                  <br />
+                  깊은 향,
+                </span>
+                <span className="block">화목의 시간</span>
               </h1>
               <p className="hm-body-lg mt-8 max-w-[29rem] text-white/74">
                 좋은 사람과 함께하는 시간.

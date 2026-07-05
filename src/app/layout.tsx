@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
-import { Camera, CirclePlay, Menu, MessageCircle, Share2, UserRound } from "lucide-react";
+import { Menu, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
@@ -41,6 +41,13 @@ const navItems = [
   { href: "/notices", label: "공지사항" },
   { href: "/support", label: "고객센터" },
 ];
+
+const socialLinks = [
+  { href: "https://www.instagram.com", label: "Instagram", icon: "instagram" },
+  { href: "https://www.facebook.com", label: "Facebook", icon: "facebook" },
+  { href: "https://www.youtube.com", label: "YouTube", icon: "youtube" },
+  { href: "https://section.blog.naver.com", label: "Naver Blog", icon: "blog" },
+] as const;
 
 export default async function RootLayout({
   children,
@@ -170,34 +177,16 @@ export default async function RootLayout({
                 주말/공휴일 11:00 - 22:00
               </p>
               <div className="mt-7 flex gap-4 text-[#8b7a62]">
-                <Link
-                  href="https://www.instagram.com"
-                  className="hm-link-focus grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e] transition hover:border-[rgba(247,230,193,.3)] hover:text-[var(--hm-primary)]"
-                  aria-label="Instagram"
-                >
-                  <Camera size={16} aria-hidden="true" />
-                </Link>
-                <Link
-                  href="https://www.facebook.com"
-                  className="hm-link-focus grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e] transition hover:border-[rgba(247,230,193,.3)] hover:text-[var(--hm-primary)]"
-                  aria-label="Facebook"
-                >
-                  <Share2 size={16} aria-hidden="true" />
-                </Link>
-                <Link
-                  href="https://www.youtube.com"
-                  className="hm-link-focus grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e] transition hover:border-[rgba(247,230,193,.3)] hover:text-[var(--hm-primary)]"
-                  aria-label="YouTube"
-                >
-                  <CirclePlay size={17} aria-hidden="true" />
-                </Link>
-                <Link
-                  href="/support"
-                  className="hm-link-focus grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e] transition hover:border-[rgba(247,230,193,.3)] hover:text-[var(--hm-primary)]"
-                  aria-label="문의"
-                >
-                  <MessageCircle size={16} aria-hidden="true" />
-                </Link>
+                {socialLinks.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    className="hm-social-link hm-link-focus"
+                    aria-label={item.label}
+                  >
+                    <SocialLogoIcon name={item.icon} />
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
@@ -215,5 +204,50 @@ export default async function RootLayout({
         </footer>
       </body>
     </html>
+  );
+}
+
+function SocialLogoIcon({ name }: { name: (typeof socialLinks)[number]["icon"] }) {
+  if (name === "instagram") {
+    return (
+      <svg aria-hidden="true" className="h-[17px] w-[17px]" fill="none" viewBox="0 0 24 24">
+        <rect height="15.5" rx="4.6" stroke="currentColor" strokeWidth="1.9" width="15.5" x="4.25" y="4.25" />
+        <circle cx="12" cy="12" r="3.35" stroke="currentColor" strokeWidth="1.9" />
+        <circle cx="16.9" cy="7.1" fill="currentColor" r="1.15" />
+      </svg>
+    );
+  }
+
+  if (name === "facebook") {
+    return (
+      <svg aria-hidden="true" className="h-[17px] w-[17px]" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M13.7 21v-7.4h2.5l.4-2.9h-2.9V8.8c0-.8.2-1.4 1.5-1.4h1.6V4.8c-.8-.1-1.6-.2-2.4-.2-2.4 0-4 1.5-4 4.1v2H7.8v2.9h2.6V21h3.3Z" />
+      </svg>
+    );
+  }
+
+  if (name === "youtube") {
+    return (
+      <svg aria-hidden="true" className="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24">
+        <path
+          d="M21 8.2a3 3 0 0 0-2.1-2.1C17.1 5.6 12 5.6 12 5.6s-5.1 0-6.9.5A3 3 0 0 0 3 8.2a31 31 0 0 0-.5 3.8A31 31 0 0 0 3 15.8a3 3 0 0 0 2.1 2.1c1.8.5 6.9.5 6.9.5s5.1 0 6.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-3.8 31 31 0 0 0-.5-3.8Z"
+          stroke="currentColor"
+          strokeWidth="1.7"
+        />
+        <path d="m10.3 14.8 4.4-2.8-4.4-2.8v5.6Z" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg aria-hidden="true" className="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24">
+      <path
+        d="M5.8 5.2h12.4a2.2 2.2 0 0 1 2.2 2.2v7.5a2.2 2.2 0 0 1-2.2 2.2h-4.1L12 19.4 9.9 17H5.8a2.2 2.2 0 0 1-2.2-2.2V7.4a2.2 2.2 0 0 1 2.2-2.2Z"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+      <path d="M8 9h3.2c1.2 0 1.9.7 1.9 1.6 0 .7-.3 1.2-.9 1.4.8.2 1.2.8 1.2 1.6 0 1.1-.8 1.8-2.2 1.8H8V9Zm2 2.4h.9c.4 0 .7-.2.7-.6s-.3-.6-.7-.6H10v1.2Zm0 2.8h1c.5 0 .8-.2.8-.7s-.3-.7-.8-.7h-1v1.4Zm5.1-5.2h1.7v6.4h-1.7V9Z" fill="currentColor" />
+    </svg>
   );
 }
