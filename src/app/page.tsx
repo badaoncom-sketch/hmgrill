@@ -2,10 +2,12 @@ import Image from "next/image";
 import {
   ArrowRight,
   Camera,
+  Clock,
   Flame,
   Gift,
   Leaf,
   MapPin,
+  Phone,
   UsersRound,
   Utensils,
 } from "lucide-react";
@@ -104,29 +106,13 @@ const fallbackPromotions = [
   },
 ];
 
-const storeCards = [
-  {
-    id: "bon",
-    name: "화목 본점",
-    address: "서울 강남구 테헤란로 123",
-    phone: "02-1234-5678",
-    imageUrl: "/images/brand/brand-storefront.png",
-  },
-  {
-    id: "gangnam",
-    name: "화목 강남점",
-    address: "서울 서초구 서초대로 456",
-    phone: "02-2345-6789",
-    imageUrl: "/images/brand/brand-fire-wall.png",
-  },
-  {
-    id: "pangyo",
-    name: "화목 판교점",
-    address: "경기 성남시 분당구 판교로 789",
-    phone: "031-345-6789",
-    imageUrl: "/images/brand/brand-sign-collage.jpg",
-  },
-];
+const storeInfo = {
+  name: "화목 본점",
+  address: "서울 강남구 테헤란로 123",
+  phone: "02-1234-5678",
+  hours: ["평일 10:00 - 22:00", "주말/공휴일 11:00 - 22:00"],
+  imageUrl: "/images/brand/brand-storefront.png",
+};
 
 const instagramImages = [
   "/images/menu/1783221305383.png",
@@ -165,16 +151,23 @@ export default async function HomePage() {
   const activeCoupon = (couponRows ?? []).map(mapCouponIssue)[0];
   const banners = (bannerRows ?? []).map(mapSiteBanner);
   const homeMenus = featuredMenu.length > 0 ? featuredMenu.slice(0, 4) : fallbackFeaturedMenu;
-  const promotions =
+  const cmsPromotions =
     banners.length > 0
-      ? banners.slice(0, 3).map((banner, index) => ({
+      ? banners.map((banner, index) => ({
           id: banner.id,
           title: banner.title,
           body: banner.body,
           href: banner.href ?? "/events",
           imageUrl: fallbackPromotions[index % fallbackPromotions.length].imageUrl,
         }))
-      : fallbackPromotions;
+      : [];
+  const promotions = [
+    ...cmsPromotions,
+    ...fallbackPromotions.filter(
+      (fallback) => !cmsPromotions.some((item) => item.title === fallback.title),
+    ),
+  ].slice(0, 3);
+  const promotionCards = activeCoupon ? promotions.slice(0, 2) : promotions.slice(0, 3);
 
   return (
     <main>
@@ -326,7 +319,7 @@ export default async function HomePage() {
             linkLabel="전체 보기"
           />
           <div className="mt-16 grid gap-8 lg:grid-cols-3">
-            {promotions.map((item) => (
+            {promotionCards.map((item) => (
               <article
                 key={item.id}
                 className="hm-card-hover group overflow-hidden rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)]"
@@ -352,17 +345,33 @@ export default async function HomePage() {
               </article>
             ))}
             {activeCoupon ? (
-              <article className="hm-card-hover rounded-[20px] border border-[rgba(247,230,193,.24)] bg-[linear-gradient(135deg,rgba(35,35,35,.96),rgba(26,18,12,.95))] p-7">
-                <div className="grid h-20 w-20 place-items-center rounded-[20px] bg-[var(--hm-primary)] text-[var(--hm-background)]">
-                  <Gift size={32} aria-hidden="true" />
+              <article className="hm-card-hover group overflow-hidden rounded-[20px] border border-[rgba(247,230,193,.22)] bg-[var(--hm-surface)]">
+                <div className="relative aspect-[16/9] overflow-hidden">
+                  <Image
+                    src="/images/brand/brand-fire-wall.png"
+                    alt={activeCoupon.name}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, 100vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.72))]" />
+                  <div className="absolute left-6 top-6 grid h-14 w-14 place-items-center rounded-[18px] bg-[var(--hm-primary)] text-[var(--hm-background)]">
+                    <Gift size={26} aria-hidden="true" />
+                  </div>
                 </div>
-                <h3 className="hm-card-title mt-6 text-[var(--hm-primary)]">{activeCoupon.name}</h3>
-                <p className="mt-3 text-[30px] font-bold leading-tight text-white">
-                  {formatCurrency(activeCoupon.amount)}
-                </p>
-                <p className="hm-caption mt-4 text-[var(--hm-subtext)]">
-                  다운로드 후 {activeCoupon.validityDays}일 사용 가능
-                </p>
+                <div className="p-7">
+                  <h3 className="hm-card-title text-[var(--hm-primary)]">{activeCoupon.name}</h3>
+                  <p className="mt-3 text-[30px] font-bold leading-tight text-white">
+                    {formatCurrency(activeCoupon.amount)}
+                  </p>
+                  <p className="hm-caption mt-4 text-[var(--hm-subtext)]">
+                    다운로드 후 {activeCoupon.validityDays}일 사용 가능
+                  </p>
+                  <ButtonLink href="/coupons" variant="ghost" className="mt-5 h-auto min-h-0 px-0 py-0 text-[15px] font-bold text-[var(--hm-primary)]">
+                    쿠폰 보기
+                    <ArrowRight size={14} aria-hidden="true" />
+                  </ButtonLink>
+                </div>
               </article>
             ) : null}
           </div>
@@ -377,32 +386,48 @@ export default async function HomePage() {
             href="/store"
             linkLabel="매장 정보 보기"
           />
-          <div className="mt-16 grid gap-8 md:grid-cols-3">
-            {storeCards.map((store) => (
-              <article
-                key={store.id}
-                className="hm-card-hover group overflow-hidden rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)]"
-              >
-                <div className="hm-image-zoom relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={store.imageUrl}
-                    alt={store.name}
-                    fill
-                    sizes="(min-width: 1280px) 25vw, (min-width: 768px) 50vw, 100vw"
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,.46))]" />
+          <div className="mt-16 grid gap-8 lg:grid-cols-[1.25fr_.75fr] lg:items-stretch">
+            <div className="hm-image-zoom relative min-h-[500px] overflow-hidden rounded-[24px] border border-[var(--hm-border)] bg-[var(--hm-card)] shadow-[var(--hm-shadow-strong)]">
+              <Image
+                src={storeInfo.imageUrl}
+                alt={`${storeInfo.name} 공간`}
+                fill
+                sizes="(min-width: 1024px) 62vw, 100vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.42))]" />
+            </div>
+            <article className="flex flex-col justify-between rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-8 shadow-[var(--hm-shadow)]">
+              <div>
+                <p className="hm-eyebrow">MAIN STORE</p>
+                <h3 className="hm-subsection-title mt-5">{storeInfo.name}</h3>
+                <p className="hm-body mt-5 text-[var(--hm-subtext)]">
+                  장작불의 온기와 차분한 조명을 중심으로 설계한 화목의 대표 공간입니다.
+                </p>
+              </div>
+              <div className="mt-10 grid gap-5">
+                <div className="flex gap-3 text-[var(--hm-subtext)]">
+                  <MapPin className="mt-1 shrink-0 text-[var(--hm-accent-gold)]" size={18} aria-hidden="true" />
+                  <p className="hm-caption">{storeInfo.address}</p>
                 </div>
-                <div className="grid gap-3 p-6">
-                  <h3 className="hm-card-title text-[var(--hm-primary)]">{store.name}</h3>
-                  <p className="hm-caption flex gap-2 text-[var(--hm-subtext)]">
-                    <MapPin size={16} aria-hidden="true" />
-                    {store.address}
-                  </p>
-                  <p className="hm-caption text-[var(--hm-subtext)]">{store.phone}</p>
+                <div className="flex gap-3 text-[var(--hm-subtext)]">
+                  <Phone className="mt-1 shrink-0 text-[var(--hm-accent-gold)]" size={18} aria-hidden="true" />
+                  <p className="hm-caption">{storeInfo.phone}</p>
                 </div>
-              </article>
-            ))}
+                <div className="flex gap-3 text-[var(--hm-subtext)]">
+                  <Clock className="mt-1 shrink-0 text-[var(--hm-accent-gold)]" size={18} aria-hidden="true" />
+                  <div className="grid gap-1">
+                    {storeInfo.hours.map((hour) => (
+                      <p key={hour} className="hm-caption">{hour}</p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-10 flex flex-wrap gap-3">
+                <ButtonLink href="/store">오시는 길</ButtonLink>
+                <ButtonLink href="/support" variant="outline">문의하기</ButtonLink>
+              </div>
+            </article>
           </div>
         </Container>
       </Section>

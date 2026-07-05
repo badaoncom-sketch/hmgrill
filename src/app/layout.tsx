@@ -1,14 +1,23 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Menu, UserRound } from "lucide-react";
+import { Geist_Mono, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
+import { Camera, CirclePlay, Menu, MessageCircle, Share2, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const notoSansKr = Noto_Sans_KR({
+  variable: "--font-hm-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const notoSerifKr = Noto_Serif_KR({
+  variable: "--font-hm-serif",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -44,7 +53,7 @@ export default async function RootLayout({
   } = await supabase.auth.getUser();
 
   return (
-    <html lang="ko" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable} ${geistMono.variable}`}>
       <body>
         <header className="fixed inset-x-0 top-0 z-50 h-20 border-b border-[var(--hm-border-soft)] bg-[rgba(13,13,13,.24)] text-[var(--hm-text)] backdrop-blur-md">
           <div className="hm-container grid h-full grid-cols-[auto_1fr_auto] items-center gap-4">
@@ -160,11 +169,35 @@ export default async function RootLayout({
                 <br />
                 주말/공휴일 11:00 - 22:00
               </p>
-              <div className="mt-7 flex gap-4 text-xs font-semibold text-[#8b7a62]">
-                <span className="grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e]">IG</span>
-                <span className="grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e]">F</span>
-                <span className="grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e]">YT</span>
-                <span className="grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e]">BG</span>
+              <div className="mt-7 flex gap-4 text-[#8b7a62]">
+                <Link
+                  href="https://www.instagram.com"
+                  className="hm-link-focus grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e] transition hover:border-[rgba(247,230,193,.3)] hover:text-[var(--hm-primary)]"
+                  aria-label="Instagram"
+                >
+                  <Camera size={16} aria-hidden="true" />
+                </Link>
+                <Link
+                  href="https://www.facebook.com"
+                  className="hm-link-focus grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e] transition hover:border-[rgba(247,230,193,.3)] hover:text-[var(--hm-primary)]"
+                  aria-label="Facebook"
+                >
+                  <Share2 size={16} aria-hidden="true" />
+                </Link>
+                <Link
+                  href="https://www.youtube.com"
+                  className="hm-link-focus grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e] transition hover:border-[rgba(247,230,193,.3)] hover:text-[var(--hm-primary)]"
+                  aria-label="YouTube"
+                >
+                  <CirclePlay size={17} aria-hidden="true" />
+                </Link>
+                <Link
+                  href="/support"
+                  className="hm-link-focus grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e] transition hover:border-[rgba(247,230,193,.3)] hover:text-[var(--hm-primary)]"
+                  aria-label="문의"
+                >
+                  <MessageCircle size={16} aria-hidden="true" />
+                </Link>
               </div>
             </div>
           </div>
