@@ -214,7 +214,7 @@ export default async function HomePage() {
         <div className="hm-hero-overlay absolute inset-0" />
         <div className="hm-hero-gradient absolute inset-0" />
         <div className="absolute inset-x-0 bottom-0 h-52 bg-[linear-gradient(180deg,transparent,rgba(13,13,13,.82)_72%,#0d0d0d)]" />
-        <Container className="relative flex min-h-screen flex-col pb-10 pt-20 lg:min-h-[860px]">
+        <Container className="relative flex min-h-screen flex-col pb-[108px] pt-20 sm:pb-10 lg:min-h-[860px]">
           <div className="flex flex-1 items-start pt-24 sm:items-center sm:pt-4">
             <div className="hm-hero-shadow hm-reveal w-full max-w-[48rem] py-8 sm:py-16 lg:w-[54%]">
               <h1 className="hm-display-title">
@@ -249,7 +249,7 @@ export default async function HomePage() {
                   className="hm-card-hover rounded-[16px] border border-[var(--hm-border)] bg-[rgba(18,18,18,.78)] p-3 text-center shadow-[0_24px_70px_rgba(0,0,0,.3)] sm:rounded-[20px] sm:p-8"
                 >
                   <Icon className="mx-auto h-7 w-7 text-[var(--hm-accent-gold)] sm:h-[42px] sm:w-[42px]" aria-hidden="true" />
-                  <h2 className="mt-3 text-[12px] font-bold leading-tight text-[var(--hm-text)] sm:mt-6 sm:text-[var(--hm-type-card-title)] sm:leading-[1.38]">
+                  <h2 className="mt-3 whitespace-nowrap text-[11px] font-bold leading-tight text-[var(--hm-text)] sm:mt-6 sm:whitespace-normal sm:text-[var(--hm-type-card-title)] sm:leading-[1.38]">
                     {item.title}
                   </h2>
                   <p className="hm-caption mt-3 hidden text-white/60 sm:block">{item.description}</p>
