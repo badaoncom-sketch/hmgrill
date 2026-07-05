@@ -2,6 +2,10 @@ import Image from "next/image";
 import QRCode from "qrcode";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  getEffectiveMemberCouponStatus,
+  getRemainingDaysText,
+} from "@/lib/coupon-policy";
 import type { MemberCoupon } from "@/lib/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -24,7 +28,8 @@ async function createQrDataUrl(token: string) {
 }
 
 export async function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
-  const isAvailable = coupon.status === "available";
+  const effectiveStatus = getEffectiveMemberCouponStatus(coupon);
+  const isAvailable = effectiveStatus === "available";
   const qrDataUrl = isAvailable ? await createQrDataUrl(coupon.token) : "";
 
   return (
@@ -33,7 +38,7 @@ export async function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
         <div className="grid gap-4">
           <div>
             <Badge tone={isAvailable ? "green" : "neutral"}>
-              {statusLabel[coupon.status]}
+              {statusLabel[effectiveStatus]}
             </Badge>
             <h2 className="mt-3 text-2xl font-bold text-neutral-950">
               {coupon.couponName}
@@ -49,6 +54,12 @@ export async function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
                 {formatDate(coupon.validFrom)} - {formatDate(coupon.validUntil)}
               </dd>
             </div>
+            {isAvailable ? (
+              <div>
+                <dt className="font-semibold text-neutral-900">남은 사용기간</dt>
+                <dd>{getRemainingDaysText(coupon.validUntil)}</dd>
+              </div>
+            ) : null}
             <div>
               <dt className="font-semibold text-neutral-900">다운로드일</dt>
               <dd>{formatDate(coupon.downloadedAt)}</dd>

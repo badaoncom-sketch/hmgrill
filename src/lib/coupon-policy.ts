@@ -1,4 +1,4 @@
-import type { CouponIssue, MemberCoupon } from "@/lib/types";
+import type { CouponIssue, MemberCoupon, MemberCouponStatus } from "@/lib/types";
 
 type DownloadDecision = {
   allowed: boolean;
@@ -71,4 +71,29 @@ export function getQrNotice(issue: CouponIssue) {
       : "";
 
   return `${issue.qrNotice}${redownloadNotice}`;
+}
+
+export function getEffectiveMemberCouponStatus(
+  coupon: MemberCoupon,
+): MemberCouponStatus {
+  if (
+    coupon.status === "available" &&
+    new Date(coupon.validUntil).getTime() < Date.now()
+  ) {
+    return "expired";
+  }
+
+  return coupon.status;
+}
+
+export function getRemainingDaysText(validUntil: string) {
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const remainingMs = new Date(validUntil).getTime() - Date.now();
+  const remainingDays = Math.ceil(remainingMs / msPerDay);
+
+  if (remainingDays <= 0) {
+    return "오늘까지";
+  }
+
+  return `${remainingDays}일`;
 }

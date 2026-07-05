@@ -40,14 +40,33 @@ export default async function SupportPage({
               </div>
             ) : null}
             <form action={submitInquiryAction} className="grid gap-4">
+              <input
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                className="hidden"
+                aria-hidden="true"
+              />
               <Field label="이름">
-                <Input name="name" placeholder="홍길동" />
+                <Input name="name" placeholder="홍길동" maxLength={80} required />
               </Field>
               <Field label="이메일">
-                <Input name="email" placeholder="member@example.com" type="email" />
+                <Input
+                  name="email"
+                  placeholder="member@example.com"
+                  type="email"
+                  maxLength={180}
+                  required
+                />
               </Field>
               <Field label="문의내용">
-                <Textarea name="message" placeholder="문의 내용을 입력해 주세요." />
+                <Textarea
+                  name="message"
+                  placeholder="문의 내용을 10자 이상 입력해 주세요."
+                  minLength={10}
+                  maxLength={2000}
+                  required
+                />
               </Field>
               <Button type="submit" className="w-full sm:w-fit">
                 문의 접수

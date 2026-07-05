@@ -228,14 +228,25 @@ export async function submitInquiryAction(formData: FormData) {
   const name = readString(formData, "name");
   const email = readString(formData, "email");
   const message = readString(formData, "message");
+  const website = readString(formData, "website");
 
-  if (!name || !email || !message) {
+  if (website) {
+    redirect("/support?sent=1");
+  }
+
+  if (
+    !name ||
+    !email ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+    message.length < 10 ||
+    message.length > 2000
+  ) {
     throw new Error("문의 입력값을 확인해 주세요.");
   }
 
   const { error } = await createAdminClient().from("inquiries").insert({
     name,
-    email,
+    email: email.toLowerCase(),
     message,
   });
 
