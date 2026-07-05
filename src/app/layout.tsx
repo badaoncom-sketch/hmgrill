@@ -130,6 +130,9 @@ export default async function RootLayout({
             <div>
               <p className="font-semibold text-[var(--hm-primary)]">운영</p>
               <div className="mt-2 flex gap-3">
+                <Link href="/store" className="hm-link-focus hover:text-white">
+                  매장안내
+                </Link>
                 <Link href="/admin" className="hm-link-focus hover:text-white">
                   관리자
                 </Link>

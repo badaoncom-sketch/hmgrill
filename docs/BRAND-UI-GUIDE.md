@@ -1,8 +1,12 @@
-# 화목 UI/UX 디자인 시스템 가이드라인
+# 화목 UI/UX 디자인 시스템 가이드라인 - Frozen Design v1.0
 
-- 기준 이미지: `public/images/brand/`
+- 기준 이미지:
+  - `public/images/brand/frozen-home-reference.png`
+  - `public/images/brand/frozen-system-reference.png`
+  - `public/images/brand/brand-hero-background.png`
 - 적용 범위: Home, 서브페이지, 관리자 페이지, 로그인, 회원가입, 쿠폰, 마이페이지, 직원 화면
-- 핵심 원칙: 첨부 디자인 이미지는 분위기와 방향을 참고하는 Reference이며, 이미지 안의 UI, 레이아웃, 카드, 문구를 그대로 복사하지 않는다.
+- 핵심 원칙: Frozen 시안의 레이아웃, 비율, 여백, 컬러, 타이포그래피, 카드, 버튼, Hover, Shadow, Border, Section 구성을 공식 기준으로 삼는다.
+- 구현 방식: 이미지를 캡처하거나 잘라 쓰지 않고 `Next.js`, `Tailwind CSS`, Shadcn/ui 스타일의 공통 컴포넌트로 새로 구현한다.
 
 ## 디자인 키워드
 
@@ -89,6 +93,21 @@
 
 ## Components
 
+구현 우선순위는 Design Token, 공통 컴포넌트, 페이지 순서다. 현재 공통 컴포넌트 기준 파일은 다음과 같다.
+
+- `src/components/ui/button.tsx`
+- `src/components/ui/card.tsx`
+- `src/components/ui/badge.tsx`
+- `src/components/ui/field.tsx`
+- `src/components/ui/layout.tsx`
+- `src/components/ui/table.tsx`
+- `src/components/ui/tabs.tsx`
+- `src/components/ui/breadcrumb.tsx`
+- `src/components/ui/pagination.tsx`
+- `src/components/ui/dialog.tsx`
+- `src/components/menu-image.tsx`
+- `src/components/coupon-card.tsx`
+
 ### Button
 
 - Primary: `#F7E6C1` background, `#0D0D0D` text
@@ -149,6 +168,52 @@ Hero 이미지는 좌측 약 40%를 비워 둔다. 좌측에는 실제 UI 레이
 
 우측에는 장작, 숯불, 불꽃, 고기, 연기를 활용한다. Desktop, Tablet, Mobile에서 `object-fit: cover` 기준으로 자연스럽게 크롭될 수 있도록 Safe Area를 고려한다. 운영 최종본은 4K 품질을 기준으로 제작한다.
 
+현재 구현:
+
+- Hero Background: `public/images/brand/brand-hero-background.png`
+- Overlay: `rgba(0,0,0,.45)`와 좌측 가독성 보정 레이어
+- Header: `80px`, fixed, transparent dark, blur
+- Bottom Feature Card: 4 columns, tablet 2 columns, mobile 1 column
+
+## Page Structure
+
+### Home
+
+1. Header
+2. Hero
+3. Feature Card
+4. Brand Story
+5. Signature Menu
+6. Event & Coupon
+7. Store
+8. Instagram
+9. Footer
+
+### Menu
+
+- Desktop: 좌측 Category, 우측 4 column menu grid
+- Tablet: 2 column menu grid
+- Mobile: 1 column menu grid
+- Card 클릭 시 `src/app/menu/[id]/page.tsx` 상세 화면으로 이동한다.
+
+### Store
+
+- `src/app/store/page.tsx`
+- 상단 매장 이미지와 우측 운영 정보
+- 하단 지도 영역은 운영 지도 API 확정 후 교체한다.
+
+### Notice
+
+- `src/app/notices/page.tsx`
+- Dark Table, Category Badge, Search UI, Detail Link
+- 상세 화면은 `src/app/notices/[id]/page.tsx`
+
+### Event
+
+- `src/app/events/page.tsx`
+- Card Layout, Image, Title, Description, Date, Button
+- 상세 화면은 `src/app/events/[id]/page.tsx`
+
 ## Image Style
 
 - Photo Realistic
@@ -168,6 +233,12 @@ Hero 이미지는 좌측 약 40%를 비워 둔다. 좌측에는 실제 UI 레이
 ## Copy Rule
 
 프로젝트 전체에서 금지어 목록에 포함된 표현은 사용하지 않는다.
+
+권장 표현:
+
+- `참나무 장작구이`
+- `참나무 장작`
+- `장작구이`
 
 ## Absolute Bans
 

@@ -67,6 +67,20 @@
 
 ## 검증 결과
 
+- Frozen Design v1.0 기준 이미지 반영: `frozen-home-reference.png`, `frozen-system-reference.png`, `brand-hero-background.png`
+- Frozen Design v1.0 공통 UI 컴포넌트 추가: Layout, Table, Tabs, Breadcrumb, Pagination, Dialog/Modal
+- Home 랜딩 구조 재구성: Hero, Feature Card, Brand Story, Signature Menu, Event & Coupon, Store, Instagram
+- Menu 목록 구조 재구성: 좌측 Category, 우측 반응형 Menu Grid, Menu Detail 라우트 추가
+- Store 페이지 추가: 매장 이미지, 주소, 전화, 영업시간, 지도 placeholder
+- Notice 목록/상세 재구성: Dark Table, Category, Search UI, Detail Page
+- Event 목록/상세 재구성: Card Layout, Image, Date, Coupon CTA
+- Frozen Design v1.0 반영 후 금지 문구 저장소 전체 검색 결과 없음
+- Frozen Design v1.0 반영 후 `npm run lint`, `npm run build` 통과
+- Frozen Design v1.0 반영 후 공개 라우트 응답 확인: `/`, `/about`, `/store`, `/menu`, `/coupons`, `/events`, `/notices`, `/support`, `/signup`, `/login` 모두 `200 OK`
+- Frozen Design v1.0 반영 후 보호 라우트 응답 확인: `/mypage`, `/staff`, `/admin` 모두 비로그인 상태에서 `/login`으로 `307` 리다이렉트
+- Frozen Design v1.0 반영 후 Home HTML 확인: 새 `brand-hero-background.png`와 Hero 타이틀 렌더링 확인
+- 이번 작업은 UI/라우트/문서 변경으로 DB 스키마 변경 없음. Supabase 마이그레이션 미수행
+
 - `npm run lint`: 통과
 - `npm run build`: 통과
 - `npm run db:push:dry-run`: 통과. 원격 DB가 로컬 마이그레이션과 최신 상태임을 확인
