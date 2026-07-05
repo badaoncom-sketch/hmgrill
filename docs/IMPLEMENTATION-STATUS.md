@@ -92,6 +92,12 @@
 - 프로필/비밀번호/쿠폰 수령 기능 반영 후 공개 라우트 응답 확인: `/`, `/login`, `/signup`, `/auth/password-reset`, `/coupons` 모두 `200 OK`
 - 프로필/비밀번호/쿠폰 수령 기능 반영 후 보호 라우트 응답 확인: `/auth/reset-password`는 세션 없을 때 `/auth/password-reset`으로 `307`, `/mypage`, `/coupons/my`는 `/login`으로 `307`
 - 화면 HTML 확인: 로그인 비밀번호 찾기, 이메일 단독 가입 안내, 비밀번호 재설정 폼 렌더링 확인
+- Frozen Design v2.0 UI Refinement 반영: Home Hero, Feature Card, Brand Story, Signature Menu, Event & Coupon, Store, Instagram, Footer 디자인 밀도와 여백 개선
+- Frozen Design v2.0 반영 후 Header 투명도, 1200px 중심 컨테이너, 150px 섹션 여백, 대형 메뉴/매장/인스타그램 이미지 카드, 다단 Footer 구성 적용
+- Frozen Design v2.0 반영 후 `npm run lint`, `npm run build` 통과
+- Frozen Design v2.0 반영 후 라우트 응답 확인: `/`, `/login`, `/menu`, `/store` 모두 `200 OK`
+- Frozen Design v2.0 반영 후 Home HTML 확인: Hero 배경, Hero 타이틀, 대표 메뉴, 이벤트와 쿠폰, 매장 안내, Instagram, Footer 고객센터 렌더링 확인
+- 인앱 브라우저 캡처 검증: 현재 세션에서 `iab` 브라우저를 사용할 수 없어 미수행. 대신 빌드, 라우트, HTML 렌더링, 코드 기준 자체 점검으로 대체
 
 - `npm run lint`: 통과
 - `npm run build`: 통과
