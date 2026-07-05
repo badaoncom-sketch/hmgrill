@@ -54,6 +54,7 @@
 | `supabase/migrations/20260704204545_restrict_content_table_grants.sql` | 신규 작성 | 운영 콘텐츠 테이블의 공개 권한을 SELECT 중심으로 정리했다. |
 | `supabase/migrations/20260704205054_add_coupon_issue_status_rpcs.sql` | 신규 작성 | 쿠폰 발행중단과 재발행 RPC 함수를 작성했다. |
 | `supabase/migrations/20260705033046_add_menu_item_image_url.sql` | 신규 작성 | 메뉴 이미지 경로 저장을 위한 `menu_items.image_url` 컬럼을 추가했다. |
+| `supabase/migrations/20260705033921_seed_menu_items_with_images.sql` | 신규 작성 | 메뉴 이미지 10장을 모두 사용하는 추천 메뉴명, 설명, 가격 데이터를 반영했다. |
 
 ## 확인한 사항
 
