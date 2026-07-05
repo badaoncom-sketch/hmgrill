@@ -231,12 +231,12 @@ export default async function HomePage() {
 
       <Section className="hm-section-band">
         <Container>
-          <div className="grid gap-16 lg:grid-cols-[0.42fr_0.58fr] lg:items-center">
+          <div className="grid gap-16 lg:grid-cols-[0.48fr_0.52fr] lg:items-center">
             <div className="hm-reveal">
               <p className="hm-eyebrow">
                 ABOUT HWAMOK
               </p>
-              <h2 className="hm-section-title mt-5">
+              <h2 className="hm-section-title mt-5 sm:whitespace-nowrap">
                 화목, 그 특별한 이야기
               </h2>
               <p className="hm-body mt-7 max-w-md text-[var(--hm-subtext)]">
