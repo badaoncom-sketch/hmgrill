@@ -81,10 +81,6 @@ export async function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
             <p className="font-semibold text-[var(--hm-text)]">사용조건</p>
             <p className="mt-2 whitespace-pre-line">{coupon.conditionText}</p>
           </div>
-          <div className="rounded-[14px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-4 text-sm leading-6 text-[var(--hm-subtext)]">
-            <p className="font-semibold">안내사항</p>
-            <p className="mt-2 whitespace-pre-line">{coupon.qrNotice}</p>
-          </div>
         </div>
         <div className="grid content-start gap-3">
           {isAvailable ? (

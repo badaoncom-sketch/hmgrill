@@ -59,7 +59,7 @@ export default async function RootLayout({
                 />
               </span>
             </Link>
-            <nav className="hidden min-w-0 items-center justify-center gap-8 text-[13px] font-semibold text-white/82 md:flex lg:gap-11">
+            <nav className="hidden min-w-0 items-center justify-center gap-8 text-[13px] font-semibold text-white/82 lg:flex lg:gap-11">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
@@ -103,7 +103,7 @@ export default async function RootLayout({
               </Link>
               <Link
                 href="/menu"
-                className="hm-link-focus grid h-10 w-10 place-items-center rounded-[14px] text-[var(--hm-text)] transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)] md:hidden"
+                className="hm-link-focus grid h-10 w-10 place-items-center rounded-[14px] text-[var(--hm-text)] transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)] lg:hidden"
                 aria-label="메뉴 보기"
               >
                 <Menu size={26} aria-hidden="true" />

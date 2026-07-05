@@ -15,10 +15,8 @@ import { Container, Section } from "@/components/ui/layout";
 import {
   mapMenuItem,
   mapSiteBanner,
-  mapSitePopup,
   menuItemSelect,
   siteBannerSelect,
-  sitePopupSelect,
 } from "@/lib/content/db";
 import { couponIssueSelect, mapCouponIssue } from "@/lib/coupons/db";
 import { createClient } from "@/lib/supabase/server";
@@ -143,7 +141,7 @@ const instagramImages = [
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const [{ data: menuRows }, { data: couponRows }, { data: bannerRows }, { data: popupRows }] =
+  const [{ data: menuRows }, { data: couponRows }, { data: bannerRows }] =
     await Promise.all([
       supabase
         .from("menu_items")
@@ -161,17 +159,11 @@ export default async function HomePage() {
         .select(siteBannerSelect)
         .eq("placement", "home")
         .order("sort_order", { ascending: true }),
-      supabase
-        .from("site_popups")
-        .select(sitePopupSelect)
-        .order("sort_order", { ascending: true })
-        .limit(1),
     ]);
 
   const featuredMenu = (menuRows ?? []).map(mapMenuItem);
   const activeCoupon = (couponRows ?? []).map(mapCouponIssue)[0];
   const banners = (bannerRows ?? []).map(mapSiteBanner);
-  const activePopup = (popupRows ?? []).map(mapSitePopup)[0];
   const homeMenus = featuredMenu.length > 0 ? featuredMenu.slice(0, 4) : fallbackFeaturedMenu;
   const promotions =
     banners.length > 0
@@ -239,22 +231,6 @@ export default async function HomePage() {
           </div>
         </Container>
       </section>
-
-      {activePopup ? (
-        <section className="hm-section-separator bg-[#100e0b]">
-          <Container className="flex flex-col gap-3 py-5 text-sm text-[var(--hm-subtext)] sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="font-bold text-[var(--hm-text)]">{activePopup.title}</p>
-              <p className="mt-1">{activePopup.body}</p>
-            </div>
-            {activePopup.href ? (
-              <ButtonLink href={activePopup.href} variant="outline">
-                자세히
-              </ButtonLink>
-            ) : null}
-          </Container>
-        </section>
-      ) : null}
 
       <Section className="hm-section-band">
         <Container>

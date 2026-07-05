@@ -98,6 +98,15 @@
 - Frozen Design v2.0 반영 후 라우트 응답 확인: `/`, `/login`, `/menu`, `/store` 모두 `200 OK`
 - Frozen Design v2.0 반영 후 Home HTML 확인: Hero 배경, Hero 타이틀, 대표 메뉴, 이벤트와 쿠폰, 매장 안내, Instagram, Footer 고객센터 렌더링 확인
 - 인앱 브라우저 캡처 검증: 현재 세션에서 `iab` 브라우저를 사용할 수 없어 미수행. 대신 빌드, 라우트, HTML 렌더링, 코드 기준 자체 점검으로 대체
+- Header 반응형 기준 조정: PC 구간에서는 햄버거 버튼을 숨기고, 축소 구간에서만 표시하도록 `lg` breakpoint 기준 적용
+- Home 상단 운영 팝업 렌더링 제거: 랜딩 시안 구조와 맞지 않는 쿠폰 안내 띠 제거
+- 내 쿠폰 QR 카드 안내사항 블록 제거: 어색한 QR 제시 안내 문구 미노출 처리
+- Supabase 마이그레이션 적용: `20260705071757_disable_coupon_usage_popup.sql`
+- 운영 팝업 데이터 확인: `쿠폰 사용 안내` 팝업 `is_active=false`
+- 재구성 보완 후 `npm run db:push:dry-run`, `npm run db:push`, `npm run lint`, `npm run build` 통과
+- Supabase advisors 확인: 이슈 없음
+- 재구성 보완 후 라우트 응답 확인: `/`, `/coupons`는 `200 OK`, `/coupons/my`는 비로그인 상태에서 `/login`으로 `307`
+- Home/Coupon HTML 확인: QR 쿠폰 제시 안내 문구 미노출, 주요 Home 섹션 렌더링 확인
 
 - `npm run lint`: 통과
 - `npm run build`: 통과
