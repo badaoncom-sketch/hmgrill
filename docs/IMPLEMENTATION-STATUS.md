@@ -29,6 +29,7 @@
 - 임시 운영 콘텐츠를 생성, 수정, 검증, 정리하는 E2E 스크립트 준비
 - Resend 발신 도메인 점검 스크립트 준비
 - Vercel 배포 준비 점검 스크립트와 배포 점검표 준비
+- Resend 실제 발신 도메인 DNS 검증 완료
 - 공개 홈, 메뉴, 이벤트, 공지, 고객센터를 Supabase 운영 데이터 조회로 연결
 - 쿠폰 다운로드 목록, 내 쿠폰, 사용내역, 관리자 쿠폰 화면 DB 조회 연결
 - Supabase 초기 스키마와 RLS 초안 작성
@@ -37,7 +38,6 @@
 
 ## 아직 실제 연동 전인 항목
 
-- Resend 실제 발신 도메인 DNS 검증
 - Vercel 프로젝트 연결과 운영 환경변수 등록
 - 실제 QR 리더기 물리 장비 테스트
 
@@ -53,7 +53,7 @@
 - `npm run admin:promote`: 인자 누락 시 사용법 출력 확인
 - `npm run test:e2e:coupon`: 통과. 임시 관리자, 회원, 직원, 쿠폰을 생성해 발행, 발행중단, 재발행, 다운로드, 사용완료, 이벤트 기록을 검증하고 정리 완료
 - `npm run test:e2e:content`: 통과. 임시 메뉴, 공지, 문의, 배너, 팝업을 생성, 수정, 검증하고 정리 완료
-- `npm run ops:resend`: 차단. `EMAIL_FROM` 도메인 `hmgrill.com`이 Resend Domains에 아직 등록되어 있지 않음. 현재 Resend 계정에는 `fmgrill.com`만 있으며 상태는 `pending`
+- `npm run ops:resend`: 통과. `EMAIL_FROM` 도메인 `hmgrill.com`이 Resend에서 `verified`이고 sending/receiving 모두 `enabled`
 - `npm run ops:vercel`: 차단. 필수 환경변수는 존재하지만 `NEXT_PUBLIC_SITE_URL`이 운영 URL이 아니고, Vercel CLI와 `.vercel/project.json` 프로젝트 연결이 없음
 - `npm audit --audit-level=moderate`: Next.js 내부 PostCSS moderate 2건 유지. 강제 수정 제안은 Next.js 9 다운그레이드라 미적용
 - 로컬 서버: `http://localhost:3000`
