@@ -113,69 +113,70 @@ export default async function RootLayout({
         </header>
         <div className="hm-surface min-h-screen pt-20">{children}</div>
         <footer className="border-t border-[var(--hm-border-soft)] bg-[var(--hm-background)] text-[#f7e6c1cc]">
-          <div className="hm-container grid gap-10 py-24 text-sm lg:grid-cols-[1.3fr_.75fr_.75fr_.75fr_1fr]">
-            <div className="max-w-sm">
-              <span className="relative block h-24 w-32">
+          <div className="hm-container grid gap-12 py-20 text-sm md:grid-cols-[1.15fr_.8fr_.8fr_.8fr_1.25fr] lg:gap-16">
+            <div className="pt-1">
+              <span className="relative block h-[172px] w-[148px]">
                 <Image
                   src="/images/brand/brand-logo-transparent.png"
                   alt="화목"
                   fill
-                  sizes="128px"
+                  sizes="148px"
                   className="object-contain object-left"
                 />
               </span>
-              <p className="mt-5 leading-7 text-[var(--hm-subtext)]">
-                참나무 장작의 온기와 숙성 고기의 결을 연구하는 화목의 시간.
-                따뜻한 불빛 아래에서 한 끼의 깊이를 전합니다.
-              </p>
-              <p className="mt-8 text-xs leading-6 text-white/38">
-                상호명. 화목 | 대표. 홍길동 | 사업자등록번호. 123-45-67890
-                <br />
-                주소. 서울특별시 강남구 테헤란로 123
-                <br />
-                Copyright HWAMOK. All rights reserved.
-              </p>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--hm-accent-gold)]">Company</p>
-              <div className="mt-5 grid gap-3 text-[var(--hm-subtext)]">
+              <p className="text-sm font-bold uppercase tracking-[0.08em] text-[#8b7a62]">Company</p>
+              <div className="mt-7 grid gap-4 text-[15px] font-semibold text-white/50">
                 <Link href="/about" className="hm-link-focus hover:text-[var(--hm-primary)]">화목 소개</Link>
-                <Link href="/store" className="hm-link-focus hover:text-[var(--hm-primary)]">매장 안내</Link>
-                <Link href="/menu" className="hm-link-focus hover:text-[var(--hm-primary)]">대표 메뉴</Link>
+                <Link href="/store" className="hm-link-focus hover:text-[var(--hm-primary)]">인사말</Link>
+                <Link href="/menu" className="hm-link-focus hover:text-[var(--hm-primary)]">매장 안내</Link>
                 <Link href="/support" className="hm-link-focus hover:text-[var(--hm-primary)]">오시는 길</Link>
               </div>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--hm-accent-gold)]">Customer</p>
-              <div className="mt-5 grid gap-3 text-[var(--hm-subtext)]">
+              <p className="text-sm font-bold uppercase tracking-[0.08em] text-[#8b7a62]">Customer</p>
+              <div className="mt-7 grid gap-4 text-[15px] font-semibold text-white/50">
                 <Link href="/notices" className="hm-link-focus hover:text-[var(--hm-primary)]">공지사항</Link>
                 <Link href="/events" className="hm-link-focus hover:text-[var(--hm-primary)]">이벤트</Link>
-                <Link href="/coupons" className="hm-link-focus hover:text-[var(--hm-primary)]">쿠폰</Link>
+                <Link href="/support" className="hm-link-focus hover:text-[var(--hm-primary)]">자주 묻는 질문</Link>
                 <Link href="/support" className="hm-link-focus hover:text-[var(--hm-primary)]">1:1 문의</Link>
               </div>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--hm-accent-gold)]">Policy</p>
-              <div className="mt-5 grid gap-3 text-[var(--hm-subtext)]">
+              <p className="text-sm font-bold uppercase tracking-[0.08em] text-[#8b7a62]">Policy</p>
+              <div className="mt-7 grid gap-4 text-[15px] font-semibold text-white/50">
                 <Link href="/support" className="hm-link-focus hover:text-[var(--hm-primary)]">이용약관</Link>
                 <Link href="/support" className="hm-link-focus hover:text-[var(--hm-primary)]">개인정보처리방침</Link>
-                <Link href="/support" className="hm-link-focus hover:text-[var(--hm-primary)]">쿠폰 이용 안내</Link>
-                <Link href="/admin" className="hm-link-focus hover:text-[var(--hm-primary)]">운영 관리</Link>
+                <Link href="/coupons" className="hm-link-focus hover:text-[var(--hm-primary)]">쿠폰 이용 안내</Link>
+                <Link href="/notices" className="hm-link-focus hover:text-[var(--hm-primary)]">멤버십 안내</Link>
               </div>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--hm-accent-gold)]">Customer Center</p>
-              <p className="mt-5 text-3xl font-bold text-[var(--hm-primary)]">02-1234-5678</p>
-              <p className="mt-3 leading-6 text-[var(--hm-subtext)]">
+              <p className="text-sm font-bold uppercase tracking-[0.08em] text-[#8b7a62]">Customer Center</p>
+              <p className="mt-5 text-[34px] font-bold leading-none text-white">02-1234-5678</p>
+              <p className="mt-4 text-[15px] font-semibold leading-7 text-white/45">
                 평일 10:00 - 22:00
                 <br />
-                주말 11:00 - 22:00
+                주말/공휴일 11:00 - 22:00
               </p>
-              <div className="mt-5 flex gap-3 text-xs font-semibold text-[var(--hm-subtext)]">
-                <span className="grid h-8 w-8 place-items-center rounded-full border border-[var(--hm-border)]">IG</span>
-                <span className="grid h-8 w-8 place-items-center rounded-full border border-[var(--hm-border)]">FB</span>
-                <span className="grid h-8 w-8 place-items-center rounded-full border border-[var(--hm-border)]">YT</span>
+              <div className="mt-7 flex gap-4 text-xs font-semibold text-[#8b7a62]">
+                <span className="grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e]">IG</span>
+                <span className="grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e]">F</span>
+                <span className="grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e]">YT</span>
+                <span className="grid h-9 w-9 place-items-center rounded-full border border-[var(--hm-warm-border)] bg-[#15120e]">BG</span>
               </div>
+            </div>
+          </div>
+          <div className="border-t border-[var(--hm-warm-border)]">
+            <div className="hm-container flex min-h-32 flex-col justify-center gap-2 py-9 text-xs font-semibold leading-6 text-white/35">
+              <p>
+                상호명. 화목 | 대표. 홍길동 | 사업자등록번호. 123-45-67890
+              </p>
+              <p>
+                주소. 서울특별시 강남구 테헤란로 123, 4층 | 대표메일. hwamok@hwamok.com
+              </p>
+              <p>Copyright HWAMOK. All rights reserved.</p>
             </div>
           </div>
         </footer>

@@ -192,8 +192,8 @@ export default async function HomePage() {
         <div className="absolute inset-x-0 bottom-0 h-52 bg-[linear-gradient(180deg,transparent,rgba(13,13,13,.82)_72%,#0d0d0d)]" />
         <Container className="relative flex min-h-screen flex-col pb-10 pt-20 lg:min-h-[860px]">
           <div className="flex flex-1 items-center pt-4">
-            <div className="hm-hero-shadow hm-reveal w-full max-w-[34rem] py-16 lg:w-[39%]">
-              <h1 className="hm-serif text-[44px] font-bold leading-[1.27] tracking-normal text-[var(--hm-primary)] md:text-[64px] lg:text-[78px]">
+            <div className="hm-hero-shadow hm-reveal w-full max-w-[45rem] py-16 lg:w-[54%]">
+              <h1 className="hm-serif text-[44px] font-bold leading-[1.28] tracking-normal text-[var(--hm-primary)] md:text-[64px] lg:text-[70px] xl:text-[76px]">
                 참나무 장작의 깊은 향,
                 <br />
                 화목의 시간
