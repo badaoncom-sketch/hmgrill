@@ -83,6 +83,10 @@
 - 다크 럭셔리 디자인 시스템 재정의 후 금지 문구 저장소 전체 검색 결과 없음
 - 다크 럭셔리 디자인 시스템 재정의 후 라우트 응답 확인: `/`, `/about`, `/menu`, `/coupons`, `/events`, `/notices`, `/support`, `/signup`, `/login` 모두 `200 OK`
 - 다크 럭셔리 디자인 시스템 재정의 후 보호 라우트 응답 확인: `/mypage`, `/staff`, `/admin`, `/admin/coupons` 모두 비로그인 상태에서 `/login`으로 `307` 리다이렉트
+- Hero Section 구현 지시 반영 후 `npm run lint`, `npm run build` 통과
+- Hero Section 구현 지시 반영 후 HTML 확인: fixed `80px` navigation, `100vh` hero, `rgba(0,0,0,.45)` overlay, background image, logo, title, CTA, feature cards 렌더링 확인
+- Hero Section 구현 지시 반영 후 라우트 응답 확인: `/`, `/about`, `/menu`, `/coupons`, `/events`, `/notices`, `/support`, `/signup`, `/login` 모두 `200 OK`
+- Hero Section 구현 지시 반영 후 보호 라우트 응답 확인: `/mypage`, `/staff`, `/admin` 모두 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - `npm audit --audit-level=moderate`: Next.js 내부 PostCSS moderate 2건 유지. 강제 수정 제안은 Next.js 9 다운그레이드라 미적용
 - 로컬 서버: `http://localhost:3000`
 - 공개 라우트 응답 확인: `/`, `/menu`, `/events`, `/notices`, `/support`, `/coupons`, `/signup`, `/login` 모두 `200 OK`

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Menu, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,28 +33,33 @@ const navItems = [
   { href: "/support", label: "고객센터" },
 ];
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <html lang="ko" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <header className="sticky top-0 z-40 border-b border-[var(--hm-border)] bg-[#0d0d0df2] text-[var(--hm-text)]">
-          <div className="hm-container grid grid-cols-[auto_1fr_auto] items-center gap-3 py-2 md:py-4">
+        <header className="fixed inset-x-0 top-0 z-50 h-20 border-b border-[var(--hm-border)] bg-[rgba(13,13,13,.68)] text-[var(--hm-text)] backdrop-blur-md">
+          <div className="hm-container grid h-full grid-cols-[auto_1fr_auto] items-center gap-3">
             <Link href="/" className="hm-link-focus flex items-center gap-3">
-              <span className="relative block h-14 w-20 sm:h-16 sm:w-24 lg:h-20 lg:w-28">
+              <span className="relative block h-16 w-24">
                 <Image
                   src="/images/brand/brand-logo-transparent.png"
                   alt="화목"
                   fill
-                  sizes="(min-width: 1024px) 112px, 96px"
+                  sizes="96px"
                   className="object-contain drop-shadow-[0_10px_26px_rgba(0,0,0,0.55)]"
                 />
               </span>
             </Link>
-            <nav className="col-span-3 row-start-2 flex items-center gap-4 overflow-x-auto border-t border-[#f7e6c114] pt-2 text-xs font-medium text-[var(--hm-text)] md:col-auto md:row-auto md:justify-center md:gap-8 md:overflow-visible md:border-0 md:pt-0 md:text-base lg:gap-12">
+            <nav className="flex min-w-0 items-center gap-5 overflow-x-auto text-sm font-medium text-[var(--hm-text)] md:justify-center md:gap-7 lg:gap-10">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
@@ -64,11 +70,34 @@ export default function RootLayout({
                 </Link>
               ))}
             </nav>
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-2 text-sm font-semibold">
+              {user ? (
+                <Link
+                  href="/mypage"
+                  className="hm-link-focus hidden rounded-[14px] px-3 py-2 text-[var(--hm-text)] transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)] sm:inline-flex"
+                >
+                  마이페이지
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="hm-link-focus hidden rounded-[14px] px-3 py-2 text-[var(--hm-text)] transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)] sm:inline-flex"
+                  >
+                    로그인
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="hm-link-focus hidden rounded-[14px] border border-[var(--hm-border)] px-3 py-2 text-[var(--hm-primary)] transition hover:border-[var(--hm-primary)] sm:inline-flex"
+                  >
+                    회원가입
+                  </Link>
+                </>
+              )}
               <Link
-                href="/login"
-                className="hm-link-focus grid h-10 w-10 place-items-center rounded-[14px] text-[var(--hm-text)] transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)]"
-                aria-label="로그인"
+                href={user ? "/mypage" : "/login"}
+                className="hm-link-focus grid h-10 w-10 place-items-center rounded-[14px] text-[var(--hm-text)] transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)] sm:hidden"
+                aria-label={user ? "마이페이지" : "로그인"}
               >
                 <UserRound size={22} aria-hidden="true" />
               </Link>
@@ -82,7 +111,7 @@ export default function RootLayout({
             </div>
           </div>
         </header>
-        <div className="hm-surface min-h-screen">{children}</div>
+        <div className="hm-surface min-h-screen pt-20">{children}</div>
         <footer className="border-t border-[var(--hm-border)] bg-[var(--hm-background)] text-[#f7e6c1cc]">
           <div className="hm-container grid gap-8 py-10 text-sm md:grid-cols-[1.2fr_1fr_1fr]">
             <div>
