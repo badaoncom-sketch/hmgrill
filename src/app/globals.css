@@ -77,6 +77,21 @@ button {
   text-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
 }
 
+.hm-hero-image {
+  filter: brightness(1.34) saturate(1.08);
+  object-position: 100% center;
+}
+
+.hm-hero-overlay {
+  background: rgba(0, 0, 0, 0.34);
+}
+
+.hm-hero-gradient {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.84) 0%, rgba(0, 0, 0, 0.62) 38%, rgba(0, 0, 0, 0.2) 72%, rgba(0, 0, 0, 0.14) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.24) 0%, rgba(13, 13, 13, 0.08) 54%, rgba(13, 13, 13, 0.76) 100%);
+}
+
 .hm-display-title {
   color: var(--hm-primary);
   font-family: var(--font-hm-serif), "Noto Serif KR", "Songti SC", Georgia, serif;
@@ -297,6 +312,10 @@ button {
     padding-block: 88px;
   }
 
+  .hm-surface {
+    padding-bottom: 82px;
+  }
+
   .hm-page-shell {
     padding: 80px 20px 96px;
   }
@@ -304,15 +323,43 @@ button {
   .hm-page-main {
     padding-block: 80px 96px;
   }
+
+  .hm-hero-overlay {
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  .hm-hero-gradient {
+    background:
+      linear-gradient(90deg, rgba(0, 0, 0, 0.68) 0%, rgba(0, 0, 0, 0.38) 50%, rgba(0, 0, 0, 0.02) 100%),
+      linear-gradient(180deg, rgba(0, 0, 0, 0.06) 0%, rgba(13, 13, 13, 0.02) 44%, rgba(13, 13, 13, 0.72) 100%);
+  }
 }
 
 @media (min-width: 1024px) {
+  .hm-hero-image {
+    filter: none;
+    object-position: 66% center;
+  }
+
   .hm-page-shell {
     padding: 120px 24px;
   }
 
   .hm-page-main {
     padding-block: 120px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1023px) {
+  .hm-hero-image {
+    filter: none;
+    object-position: 70% center;
+  }
+}
+
+@media (max-width: 1279px) {
+  .hm-surface {
+    padding-bottom: 86px;
   }
 }
 

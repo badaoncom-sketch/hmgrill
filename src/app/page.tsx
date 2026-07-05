@@ -173,19 +173,27 @@ export default async function HomePage() {
     <main>
       <section className="relative -mt-20 min-h-screen overflow-hidden bg-[var(--hm-background)] text-white lg:min-h-[860px]">
         <Image
+          src="/images/brand/brand-hero-mobile.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center brightness-[1.1] saturate-[1.05] md:hidden"
+        />
+        <Image
           src="/images/brand/brand-hero-background.png"
           alt=""
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[64%_center] lg:object-[66%_center]"
+          className="hm-hero-image hidden object-cover md:block"
         />
-        <div className="absolute inset-0 bg-[rgba(0,0,0,.38)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,.9)_0%,rgba(0,0,0,.72)_33%,rgba(0,0,0,.2)_62%,rgba(0,0,0,.18)_100%)]" />
+        <div className="hm-hero-overlay absolute inset-0" />
+        <div className="hm-hero-gradient absolute inset-0" />
         <div className="absolute inset-x-0 bottom-0 h-52 bg-[linear-gradient(180deg,transparent,rgba(13,13,13,.82)_72%,#0d0d0d)]" />
         <Container className="relative flex min-h-screen flex-col pb-10 pt-20 lg:min-h-[860px]">
-          <div className="flex flex-1 items-center pt-4">
-            <div className="hm-hero-shadow hm-reveal w-full max-w-[48rem] py-16 lg:w-[54%]">
+          <div className="flex flex-1 items-start pt-24 sm:items-center sm:pt-4">
+            <div className="hm-hero-shadow hm-reveal w-full max-w-[48rem] py-8 sm:py-16 lg:w-[54%]">
               <h1 className="hm-display-title">
                 <span className="hidden whitespace-nowrap xl:block">참나무 장작의 깊은 향,</span>
                 <span className="block xl:hidden">
@@ -209,19 +217,19 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-4 gap-2.5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
             {featureCards.map((item) => {
               const Icon = item.icon;
               return (
                 <div
                   key={item.title}
-                  className="hm-card-hover rounded-[20px] border border-[var(--hm-border)] bg-[rgba(18,18,18,.78)] p-8 text-center shadow-[0_24px_70px_rgba(0,0,0,.3)]"
+                  className="hm-card-hover rounded-[16px] border border-[var(--hm-border)] bg-[rgba(18,18,18,.78)] p-3 text-center shadow-[0_24px_70px_rgba(0,0,0,.3)] sm:rounded-[20px] sm:p-8"
                 >
-                  <Icon className="mx-auto text-[var(--hm-accent-gold)]" size={42} aria-hidden="true" />
-                  <h2 className="hm-card-title mt-6">
+                  <Icon className="mx-auto h-7 w-7 text-[var(--hm-accent-gold)] sm:h-[42px] sm:w-[42px]" aria-hidden="true" />
+                  <h2 className="mt-3 text-[12px] font-bold leading-tight text-[var(--hm-text)] sm:mt-6 sm:text-[var(--hm-type-card-title)] sm:leading-[1.38]">
                     {item.title}
                   </h2>
-                  <p className="hm-caption mt-3 text-white/60">{item.description}</p>
+                  <p className="hm-caption mt-3 hidden text-white/60 sm:block">{item.description}</p>
                 </div>
               );
             })}

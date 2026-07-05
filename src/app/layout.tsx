@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
-import { Menu, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { SiteHeader } from "@/components/site-header";
 import { createClient } from "@/lib/supabase/server";
 import "./globals.css";
 
@@ -33,15 +33,6 @@ export const metadata: Metadata = {
   description: "장작불의 온기로 고기를 연구하는 화목 장작구이",
 };
 
-const navItems = [
-  { href: "/about", label: "화목소개" },
-  { href: "/menu", label: "메뉴" },
-  { href: "/coupons", label: "쿠폰" },
-  { href: "/events", label: "이벤트" },
-  { href: "/notices", label: "공지사항" },
-  { href: "/support", label: "고객센터" },
-];
-
 const socialLinks = [
   { href: "https://www.instagram.com", label: "Instagram", icon: "instagram" },
   { href: "https://www.facebook.com", label: "Facebook", icon: "facebook" },
@@ -62,71 +53,7 @@ export default async function RootLayout({
   return (
     <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable} ${geistMono.variable}`}>
       <body>
-        <header className="fixed inset-x-0 top-0 z-50 h-20 border-b border-[var(--hm-border-soft)] bg-[rgba(13,13,13,.24)] text-[var(--hm-text)] backdrop-blur-md">
-          <div className="hm-container grid h-full grid-cols-[auto_1fr_auto] items-center gap-4">
-            <Link href="/" className="hm-link-focus flex items-center gap-3">
-              <span className="relative block h-[66px] w-[96px]">
-                <Image
-                  src="/images/brand/brand-logo-transparent.png"
-                  alt="화목"
-                  fill
-                  sizes="96px"
-                  className="object-contain drop-shadow-[0_10px_26px_rgba(0,0,0,0.55)]"
-                />
-              </span>
-            </Link>
-            <nav className="hidden min-w-0 items-center justify-center gap-8 text-[13px] font-semibold text-white/82 lg:flex lg:gap-11">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="hm-link-focus shrink-0 rounded-[14px] px-1 py-2 transition hover:text-[var(--hm-primary)]"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-            <div className="flex items-center justify-end gap-2 text-sm font-semibold">
-              {user ? (
-                <Link
-                  href="/mypage"
-                  className="hm-link-focus hidden rounded-[14px] px-3 py-2 text-[var(--hm-text)] transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)] sm:inline-flex"
-                >
-                  마이페이지
-                </Link>
-              ) : (
-                <>
-                  <Link
-                    href="/login"
-                    className="hm-link-focus hidden rounded-[14px] px-3 py-2 text-white/82 transition hover:text-[var(--hm-primary)] sm:inline-flex"
-                  >
-                    로그인
-                  </Link>
-                  <Link
-                    href="/signup"
-                    className="hm-link-focus hidden rounded-[14px] border border-[rgba(247,230,193,.28)] px-4 py-2 text-[var(--hm-primary)] transition hover:border-[var(--hm-primary)] hover:bg-[var(--hm-primary)] hover:text-[var(--hm-background)] sm:inline-flex"
-                  >
-                    회원가입
-                  </Link>
-                </>
-              )}
-              <Link
-                href={user ? "/mypage" : "/login"}
-                className="hm-link-focus grid h-10 w-10 place-items-center rounded-[14px] text-[var(--hm-text)] transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)] sm:hidden"
-                aria-label={user ? "마이페이지" : "로그인"}
-              >
-                <UserRound size={22} aria-hidden="true" />
-              </Link>
-              <Link
-                href="/menu"
-                className="hm-link-focus grid h-10 w-10 place-items-center rounded-[14px] text-[var(--hm-text)] transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)] lg:hidden"
-                aria-label="메뉴 보기"
-              >
-                <Menu size={26} aria-hidden="true" />
-              </Link>
-            </div>
-          </div>
-        </header>
+        <SiteHeader isAuthenticated={Boolean(user)} />
         <div className="hm-surface min-h-screen pt-20">{children}</div>
         <footer className="border-t border-[var(--hm-border-soft)] bg-[var(--hm-background)] text-[#f7e6c1cc]">
           <div className="hm-container grid gap-12 py-20 md:grid-cols-[1.15fr_.8fr_.8fr_.8fr_1.25fr] lg:gap-16">
