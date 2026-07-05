@@ -1,13 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f6f0e6;
+  --background: #faf7f2;
   --foreground: #17130f;
-  --hm-charcoal: #0d0d0d;
-  --hm-stone: #27231e;
-  --hm-ember: #b13a1e;
+  --hm-black: #0d0d0d;
+  --hm-charcoal: #1f1f1f;
+  --hm-dark-brown: #3a2a1f;
+  --hm-wood: #5a3a22;
+  --hm-ember: #b8281e;
   --hm-flame: #e06a2a;
   --hm-gold: #f7e6c1;
+  --hm-ivory: #faf7f2;
   --hm-paper: #f6f0e6;
   --hm-line: rgba(23, 19, 15, 0.12);
 }
@@ -45,14 +48,22 @@ button {
 
 .hm-surface {
   background:
-    radial-gradient(circle at top left, rgba(247, 230, 193, 0.3), transparent 34rem),
-    linear-gradient(180deg, #fffaf1 0%, var(--hm-paper) 100%);
+    radial-gradient(circle at top left, rgba(247, 230, 193, 0.32), transparent 34rem),
+    linear-gradient(180deg, var(--hm-ivory) 0%, var(--hm-paper) 100%);
 }
 
 .hm-dark-surface {
   background:
     linear-gradient(180deg, rgba(13, 13, 13, 0.88), rgba(13, 13, 13, 0.96)),
     var(--hm-charcoal);
+}
+
+.hm-serif {
+  font-family: "Noto Serif KR", "Songti SC", "Apple SD Gothic Neo", Georgia, serif;
+}
+
+.hm-hero-shadow {
+  text-shadow: 0 3px 24px rgba(0, 0, 0, 0.52);
 }
 
 .hm-link-focus {

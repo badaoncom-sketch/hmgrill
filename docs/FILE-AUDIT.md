@@ -29,7 +29,7 @@
 | `src/components/auth/*` | 신규 작성 | 회원가입, 로그인, 인증 메일 재발송 클라이언트 폼을 구성했다. |
 | `src/components/coupon-download-form.tsx` | 신규 작성 | 회원 쿠폰 다운로드 서버 액션 폼을 구성했다. |
 | `src/components/menu-image.tsx` | 신규 작성 | 메뉴 이미지가 있으면 표시하고 없으면 안정적인 플레이스홀더를 표시한다. |
-| `public/images/brand/*` | 신규 추가 | 화목 브랜드 로고, 매장 외관, 불/간판 분위기 이미지를 전역 UI 기준 이미지로 저장한다. |
+| `public/images/brand/*` | 신규 추가 | 화목 브랜드 로고, 매장 외관, 히어로 순수 배경, 디자인 참고 시안 이미지를 전역 UI 기준 이미지로 저장한다. |
 | `src/app/actions/staff.ts` | 신규 작성 | 직원모드 쿠폰 조회와 사용완료 서버 액션을 구성했다. |
 | `src/app/actions/admin-users.ts` | 신규 작성 | 관리자 회원/직원 권한 변경 서버 액션을 구성했다. |
 | `src/app/actions/content.ts` | 신규 작성 | 메뉴, 이벤트, 공지, 문의, 배너, 팝업 운영 서버 액션을 구성했다. |

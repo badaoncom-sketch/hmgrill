@@ -19,25 +19,56 @@
 
 | 파일 | 권장 용도 |
 | --- | --- |
-| `public/images/brand/brand-storefront.png` | 홈 히어로, 매장 첫인상 |
+| `public/images/brand/brand-hero-background.png` | 홈 히어로 전용 순수 배경 이미지 |
+| `public/images/brand/brand-hero-design-reference.png` | 히어로 UI 레이아웃 참고 시안 |
+| `public/images/brand/brand-ui-guideline-reference.png` | 전체 디자인 가이드 참고 시안 |
+| `public/images/brand/brand-storefront.png` | 매장 외관, 보조 브랜드 이미지 |
 | `public/images/brand/brand-fire-wall.png` | 브랜드 소개, 불과 간판의 분위기 |
 | `public/images/brand/brand-sign-collage.jpg` | 로고 응용, 브랜드 시스템 설명 |
 | `public/images/brand/brand-logo-white.jpg` | 헤더 로고, 정사각 썸네일 |
+
+## 히어로 배경 에셋 기준
+
+히어로 이미지는 순수한 `Background Asset`으로 관리한다. 이미지 파일 안에는 아래 요소를 절대 포함하지 않는다.
+
+- 로고
+- 브랜드명
+- 문구
+- 버튼
+- 메뉴
+- 아이콘
+- UI 요소
+- 텍스트
+
+히어로 문구, CTA, 로고, 네비게이션은 모두 실제 HTML/CSS UI 레이어에서 구성한다.
+
+배경 구성 기준:
+
+- 좌측 약 35-40% 영역은 문구와 CTA 버튼이 들어갈 수 있도록 어둡고 비워진 Safe Area로 둔다.
+- 우측에는 참나무 장작불, 숯불, 고기, 불꽃, 은은한 연기를 배치해 장작구이 전문점의 분위기를 만든다.
+- 전체 톤은 블랙, 차콜, 다크 브라운을 기본으로 하고 앰버 조명을 강조한다.
+- 목표 제작 기준은 4K `3840x2160`이다.
+- 현재 적용 파일 `brand-hero-background.png`는 제공 첨부 기준 `1672x941`이므로, 운영 전 4K 최종본이 준비되면 같은 파일명으로 교체한다.
+- 데스크톱, 태블릿, 모바일 모두 `object-fit: cover`로 사용하며 핵심 불/고기 영역이 우측 중심에 남도록 `object-position`을 조정한다.
 
 ## 컬러
 
 | 토큰 | 색상 | 용도 |
 | --- | --- | --- |
-| `charcoal` | `#0D0D0D` | 헤더, 푸터, 히어로 오버레이, 주요 텍스트 |
-| `ember` | `#B13A1E` | 주요 CTA, 상태 강조, 불의 포인트 |
+| `main-black` | `#0D0D0D` | 헤더, 푸터, 히어로 오버레이 |
+| `charcoal` | `#1F1F1F` | 어두운 표면, 보조 패널 |
+| `dark-brown` | `#3A2A1F` | 목재와 매장 무드 |
+| `wood-brown` | `#5A3A22` | 우드 텍스처, 보조 강조 |
+| `ember` | `#B8281E` | 주요 CTA, 상태 강조, 불의 포인트 |
 | `flame` | `#E06A2A` | 보조 강조, 인터랙션 |
 | `warm-gold` | `#F7E6C1` | 로고 조명, 프리미엄 강조 |
-| `paper` | `#F6F0E6` | 섹션 배경, 카드 대비 |
-| `stone` | `#27231E` | 어두운 표면, 운영 화면 보조 배경 |
+| `ivory` | `#FAF7F2` | 밝은 섹션 배경 |
+| `paper` | `#F6F0E6` | 카드 대비, 보조 배경 |
 
 ## 타이포그래피
 
 - 본문은 시스템 산세리프를 유지해 관리 화면과 모바일 가독성을 우선한다.
+- 한글 기본 톤은 `Noto Sans KR` 계열을 우선하고, 히어로 대형 문구는 `Noto Serif KR` 계열의 세리프 감성을 허용한다.
 - 큰 제목은 짧게 쓰고, 브랜드 메시지는 보조 문장으로 풀어쓴다.
 - 버튼과 배지는 굵게, 설명문은 낮은 대비의 중립색으로 정리한다.
 
@@ -51,7 +82,7 @@
 
 ## 페이지 구성
 
-- 홈: 브랜드 히어로, 장작구이 가치, 대표 메뉴, 운영 혜택 순서
+- 홈: 풀스크린 히어로, 장작구이 가치, 대표 메뉴, 운영 혜택 순서
 - 화목소개: 브랜드 철학, 매장 분위기, 로고 응용 이미지
 - 메뉴: 메뉴 이미지 중심 카드와 카테고리 필터형 시각 구조
 - 쿠폰: 브랜드 경험의 보조 혜택으로 톤 다운

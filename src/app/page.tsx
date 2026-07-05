@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowRight, Flame, Leaf, Users } from "lucide-react";
+import { ArrowRight, Flame, Leaf, Utensils, Wind } from "lucide-react";
 import { MenuImage } from "@/components/menu-image";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,19 +17,24 @@ import { formatCurrency } from "@/lib/utils";
 
 const brandValues = [
   {
-    title: "장작구이",
-    description: "불의 세기와 머무는 시간을 조절해 겉은 선명하게, 속은 부드럽게 익힙니다.",
+    title: "참나무 장작",
+    description: "100% 참나무 사용",
     icon: Flame,
   },
   {
     title: "좋은 재료",
-    description: "고기의 결, 채소의 단맛, 곁들임의 균형까지 한 접시의 완성도를 봅니다.",
+    description: "엄선한 신선한 재료",
     icon: Leaf,
   },
   {
-    title: "편안한 공간",
-    description: "따뜻한 조명과 차분한 동선으로 식사에 집중할 수 있는 시간을 만듭니다.",
-    icon: Users,
+    title: "전통 방식",
+    description: "정직한 숙성의 기술",
+    icon: Utensils,
+  },
+  {
+    title: "쾌적한 공간",
+    description: "최적의 연기 시스템",
+    icon: Wind,
   },
 ];
 
@@ -66,6 +71,66 @@ export default async function HomePage() {
 
   return (
     <main>
+      <section className="relative min-h-[calc(100svh-105px)] overflow-hidden bg-[#0d0d0d] text-white md:min-h-[calc(100svh-81px)]">
+        <Image
+          src="/images/brand/brand-hero-background.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[64%_center]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050403f7] via-[#050403b8] to-[#0504031f]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_52%,rgba(224,106,42,0.18),transparent_34rem)]" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0d0d0d] to-transparent" />
+        <div className="relative mx-auto flex min-h-[calc(100svh-105px)] max-w-7xl flex-col justify-end px-4 pb-10 pt-14 sm:px-6 md:min-h-[calc(100svh-81px)] lg:px-8">
+          <div className="hm-hero-shadow w-full max-w-[42rem] lg:w-[39%]">
+            <p className="text-sm font-semibold tracking-[0.18em] text-[#f7e6c1]">
+              참나무 장작구이 전문점
+            </p>
+            <h1 className="hm-serif mt-7 text-4xl font-semibold leading-[1.22] tracking-normal text-[#f7e6c1] sm:text-5xl lg:text-6xl">
+              고기의 맛은
+              <br />
+              불에서 결정된다
+            </h1>
+            <p className="mt-6 max-w-xl text-base leading-8 text-[#faf7f2cc] sm:text-lg">
+              좋은 재료, 참나무 장작, 그리고 정성. 화목은 장작불의 온도와
+              은은한 연기로 깊은 풍미를 완성합니다.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <ButtonLink href="/menu" className="border border-[#b8281e]">
+                대표 메뉴 보기
+                <ArrowRight size={16} aria-hidden="true" />
+              </ButtonLink>
+              <ButtonLink
+                href="/about"
+                variant="outline"
+                className="border-[#f7e6c166] bg-[#0d0d0d4d] text-[#f7e6c1] backdrop-blur hover:border-[#f7e6c1] hover:bg-[#f7e6c114] hover:text-white"
+              >
+                브랜드 소개
+              </ButtonLink>
+            </div>
+          </div>
+          <div className="mt-12 grid overflow-hidden rounded-md border border-[#f7e6c11f] bg-[#0d0d0dcc] shadow-2xl shadow-black/35 backdrop-blur-md sm:grid-cols-2 lg:ml-auto lg:w-[66%] lg:grid-cols-4">
+            {brandValues.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.title}
+                  className="border-b border-[#f7e6c11f] p-5 last:border-b-0 sm:odd:border-r sm:even:border-r-0 lg:border-b-0 lg:border-r lg:last:border-r-0"
+                >
+                  <Icon className="text-[#f7e6c1]" size={30} aria-hidden="true" />
+                  <p className="mt-4 font-semibold text-[#f7e6c1]">{item.title}</p>
+                  <p className="mt-2 text-sm leading-6 text-[#f7e6c199]">
+                    {item.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {activePopup ? (
         <section className="border-b border-[#b13a1e26] bg-[#fff5e6]">
           <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-3 text-sm text-[#5b281a] sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
@@ -81,58 +146,6 @@ export default async function HomePage() {
           </div>
         </section>
       ) : null}
-      <section className="relative min-h-[calc(100svh-74px)] overflow-hidden bg-[#0d0d0d] text-white">
-        <Image
-          src="/images/brand/brand-storefront.png"
-          alt="화목 매장 외관"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover opacity-74"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0d0d0df2] via-[#0d0d0d99] to-[#0d0d0d26]" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0d0d0d] to-transparent" />
-        <div className="relative mx-auto flex min-h-[calc(100svh-74px)] max-w-7xl flex-col justify-end px-4 pb-16 pt-20 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-wide text-[#f7e6c1]">
-              Charcoal Wood Fire Dining
-            </p>
-            <h1 className="mt-5 text-5xl font-bold tracking-normal text-[#f7e6c1] sm:text-6xl lg:text-7xl">
-              화목
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-[#f7e6c1d9] sm:text-xl">
-              고기의 맛은 불에서 결정된다. 화목은 장작불의 온기와 숙성 고기의
-              깊이를 차분한 공간 안에 담아내는 장작구이 전문점입니다.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="/menu">
-                메뉴 보기
-                <ArrowRight size={16} aria-hidden="true" />
-              </ButtonLink>
-              <ButtonLink href="/about" variant="outline">
-                브랜드 소개
-              </ButtonLink>
-            </div>
-          </div>
-          <div className="mt-12 grid gap-3 sm:grid-cols-3">
-            {brandValues.map((item) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={item.title}
-                  className="rounded-md border border-[#f7e6c126] bg-[#0d0d0d99] p-4 backdrop-blur"
-                >
-                  <Icon className="text-[#f7e6c1]" size={22} aria-hidden="true" />
-                  <p className="mt-3 font-semibold text-[#f7e6c1]">{item.title}</p>
-                  <p className="mt-2 text-sm leading-6 text-[#f7e6c1a6]">
-                    {item.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">

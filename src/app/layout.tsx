@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Menu, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import "./globals.css";
@@ -23,7 +24,6 @@ export const metadata: Metadata = {
 };
 
 const navItems = [
-  { href: "/", label: "HOME" },
   { href: "/about", label: "화목소개" },
   { href: "/menu", label: "메뉴" },
   { href: "/coupons", label: "쿠폰" },
@@ -40,19 +40,19 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <header className="sticky top-0 z-40 border-b border-[#f7e6c11f] bg-[#0d0d0df2] text-[#f7e6c1] backdrop-blur">
-          <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+        <header className="sticky top-0 z-40 border-b border-[#f7e6c11a] bg-[#070604e6] text-[#faf7f2] backdrop-blur-xl">
+          <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
             <Link href="/" className="hm-link-focus flex items-center gap-3">
-              <span className="relative grid h-11 w-11 overflow-hidden rounded-md border border-[#f7e6c133] bg-[#f7e6c1]">
+              <span className="relative grid h-12 w-12 overflow-hidden rounded-full border border-[#f7e6c133] bg-[#0d0d0d] shadow-lg shadow-black/30 sm:h-14 sm:w-14">
                 <Image
                   src="/images/brand/brand-logo-white.jpg"
                   alt="화목"
                   fill
-                  sizes="44px"
+                  sizes="56px"
                   className="object-cover"
                 />
               </span>
-              <span>
+              <span className="hidden sm:block">
                 <span className="block text-lg font-semibold text-[#f7e6c1]">
                   화목
                 </span>
@@ -61,23 +61,33 @@ export default function RootLayout({
                 </span>
               </span>
             </Link>
-            <nav className="flex items-center gap-1 overflow-x-auto pb-1 text-sm text-[#f7e6c1cc] lg:flex-wrap lg:overflow-visible lg:pb-0">
+            <nav className="col-span-3 row-start-2 flex items-center gap-4 overflow-x-auto border-t border-[#f7e6c114] pt-2 text-xs font-medium text-[#faf7f2cc] md:col-auto md:row-auto md:justify-center md:gap-7 md:overflow-visible md:border-0 md:pt-0 md:text-sm lg:gap-10">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="hm-link-focus shrink-0 rounded-md px-3 py-2 transition hover:bg-[#f7e6c11a] hover:text-white"
+                  className="hm-link-focus shrink-0 rounded-md px-1 py-2 transition hover:text-[#f7e6c1]"
                 >
                   {item.label}
                 </Link>
               ))}
+            </nav>
+            <div className="flex items-center justify-end gap-2">
               <Link
                 href="/login"
-                className="hm-link-focus shrink-0 rounded-md border border-[#f7e6c14d] px-3 py-2 text-[#f7e6c1] transition hover:border-[#f7e6c1] hover:bg-[#f7e6c114]"
+                className="hm-link-focus grid h-10 w-10 place-items-center rounded-md text-[#faf7f2] transition hover:bg-[#f7e6c114] hover:text-[#f7e6c1]"
+                aria-label="로그인"
               >
-                로그인
+                <UserRound size={22} aria-hidden="true" />
               </Link>
-            </nav>
+              <Link
+                href="/menu"
+                className="hm-link-focus grid h-10 w-10 place-items-center rounded-md text-[#faf7f2] transition hover:bg-[#f7e6c114] hover:text-[#f7e6c1]"
+                aria-label="메뉴 보기"
+              >
+                <Menu size={26} aria-hidden="true" />
+              </Link>
+            </div>
           </div>
         </header>
         <div className="hm-surface min-h-screen">{children}</div>
