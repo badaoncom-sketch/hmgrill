@@ -31,14 +31,15 @@
 - 메뉴 이미지 10장을 모두 사용하는 추천 메뉴명, 설명, 가격 데이터 반영
 - 화목 브랜드 이미지 `public/images/brand/` 정적 자산 반영
 - 브랜드 UI 가이드 `docs/BRAND-UI-GUIDE.md` 작성
-- 공개 홈 랜딩을 쿠폰 중심에서 장작구이 전문점 브랜드 중심으로 재구성
+- 공개 홈 랜딩을 쿠폰 중심에서 장작구이 브랜드 중심으로 재구성
 - 헤더, 푸터, 버튼, 카드, 배지, 입력 필드의 전역 브랜드 톤 정리
 - 홈, 소개, 메뉴, 쿠폰, 이벤트, 공지, 고객센터, 회원, 직원 주요 화면의 문구와 색상 체계 정리
 - 새 첨부 기준 히어로 순수 배경 에셋 `public/images/brand/brand-hero-background.png` 반영
 - 새 첨부 기준 투명 로고 에셋 `public/images/brand/brand-logo-transparent.png` 반영
-- 히어로 배경 금지 요소, 좌측 Safe Area, 4K 교체 기준을 브랜드 UI 가이드에 추가
-- 홈 히어로를 시안 기준의 좌측 카피/CTA, 우측 장작불 배경, 하단 가치 패널 구조로 재개선
-- 전역 헤더를 로고, 중앙 네비게이션, 로그인/메뉴 아이콘 중심의 다크 글래스 톤으로 개선
+- 히어로 배경 금지 요소, 좌측 Safe Area, 4K 교체 기준, Reference 복제 금지 원칙을 브랜드 UI 가이드에 추가
+- Home과 주요 화면을 새 Design Token, 공통 Button/Card/Input/Badge 기준의 다크 럭셔리 시스템으로 재정리
+- 전역 헤더를 로고, 중앙 네비게이션, 로그인/메뉴 아이콘 중심의 절제된 다크 럭셔리 톤으로 개선
+- 프로젝트 전체 금지어 점검과 문구 정리 완료
 - 임시 운영 콘텐츠를 생성, 수정, 검증, 정리하는 E2E 스크립트 준비
 - Resend 발신 도메인 점검 스크립트 준비
 - Vercel 배포 준비 점검 스크립트와 배포 점검표 준비
@@ -78,6 +79,10 @@
 - 브랜드 UI 개선 후 라우트 응답 확인: `/`, `/about`, `/menu`, `/coupons`, `/events`, `/notices`, `/support`, `/signup`, `/login` 모두 `200 OK`
 - 브랜드 UI 개선 후 보호 라우트 응답 확인: `/mypage`, `/staff`, `/admin` 모두 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - 브라우저 플러그인 캡처 검증: 현재 실행 환경에서 `iab` 브라우저를 사용할 수 없어 미수행
+- 다크 럭셔리 디자인 시스템 재정의 후 `npm run lint`, `npm run build`, `npm run db:push:dry-run`, `npm run test:e2e:content`, `npm run test:e2e:coupon` 재통과
+- 다크 럭셔리 디자인 시스템 재정의 후 금지 문구 저장소 전체 검색 결과 없음
+- 다크 럭셔리 디자인 시스템 재정의 후 라우트 응답 확인: `/`, `/about`, `/menu`, `/coupons`, `/events`, `/notices`, `/support`, `/signup`, `/login` 모두 `200 OK`
+- 다크 럭셔리 디자인 시스템 재정의 후 보호 라우트 응답 확인: `/mypage`, `/staff`, `/admin`, `/admin/coupons` 모두 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - `npm audit --audit-level=moderate`: Next.js 내부 PostCSS moderate 2건 유지. 강제 수정 제안은 Next.js 9 다운그레이드라 미적용
 - 로컬 서버: `http://localhost:3000`
 - 공개 라우트 응답 확인: `/`, `/menu`, `/events`, `/notices`, `/support`, `/coupons`, `/signup`, `/login` 모두 `200 OK`

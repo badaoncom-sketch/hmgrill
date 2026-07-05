@@ -28,10 +28,10 @@ export default async function VerifyEmailPage({
             size={32}
             aria-hidden="true"
           />
-          <h2 className="mt-4 text-xl font-bold text-[#17130f]">
+          <h2 className="mt-4 text-xl font-bold text-[var(--hm-text)]">
             {result.ok ? "인증 완료" : "인증 실패"}
           </h2>
-          <p className="mt-3 text-sm leading-6 text-[#5f554a]">
+          <p className="mt-3 text-sm leading-6 text-[var(--hm-subtext)]">
             {result.message}
           </p>
           <ButtonLink href="/login" className="mt-5">

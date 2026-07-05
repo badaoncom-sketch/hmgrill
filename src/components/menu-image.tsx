@@ -12,14 +12,14 @@ export function MenuImage({
 }) {
   if (!src) {
     return (
-      <div className="grid aspect-[3/2] place-items-center rounded-md bg-[#17130f0a] text-[#8a7c6d]">
+      <div className="grid aspect-[3/2] place-items-center rounded-[24px] bg-[var(--hm-surface)] text-[var(--hm-subtext)]">
         <Utensils size={28} aria-hidden="true" />
       </div>
     );
   }
 
   return (
-    <div className="relative aspect-[3/2] overflow-hidden rounded-md bg-[#17130f0a]">
+    <div className="relative aspect-[3/2] overflow-hidden rounded-[24px] bg-[var(--hm-surface)]">
       <Image
         src={src}
         alt={alt}

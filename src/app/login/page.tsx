@@ -14,15 +14,15 @@ export default function LoginPage() {
       <Card>
         <CardContent>
           <LoginForm />
-          <div className="mt-4 flex justify-between text-sm text-[#5f554a]">
-            <Link href="/signup" className="hm-link-focus rounded-sm hover:text-[#17130f]">
+          <div className="mt-4 flex justify-between text-sm text-[var(--hm-subtext)]">
+            <Link href="/signup" className="hm-link-focus rounded-sm hover:text-[var(--hm-text)]">
               회원가입
             </Link>
-            <Link href="/mypage" className="hm-link-focus rounded-sm hover:text-[#17130f]">
+            <Link href="/mypage" className="hm-link-focus rounded-sm hover:text-[var(--hm-text)]">
               마이페이지
             </Link>
           </div>
-          <div className="mt-6 border-t border-[#17130f14] pt-6">
+          <div className="mt-6 border-t border-[var(--hm-divider)] pt-6">
             <ResendVerificationForm />
           </div>
         </CardContent>

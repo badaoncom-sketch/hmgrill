@@ -24,8 +24,8 @@ export default async function SupportPage({
           {faqs.map((item) => (
             <Card key={item.question}>
               <CardContent>
-                <h2 className="font-bold text-[#17130f]">{item.question}</h2>
-                <p className="mt-2 text-sm leading-6 text-[#5f554a]">
+                <h2 className="font-bold text-[var(--hm-text)]">{item.question}</h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--hm-subtext)]">
                   {item.answer}
                 </p>
               </CardContent>
@@ -35,7 +35,7 @@ export default async function SupportPage({
         <Card>
           <CardContent>
             {sent === "1" ? (
-              <div className="mb-4 rounded-md bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
+              <div className="mb-4 rounded-[14px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-4 text-sm font-semibold text-[var(--hm-primary)]">
                 문의가 접수되었습니다.
               </div>
             ) : null}

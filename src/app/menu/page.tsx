@@ -18,7 +18,7 @@ export default async function MenuPage() {
   const menuItems = (rows ?? []).map(mapMenuItem);
 
   return (
-    <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
+    <main className="hm-container grid gap-8 py-[120px]">
       <SectionHeading
         eyebrow="MENU"
         title="메뉴"
@@ -33,18 +33,18 @@ export default async function MenuPage() {
         {menuItems.map((item) => (
           <Card
             key={item.id}
-            className="group overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/10"
+            className="group overflow-hidden hover:-translate-y-0.5"
           >
             <CardContent className="grid gap-4">
               <MenuImage src={item.imageUrl} alt={item.name} />
               <Badge tone={item.featured ? "red" : "neutral"}>
                 {item.category}
               </Badge>
-              <h2 className="text-xl font-bold text-[#17130f]">{item.name}</h2>
-              <p className="text-sm leading-6 text-[#5f554a]">
+              <h2 className="text-xl font-bold text-[var(--hm-text)]">{item.name}</h2>
+              <p className="text-sm leading-6 text-[var(--hm-subtext)]">
                 {item.description}
               </p>
-              <p className="text-lg font-bold text-[#17130f]">
+              <p className="text-lg font-bold text-[var(--hm-text)]">
                 {formatCurrency(item.price)}
               </p>
             </CardContent>
@@ -53,7 +53,7 @@ export default async function MenuPage() {
         {menuItems.length === 0 ? (
           <Card>
             <CardContent>
-              <p className="text-sm font-semibold text-[#5f554a]">
+              <p className="text-sm font-semibold text-[var(--hm-subtext)]">
                 등록된 메뉴가 없습니다.
               </p>
             </CardContent>

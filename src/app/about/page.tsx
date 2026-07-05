@@ -23,21 +23,21 @@ const values = [
 export default function AboutPage() {
   return (
     <main>
-      <section className="relative overflow-hidden bg-[#0d0d0d] text-[#f7e6c1]">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:px-8">
+      <section className="relative overflow-hidden bg-[var(--hm-background)] text-[var(--hm-primary)]">
+        <div className="hm-container grid gap-8 py-[120px] lg:grid-cols-[0.85fr_1.15fr]">
           <div className="flex flex-col justify-center">
-            <p className="text-sm font-semibold uppercase tracking-wide text-[#e9b66e]">
+            <p className="text-sm font-semibold uppercase tracking-wide text-[var(--hm-accent-gold)]">
               ABOUT
             </p>
-            <h1 className="mt-3 text-3xl font-bold tracking-normal text-[#f7e6c1] sm:text-4xl">
+            <h1 className="hm-serif mt-4 text-3xl font-bold tracking-normal text-[var(--hm-text)] sm:text-4xl">
               화목소개
             </h1>
-            <p className="mt-4 text-base leading-7 text-[#f7e6c1b3]">
+            <p className="mt-4 text-base leading-7 text-[var(--hm-subtext)]">
               화목은 장작불의 온기, 숙성 고기의 밀도, 조용한 식사 공간을
               하나의 브랜드 경험으로 설계합니다.
             </p>
           </div>
-          <div className="relative min-h-72 overflow-hidden rounded-md border border-[#f7e6c126]">
+          <div className="relative min-h-72 overflow-hidden rounded-[24px] border border-[var(--hm-border)]">
             <Image
               src="/images/brand/brand-fire-wall.png"
               alt="화목 브랜드 월"
@@ -50,18 +50,18 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:px-8">
+      <section className="hm-container grid gap-8 py-[120px]">
         <div className="grid gap-5 md:grid-cols-3">
           {values.map((item) => {
             const Icon = item.icon;
             return (
               <Card key={item.title}>
                 <CardContent>
-                  <Icon className="text-[#B13A1E]" size={28} aria-hidden="true" />
-                  <h2 className="mt-4 text-xl font-bold text-[#17130f]">
+                  <Icon className="text-[var(--hm-accent-gold)]" size={28} aria-hidden="true" />
+                  <h2 className="mt-4 text-xl font-bold text-[var(--hm-text)]">
                     {item.title}
                   </h2>
-                  <p className="mt-3 text-sm leading-6 text-[#5f554a]">
+                  <p className="mt-3 text-sm leading-6 text-[var(--hm-subtext)]">
                     {item.description}
                   </p>
                 </CardContent>
@@ -70,7 +70,7 @@ export default function AboutPage() {
           })}
         </div>
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="relative min-h-80 overflow-hidden rounded-md">
+          <div className="relative min-h-80 overflow-hidden rounded-[24px]">
             <Image
               src="/images/brand/brand-sign-collage.jpg"
               alt="화목 로고 응용"
@@ -81,9 +81,9 @@ export default function AboutPage() {
           </div>
           <Card>
             <CardContent className="grid content-center gap-5">
-              <MapPin className="text-[#B13A1E]" size={28} aria-hidden="true" />
-              <h2 className="text-2xl font-bold text-[#17130f]">오시는 길</h2>
-              <p className="leading-7 text-[#5f554a]">
+              <MapPin className="text-[var(--hm-accent-gold)]" size={28} aria-hidden="true" />
+              <h2 className="text-2xl font-bold text-[var(--hm-text)]">오시는 길</h2>
+              <p className="leading-7 text-[var(--hm-subtext)]">
                 실제 매장 주소와 지도 연동은 운영 정보 확정 후 연결합니다.
                 그 전까지는 브랜드와 메뉴 중심의 탐색 흐름을 우선 제공합니다.
               </p>

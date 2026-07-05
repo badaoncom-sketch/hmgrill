@@ -7,11 +7,11 @@ type ButtonProps = ComponentPropsWithoutRef<"button"> & {
 };
 
 const variants = {
-  primary: "bg-[#B13A1E] text-white shadow-sm shadow-[#B13A1E]/20 hover:bg-[#8f2e18]",
-  secondary: "bg-[#17130f] text-[#F7E6C1] hover:bg-[#27231E]",
-  outline: "border border-[#17130f33] bg-white/80 text-[#17130f] hover:border-[#17130f] hover:bg-white",
-  ghost: "text-[#5f554a] hover:bg-[#17130f0d] hover:text-[#17130f]",
-  danger: "bg-[#6f1f14] text-white hover:bg-[#54160f]",
+  primary: "bg-[var(--hm-primary)] text-[var(--hm-background)] hover:bg-[var(--hm-accent-gold)] hover:text-white",
+  secondary: "bg-[var(--hm-card)] text-[var(--hm-primary)] hover:bg-[var(--hm-surface)]",
+  outline: "border border-[var(--hm-primary)] bg-transparent text-[var(--hm-primary)] hover:bg-[var(--hm-accent-gold)] hover:text-white",
+  ghost: "text-[var(--hm-subtext)] hover:bg-white/[0.04] hover:text-[var(--hm-primary)]",
+  danger: "bg-[var(--hm-accent-red)] text-white hover:bg-[#9f2f25]",
 };
 
 export function Button({
@@ -23,7 +23,7 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50",
+        "inline-flex min-h-11 items-center justify-center gap-2 rounded-[14px] px-5 py-2.5 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-50",
         variants[variant],
         className,
       )}
@@ -46,7 +46,7 @@ export function ButtonLink({
   return (
     <Link
       className={cn(
-        "inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition",
+        "inline-flex min-h-11 items-center justify-center gap-2 rounded-[14px] px-5 py-2.5 text-sm font-semibold transition duration-200",
         variants[variant],
         className,
       )}

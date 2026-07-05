@@ -1,18 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #faf7f2;
-  --foreground: #17130f;
-  --hm-black: #0d0d0d;
-  --hm-charcoal: #1f1f1f;
-  --hm-dark-brown: #3a2a1f;
-  --hm-wood: #5a3a22;
-  --hm-ember: #b8281e;
-  --hm-flame: #e06a2a;
-  --hm-gold: #f7e6c1;
-  --hm-ivory: #faf7f2;
-  --hm-paper: #f6f0e6;
-  --hm-line: rgba(23, 19, 15, 0.12);
+  --background: #0d0d0d;
+  --foreground: #ffffff;
+  --hm-background: #0d0d0d;
+  --hm-surface: #1a1a1a;
+  --hm-card: #232323;
+  --hm-primary: #f7e6c1;
+  --hm-accent-gold: #b8821e;
+  --hm-accent-red: #c63b2d;
+  --hm-text: #ffffff;
+  --hm-subtext: #bdbdbd;
+  --hm-border: rgba(255, 255, 255, 0.08);
+  --hm-divider: rgba(255, 255, 255, 0.05);
+  --hm-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  --hm-radius-card: 20px;
+  --hm-radius-button: 14px;
+  --hm-radius-input: 12px;
+  --hm-radius-image: 24px;
 }
 
 @theme inline {
@@ -25,7 +30,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", var(--font-geist-sans), Arial, Helvetica, sans-serif;
   text-rendering: optimizeLegibility;
 }
 
@@ -37,8 +42,8 @@ textarea {
 }
 
 ::selection {
-  background: var(--hm-ember);
-  color: #ffffff;
+  background: var(--hm-primary);
+  color: var(--hm-background);
 }
 
 a,
@@ -47,23 +52,44 @@ button {
 }
 
 .hm-surface {
-  background:
-    radial-gradient(circle at top left, rgba(247, 230, 193, 0.32), transparent 34rem),
-    linear-gradient(180deg, var(--hm-ivory) 0%, var(--hm-paper) 100%);
+  background: var(--hm-background);
 }
 
 .hm-dark-surface {
-  background:
-    linear-gradient(180deg, rgba(13, 13, 13, 0.88), rgba(13, 13, 13, 0.96)),
-    var(--hm-charcoal);
+  background: var(--hm-surface);
 }
 
 .hm-serif {
-  font-family: "Noto Serif KR", "Songti SC", "Apple SD Gothic Neo", Georgia, serif;
+  font-family: "Noto Serif KR", "Songti SC", Georgia, serif;
 }
 
 .hm-hero-shadow {
-  text-shadow: 0 3px 24px rgba(0, 0, 0, 0.52);
+  text-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.hm-container {
+  margin-inline: auto;
+  max-width: 1440px;
+  padding-inline: 24px;
+}
+
+.hm-content {
+  margin-inline: auto;
+  max-width: 1200px;
+}
+
+.hm-section {
+  padding-block: 120px;
+}
+
+@media (max-width: 640px) {
+  .hm-container {
+    padding-inline: 20px;
+  }
+
+  .hm-section {
+    padding-block: 72px;
+  }
 }
 
 .hm-link-focus {
@@ -72,5 +98,42 @@ button {
 }
 
 .hm-link-focus:focus-visible {
-  outline-color: var(--hm-flame);
+  outline-color: var(--hm-primary);
+}
+
+/* Legacy utility compatibility while pages are consolidated onto the design system. */
+.text-neutral-950,
+.text-neutral-900,
+.text-neutral-800 {
+  color: var(--hm-text) !important;
+}
+
+.text-neutral-700,
+.text-neutral-600,
+.text-neutral-500,
+.text-neutral-400 {
+  color: var(--hm-subtext) !important;
+}
+
+.text-red-700 {
+  color: var(--hm-accent-red) !important;
+}
+
+.bg-white,
+.bg-white\/90 {
+  background-color: var(--hm-card) !important;
+}
+
+.bg-neutral-50,
+.bg-neutral-100,
+.bg-red-50,
+.bg-emerald-50 {
+  background-color: var(--hm-surface) !important;
+}
+
+.border-neutral-100,
+.border-neutral-200,
+.border-neutral-300,
+.border-red-200 {
+  border-color: var(--hm-border) !important;
 }

@@ -54,7 +54,7 @@ export default async function CouponsPage() {
           />
         ))}
         {couponIssues.length === 0 ? (
-          <p className="text-sm text-[#8a7c6d]">현재 제공 중인 혜택이 없습니다.</p>
+          <p className="text-sm text-[var(--hm-subtext)]">현재 제공 중인 혜택이 없습니다.</p>
         ) : null}
       </div>
     </main>

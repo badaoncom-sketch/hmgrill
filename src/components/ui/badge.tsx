@@ -6,17 +6,17 @@ type BadgeProps = ComponentPropsWithoutRef<"span"> & {
 };
 
 const tones = {
-  neutral: "bg-[#17130f0d] text-[#5f554a]",
-  green: "bg-emerald-100 text-emerald-800",
-  red: "bg-[#B13A1E1a] text-[#8f2e18]",
-  amber: "bg-[#F7E6C1] text-[#6d4b13]",
+  neutral: "border-[var(--hm-border)] bg-white/[0.04] text-[var(--hm-subtext)]",
+  green: "border-emerald-400/20 bg-emerald-400/10 text-emerald-200",
+  red: "border-[var(--hm-accent-red)]/30 bg-[var(--hm-accent-red)]/12 text-[#f0a39b]",
+  amber: "border-[var(--hm-primary)]/35 bg-[var(--hm-primary)]/10 text-[var(--hm-primary)]",
 };
 
 export function Badge({ className, tone = "neutral", ...props }: BadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold",
+        "inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold",
         tones[tone],
         className,
       )}

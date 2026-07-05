@@ -9,7 +9,7 @@ export function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="grid gap-2 text-sm font-medium text-[#17130f]">
+    <label className="grid gap-2 text-sm font-medium text-[var(--hm-text)]">
       {label}
       {children}
     </label>
@@ -23,7 +23,7 @@ export function Input({
   return (
     <input
       className={cn(
-        "min-h-11 rounded-md border border-[#17130f33] bg-white px-3 py-2 text-sm outline-none transition placeholder:text-[#8a7c6d] focus:border-[#B13A1E] focus:ring-2 focus:ring-[#B13A1E1f]",
+        "min-h-11 rounded-[12px] border border-[var(--hm-border)] bg-[var(--hm-surface)] px-3 py-2 text-sm text-[var(--hm-text)] outline-none transition placeholder:text-[var(--hm-subtext)] focus:border-[var(--hm-primary)] focus:ring-2 focus:ring-[rgba(247,230,193,.18)]",
         className,
       )}
       {...props}
@@ -38,7 +38,7 @@ export function Textarea({
   return (
     <textarea
       className={cn(
-        "min-h-28 rounded-md border border-[#17130f33] bg-white px-3 py-2 text-sm outline-none transition placeholder:text-[#8a7c6d] focus:border-[#B13A1E] focus:ring-2 focus:ring-[#B13A1E1f]",
+        "min-h-28 rounded-[12px] border border-[var(--hm-border)] bg-[var(--hm-surface)] px-3 py-2 text-sm text-[var(--hm-text)] outline-none transition placeholder:text-[var(--hm-subtext)] focus:border-[var(--hm-primary)] focus:ring-2 focus:ring-[rgba(247,230,193,.18)]",
         className,
       )}
       {...props}
@@ -53,7 +53,7 @@ export function Select({
   return (
     <select
       className={cn(
-        "min-h-11 rounded-md border border-[#17130f33] bg-white px-3 py-2 text-sm outline-none transition focus:border-[#B13A1E] focus:ring-2 focus:ring-[#B13A1E1f]",
+        "min-h-11 rounded-[12px] border border-[var(--hm-border)] bg-[var(--hm-surface)] px-3 py-2 text-sm text-[var(--hm-text)] outline-none transition focus:border-[var(--hm-primary)] focus:ring-2 focus:ring-[rgba(247,230,193,.18)]",
         className,
       )}
       {...props}

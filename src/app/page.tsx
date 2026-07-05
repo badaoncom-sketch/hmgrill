@@ -71,7 +71,7 @@ export default async function HomePage() {
 
   return (
     <main>
-      <section className="relative -mt-[105px] min-h-screen overflow-hidden bg-[#0d0d0d] text-white md:-mt-[81px]">
+      <section className="relative -mt-[105px] min-h-screen overflow-hidden bg-[var(--hm-background)] text-white md:-mt-[81px]">
         <Image
           src="/images/brand/brand-hero-background.png"
           alt=""
@@ -80,27 +80,26 @@ export default async function HomePage() {
           sizes="100vw"
           className="object-cover object-[63%_center]"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050403f2] via-[#0504039f] to-[#05040312]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_52%,rgba(224,106,42,0.15),transparent_32rem)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050403f2] via-[#050403a8] to-[#0504031a]" />
         <div className="absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-[#0d0d0d] via-[#0d0d0d99] to-transparent" />
         <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col justify-end px-4 pb-8 pt-[132px] sm:px-6 md:pt-[112px] lg:px-8">
           <div className="hm-hero-shadow w-full max-w-[41rem] lg:w-[38%]">
             <div className="relative h-48 w-72 sm:h-56 sm:w-80 lg:h-64 lg:w-[24rem]">
               <Image
                 src="/images/brand/brand-logo-transparent.png"
-                alt="화목 참나무 장작구이 전문점"
+                alt="화목 참나무 장작구이"
                 fill
                 priority
                 sizes="(min-width: 1024px) 384px, 320px"
                 className="object-contain object-left drop-shadow-[0_18px_42px_rgba(0,0,0,0.65)]"
               />
             </div>
-            <h1 className="hm-serif mt-5 text-4xl font-semibold leading-[1.22] tracking-normal text-[#f7e6c1] sm:text-5xl lg:text-[3.55rem]">
+            <h1 className="hm-serif mt-5 text-4xl font-semibold leading-[1.22] tracking-normal text-[var(--hm-primary)] sm:text-5xl lg:text-[3.55rem]">
               고기의 맛은
               <br />
               불에서 결정된다
             </h1>
-            <p className="mt-6 max-w-md text-base leading-8 text-[#faf7f2d9] sm:text-lg">
+            <p className="mt-6 max-w-md text-base leading-8 text-[var(--hm-subtext)] sm:text-lg">
               좋은 재료, 참나무 장작, 그리고 정성. 화목은 장작불의 온도와
               은은한 연기로 깊은 풍미를 완성합니다.
             </p>
@@ -112,23 +111,23 @@ export default async function HomePage() {
               <ButtonLink
                 href="/about"
                 variant="outline"
-                className="border-[#f7e6c166] bg-[#0d0d0d4d] text-[#f7e6c1] backdrop-blur hover:border-[#f7e6c1] hover:bg-[#f7e6c114] hover:text-white"
+                className="border-[var(--hm-primary)] text-[var(--hm-primary)] hover:border-[var(--hm-accent-gold)] hover:bg-[var(--hm-accent-gold)] hover:text-white"
               >
                 브랜드 소개
               </ButtonLink>
             </div>
           </div>
-          <div className="mt-10 grid overflow-hidden rounded-md border border-[#f7e6c11f] bg-[#120d08d9] shadow-2xl shadow-black/35 backdrop-blur-md sm:grid-cols-2 lg:ml-auto lg:w-[52rem] lg:grid-cols-4">
+          <div className="mt-10 grid overflow-hidden rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-card)] shadow-[var(--hm-shadow)] sm:grid-cols-2 lg:ml-auto lg:w-[52rem] lg:grid-cols-4">
             {brandValues.map((item) => {
               const Icon = item.icon;
               return (
                 <div
                   key={item.title}
-                  className="border-b border-[#f7e6c11f] p-5 last:border-b-0 sm:odd:border-r sm:even:border-r-0 lg:border-b-0 lg:border-r lg:last:border-r-0"
+                  className="border-b border-[var(--hm-border)] p-5 last:border-b-0 sm:odd:border-r sm:even:border-r-0 lg:border-b-0 lg:border-r lg:last:border-r-0"
                 >
-                  <Icon className="text-[#f7e6c1]" size={30} aria-hidden="true" />
-                  <p className="mt-4 font-semibold text-[#f7e6c1]">{item.title}</p>
-                  <p className="mt-2 text-sm leading-6 text-[#f7e6c199]">
+                  <Icon className="text-[var(--hm-primary)]" size={30} aria-hidden="true" />
+                  <p className="mt-4 font-semibold text-[var(--hm-primary)]">{item.title}</p>
+                  <p className="mt-2 text-sm leading-6 text-[var(--hm-subtext)]">
                     {item.description}
                   </p>
                 </div>
@@ -139,11 +138,11 @@ export default async function HomePage() {
       </section>
 
       {activePopup ? (
-        <section className="border-b border-[#b13a1e26] bg-[#fff5e6]">
-          <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-3 text-sm text-[#5b281a] sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <section className="border-y border-[var(--hm-border)] bg-[var(--hm-surface)]">
+          <div className="hm-container flex flex-col gap-2 py-4 text-sm text-[var(--hm-subtext)] sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="font-bold">{activePopup.title}</p>
-              <p className="mt-1 text-[#7a4b33]">{activePopup.body}</p>
+              <p className="font-bold text-[var(--hm-text)]">{activePopup.title}</p>
+              <p className="mt-1">{activePopup.body}</p>
             </div>
             {activePopup.href ? (
               <ButtonLink href={activePopup.href} variant="outline">
@@ -154,13 +153,13 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <section className="hm-container py-[120px]">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-[#B13A1E]">
+            <p className="text-sm font-semibold uppercase tracking-wide text-[var(--hm-accent-gold)]">
               MENU
             </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-normal text-[#17130f]">
+            <h2 className="mt-2 text-3xl font-bold tracking-normal text-[var(--hm-text)]">
               불맛을 중심에 둔 대표 메뉴
             </h2>
           </div>
@@ -174,14 +173,14 @@ export default async function HomePage() {
             <Card key={item.id}>
               <CardContent className="grid gap-4">
                 <MenuImage src={item.imageUrl} alt={item.name} />
-                <p className="text-sm font-semibold text-[#B13A1E]">
+                <p className="text-sm font-semibold text-[var(--hm-accent-gold)]">
                   {item.category}
                 </p>
-                <h3 className="text-xl font-bold text-[#17130f]">{item.name}</h3>
-                <p className="text-sm leading-6 text-[#5f554a]">
+                <h3 className="text-xl font-bold text-[var(--hm-text)]">{item.name}</h3>
+                <p className="text-sm leading-6 text-[var(--hm-subtext)]">
                   {item.description}
                 </p>
-                <p className="font-semibold text-[#17130f]">
+                <p className="font-semibold text-[var(--hm-text)]">
                   {formatCurrency(item.price)}
                 </p>
               </CardContent>
@@ -190,7 +189,7 @@ export default async function HomePage() {
           {featuredMenu.length === 0 ? (
             <Card>
               <CardContent>
-                <p className="text-sm font-semibold text-[#5f554a]">
+                <p className="text-sm font-semibold text-[var(--hm-subtext)]">
                   대표 메뉴가 준비 중입니다.
                 </p>
               </CardContent>
@@ -198,30 +197,30 @@ export default async function HomePage() {
           ) : null}
         </div>
       </section>
-      <section className="bg-[#17130f] text-[#f7e6c1]">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+      <section className="border-t border-[var(--hm-border)] bg-[var(--hm-surface)] text-[var(--hm-primary)]">
+        <div className="hm-container grid gap-8 py-[120px] lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-[#e9b66e]">
+            <p className="text-sm font-semibold uppercase tracking-wide text-[var(--hm-accent-gold)]">
               Brand Experience
             </p>
             <h2 className="mt-3 text-3xl font-bold tracking-normal">
               화목은 불을 연구합니다
             </h2>
-            <p className="mt-4 leading-7 text-[#f7e6c1b3]">
+            <p className="mt-4 leading-7 text-[var(--hm-subtext)]">
               장작불의 빛, 검은 간판, 금빛 로고, 따뜻한 실내 조명은 하나의
               경험으로 이어집니다. 쿠폰은 방문 혜택으로 조용히 돕고, 첫인상은
-              전문점의 깊이로 남깁니다.
+              브랜드의 깊이로 남깁니다.
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {banners.map((banner) => (
               <div
                 key={banner.id}
-                className="rounded-md border border-[#f7e6c126] bg-[#f7e6c10f] p-5"
+                className="rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-card)] p-6"
               >
-                <p className="text-sm font-semibold text-[#e9b66e]">소식</p>
+                <p className="text-sm font-semibold text-[var(--hm-accent-gold)]">소식</p>
                 <h3 className="mt-2 text-xl font-bold">{banner.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-[#f7e6c1a6]">
+                <p className="mt-2 text-sm leading-6 text-[var(--hm-subtext)]">
                   {banner.body}
                 </p>
                 {banner.href ? (
@@ -233,13 +232,13 @@ export default async function HomePage() {
               </div>
             ))}
             {activeCoupon ? (
-              <div className="rounded-md border border-[#f7e6c126] bg-[#f7e6c10f] p-5">
-                <p className="text-sm font-semibold text-[#e9b66e]">방문 혜택</p>
+              <div className="rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-card)] p-6">
+                <p className="text-sm font-semibold text-[var(--hm-accent-gold)]">방문 혜택</p>
                 <h3 className="mt-2 text-xl font-bold">{activeCoupon.name}</h3>
                 <p className="mt-2 text-2xl font-bold text-white">
                   {formatCurrency(activeCoupon.amount)}
                 </p>
-                <p className="mt-3 text-sm text-[#f7e6c1a6]">
+                <p className="mt-3 text-sm text-[var(--hm-subtext)]">
                   다운로드 후 {activeCoupon.validityDays}일 사용 가능
                 </p>
               </div>

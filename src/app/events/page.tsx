@@ -24,10 +24,10 @@ export default async function EventsPage() {
         {events.map((event) => (
           <Card key={event.id}>
             <CardContent>
-              <h2 className="text-xl font-bold text-[#17130f]">
+              <h2 className="text-xl font-bold text-[var(--hm-text)]">
                 {event.title}
               </h2>
-              <p className="mt-3 whitespace-pre-line text-sm leading-6 text-[#5f554a]">
+              <p className="mt-3 whitespace-pre-line text-sm leading-6 text-[var(--hm-subtext)]">
                 {event.body}
               </p>
             </CardContent>
@@ -36,7 +36,7 @@ export default async function EventsPage() {
         {events.length === 0 ? (
           <Card>
             <CardContent>
-              <p className="text-sm font-semibold text-[#5f554a]">
+              <p className="text-sm font-semibold text-[var(--hm-subtext)]">
                 진행 중인 이벤트가 없습니다.
               </p>
             </CardContent>

@@ -30,26 +30,26 @@ export default async function StaffPage() {
           <StaffScanner />
           <Card>
             <CardContent>
-              <h2 className="font-bold text-[#17130f]">최근 처리 내역</h2>
+              <h2 className="font-bold text-[var(--hm-text)]">최근 처리 내역</h2>
               <div className="mt-4 grid gap-3">
                 {recentEvents.map((event) => (
                   <div
                     key={event.id}
-                    className="rounded-md border border-[#17130f1f] p-3"
+                    className="rounded-md border border-[var(--hm-border)] p-3"
                   >
-                    <p className="text-sm font-semibold text-[#17130f]">
+                    <p className="text-sm font-semibold text-[var(--hm-text)]">
                       {event.eventType === "coupon_used"
                         ? "사용완료"
                         : "기간만료"}{" "}
                       처리
                     </p>
-                    <p className="mt-1 text-sm text-[#5f554a]">
+                    <p className="mt-1 text-sm text-[var(--hm-subtext)]">
                       {new Date(event.createdAt).toLocaleString("ko-KR")}
                     </p>
                   </div>
                 ))}
                 {recentEvents.length === 0 ? (
-                  <p className="text-sm font-semibold text-[#5f554a]">
+                  <p className="text-sm font-semibold text-[var(--hm-subtext)]">
                     최근 처리한 쿠폰이 없습니다.
                   </p>
                 ) : null}
@@ -58,7 +58,7 @@ export default async function StaffPage() {
           </Card>
         </>
       ) : (
-        <div className="rounded-md border border-[#B13A1E33] bg-[#B13A1E14] p-5 text-sm font-semibold text-[#5b281a]">
+        <div className="rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-card)] p-5 text-sm font-semibold text-[var(--hm-subtext)]">
           직원 또는 관리자 권한과 이메일 인증이 필요합니다.
         </div>
       )}

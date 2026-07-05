@@ -43,7 +43,7 @@ export default async function MyCouponsPage() {
           <QrCoupon key={coupon.id} coupon={coupon} />
         ))}
         {memberCoupons.length === 0 ? (
-          <p className="text-sm text-[#8a7c6d]">다운로드한 쿠폰이 없습니다.</p>
+          <p className="text-sm text-[var(--hm-subtext)]">다운로드한 쿠폰이 없습니다.</p>
         ) : null}
       </div>
     </main>

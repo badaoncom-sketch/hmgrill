@@ -25,13 +25,13 @@ export default async function NoticesPage() {
         {notices.map((notice) => (
           <Card key={notice.id}>
             <CardContent>
-              <p className="text-sm text-[#8a7c6d]">
+              <p className="text-sm text-[var(--hm-subtext)]">
                 {formatDate(notice.publishedAt ?? notice.createdAt)}
               </p>
-              <h2 className="mt-2 text-xl font-bold text-[#17130f]">
+              <h2 className="mt-2 text-xl font-bold text-[var(--hm-text)]">
                 {notice.title}
               </h2>
-              <p className="mt-3 text-sm leading-6 text-[#5f554a]">
+              <p className="mt-3 text-sm leading-6 text-[var(--hm-subtext)]">
                 {notice.body}
               </p>
             </CardContent>
@@ -40,7 +40,7 @@ export default async function NoticesPage() {
         {notices.length === 0 ? (
           <Card>
             <CardContent>
-              <p className="text-sm font-semibold text-[#5f554a]">
+              <p className="text-sm font-semibold text-[var(--hm-subtext)]">
                 등록된 공지사항이 없습니다.
               </p>
             </CardContent>

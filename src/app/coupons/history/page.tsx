@@ -64,18 +64,18 @@ export default async function CouponHistoryPage() {
                   <Badge tone={statusTones[effectiveStatus]}>
                     {statusLabels[effectiveStatus]}
                   </Badge>
-                  <h2 className="mt-3 text-xl font-bold text-[#17130f]">
+                  <h2 className="mt-3 text-xl font-bold text-[var(--hm-text)]">
                     {coupon.couponName}
                   </h2>
-                  <p className="mt-1 text-sm text-[#5f554a]">
+                  <p className="mt-1 text-sm text-[var(--hm-subtext)]">
                     다운로드일 {formatDate(coupon.downloadedAt)}
                   </p>
                 </div>
                 <div className="text-left md:text-right">
-                  <p className="font-bold text-[#B13A1E]">
+                  <p className="font-bold text-[var(--hm-accent-gold)]">
                     {formatCurrency(coupon.amount)}
                   </p>
-                  <p className="mt-1 text-sm text-[#8a7c6d]">
+                  <p className="mt-1 text-sm text-[var(--hm-subtext)]">
                     {coupon.usedAt
                       ? `사용일시 ${new Date(coupon.usedAt).toLocaleString("ko-KR")}`
                       : `유효기간 ${formatDate(coupon.validUntil)}`}
@@ -86,7 +86,7 @@ export default async function CouponHistoryPage() {
           );
         })}
         {memberCoupons.length === 0 ? (
-          <p className="text-sm text-[#8a7c6d]">쿠폰 사용내역이 없습니다.</p>
+          <p className="text-sm text-[var(--hm-subtext)]">쿠폰 사용내역이 없습니다.</p>
         ) : null}
       </div>
     </main>
