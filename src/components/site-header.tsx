@@ -244,14 +244,23 @@ function MobileMenu({
         <Link
           href="/coupons"
           onClick={onClose}
-          className="hm-link-focus mt-6 flex items-center justify-between overflow-hidden rounded-[18px] border border-[var(--hm-border)] bg-[linear-gradient(135deg,rgba(247,230,193,.13),rgba(184,130,30,.12))] p-5"
+          className="hm-link-focus relative mt-6 flex min-h-[86px] items-center justify-between gap-5 overflow-hidden rounded-[18px] border border-[rgba(247,230,193,.12)] bg-[linear-gradient(135deg,rgba(247,230,193,.15),rgba(184,130,30,.14)_58%,rgba(247,230,193,.08))] px-5 py-4 shadow-[0_18px_42px_rgba(0,0,0,.22)]"
         >
-          <span className="text-[15px] font-bold leading-7 text-[var(--hm-primary)]">
+          <span className="pointer-events-none absolute right-10 top-1/2 h-24 w-24 -translate-y-1/2 opacity-[0.07]">
+            <Image
+              src="/images/brand/brand-logo-transparent.png"
+              alt=""
+              fill
+              sizes="96px"
+              className="object-contain"
+            />
+          </span>
+          <span className="relative z-10 text-[18px] font-black leading-[1.65] text-[var(--hm-primary)] drop-shadow-[0_2px_8px_rgba(0,0,0,.35)]">
             카카오 채널 추가하고
             <br />
-            QR 쿠폰 받기
+            QR 쿠폰 받기!
           </span>
-          <span className="grid h-12 w-12 place-items-center rounded-full bg-[#f5cf35] text-xs font-black text-[#371f00]">
+          <span className="relative z-10 mr-1 grid h-[58px] w-[58px] shrink-0 place-items-center rounded-full bg-[#f6d339] text-[14px] font-black text-[#352300] shadow-[0_10px_24px_rgba(0,0,0,.28)] after:absolute after:bottom-1 after:left-2 after:h-3 after:w-3 after:rotate-45 after:bg-[#f6d339]">
             TALK
           </span>
         </Link>
