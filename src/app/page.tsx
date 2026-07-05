@@ -71,29 +71,36 @@ export default async function HomePage() {
 
   return (
     <main>
-      <section className="relative min-h-[calc(100svh-105px)] overflow-hidden bg-[#0d0d0d] text-white md:min-h-[calc(100svh-81px)]">
+      <section className="relative -mt-[105px] min-h-screen overflow-hidden bg-[#0d0d0d] text-white md:-mt-[81px]">
         <Image
           src="/images/brand/brand-hero-background.png"
           alt=""
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[64%_center]"
+          className="object-cover object-[63%_center]"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050403f7] via-[#050403b8] to-[#0504031f]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_52%,rgba(224,106,42,0.18),transparent_34rem)]" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0d0d0d] to-transparent" />
-        <div className="relative mx-auto flex min-h-[calc(100svh-105px)] max-w-7xl flex-col justify-end px-4 pb-10 pt-14 sm:px-6 md:min-h-[calc(100svh-81px)] lg:px-8">
-          <div className="hm-hero-shadow w-full max-w-[42rem] lg:w-[39%]">
-            <p className="text-sm font-semibold tracking-[0.18em] text-[#f7e6c1]">
-              참나무 장작구이 전문점
-            </p>
-            <h1 className="hm-serif mt-7 text-4xl font-semibold leading-[1.22] tracking-normal text-[#f7e6c1] sm:text-5xl lg:text-6xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050403f2] via-[#0504039f] to-[#05040312]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_52%,rgba(224,106,42,0.15),transparent_32rem)]" />
+        <div className="absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-[#0d0d0d] via-[#0d0d0d99] to-transparent" />
+        <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col justify-end px-4 pb-8 pt-[132px] sm:px-6 md:pt-[112px] lg:px-8">
+          <div className="hm-hero-shadow w-full max-w-[41rem] lg:w-[38%]">
+            <div className="relative h-48 w-72 sm:h-56 sm:w-80 lg:h-64 lg:w-[24rem]">
+              <Image
+                src="/images/brand/brand-logo-transparent.png"
+                alt="화목 참나무 장작구이 전문점"
+                fill
+                priority
+                sizes="(min-width: 1024px) 384px, 320px"
+                className="object-contain object-left drop-shadow-[0_18px_42px_rgba(0,0,0,0.65)]"
+              />
+            </div>
+            <h1 className="hm-serif mt-5 text-4xl font-semibold leading-[1.22] tracking-normal text-[#f7e6c1] sm:text-5xl lg:text-[3.55rem]">
               고기의 맛은
               <br />
               불에서 결정된다
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-8 text-[#faf7f2cc] sm:text-lg">
+            <p className="mt-6 max-w-md text-base leading-8 text-[#faf7f2d9] sm:text-lg">
               좋은 재료, 참나무 장작, 그리고 정성. 화목은 장작불의 온도와
               은은한 연기로 깊은 풍미를 완성합니다.
             </p>
@@ -111,7 +118,7 @@ export default async function HomePage() {
               </ButtonLink>
             </div>
           </div>
-          <div className="mt-12 grid overflow-hidden rounded-md border border-[#f7e6c11f] bg-[#0d0d0dcc] shadow-2xl shadow-black/35 backdrop-blur-md sm:grid-cols-2 lg:ml-auto lg:w-[66%] lg:grid-cols-4">
+          <div className="mt-10 grid overflow-hidden rounded-md border border-[#f7e6c11f] bg-[#120d08d9] shadow-2xl shadow-black/35 backdrop-blur-md sm:grid-cols-2 lg:ml-auto lg:w-[52rem] lg:grid-cols-4">
             {brandValues.map((item) => {
               const Icon = item.icon;
               return (

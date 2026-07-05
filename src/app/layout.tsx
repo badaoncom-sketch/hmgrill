@@ -40,28 +40,20 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <header className="sticky top-0 z-40 border-b border-[#f7e6c11a] bg-[#070604e6] text-[#faf7f2] backdrop-blur-xl">
-          <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
+        <header className="sticky top-0 z-40 border-b border-[#f7e6c10f] bg-[#050403bf] text-[#faf7f2] backdrop-blur-md">
+          <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-2 sm:px-6 md:py-4 lg:px-8">
             <Link href="/" className="hm-link-focus flex items-center gap-3">
-              <span className="relative grid h-12 w-12 overflow-hidden rounded-full border border-[#f7e6c133] bg-[#0d0d0d] shadow-lg shadow-black/30 sm:h-14 sm:w-14">
+              <span className="relative block h-14 w-20 sm:h-16 sm:w-24 lg:h-20 lg:w-28">
                 <Image
-                  src="/images/brand/brand-logo-white.jpg"
+                  src="/images/brand/brand-logo-transparent.png"
                   alt="화목"
                   fill
-                  sizes="56px"
-                  className="object-cover"
+                  sizes="(min-width: 1024px) 112px, 96px"
+                  className="object-contain drop-shadow-[0_10px_26px_rgba(0,0,0,0.55)]"
                 />
               </span>
-              <span className="hidden sm:block">
-                <span className="block text-lg font-semibold text-[#f7e6c1]">
-                  화목
-                </span>
-                <span className="block text-xs text-[#f7e6c1b3]">
-                  장작구이 전문점
-                </span>
-              </span>
             </Link>
-            <nav className="col-span-3 row-start-2 flex items-center gap-4 overflow-x-auto border-t border-[#f7e6c114] pt-2 text-xs font-medium text-[#faf7f2cc] md:col-auto md:row-auto md:justify-center md:gap-7 md:overflow-visible md:border-0 md:pt-0 md:text-sm lg:gap-10">
+            <nav className="col-span-3 row-start-2 flex items-center gap-4 overflow-x-auto border-t border-[#f7e6c114] pt-2 text-xs font-medium text-[#faf7f2] md:col-auto md:row-auto md:justify-center md:gap-8 md:overflow-visible md:border-0 md:pt-0 md:text-base lg:gap-12">
               {navItems.map((item) => (
                 <Link
                   key={item.href}

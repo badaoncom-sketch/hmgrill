@@ -22,10 +22,11 @@
 | `public/images/brand/brand-hero-background.png` | 홈 히어로 전용 순수 배경 이미지 |
 | `public/images/brand/brand-hero-design-reference.png` | 히어로 UI 레이아웃 참고 시안 |
 | `public/images/brand/brand-ui-guideline-reference.png` | 전체 디자인 가이드 참고 시안 |
+| `public/images/brand/brand-logo-transparent.png` | 헤더와 홈 히어로에 사용하는 투명 로고 |
 | `public/images/brand/brand-storefront.png` | 매장 외관, 보조 브랜드 이미지 |
 | `public/images/brand/brand-fire-wall.png` | 브랜드 소개, 불과 간판의 분위기 |
 | `public/images/brand/brand-sign-collage.jpg` | 로고 응용, 브랜드 시스템 설명 |
-| `public/images/brand/brand-logo-white.jpg` | 헤더 로고, 정사각 썸네일 |
+| `public/images/brand/brand-logo-white.jpg` | 정사각 썸네일 또는 대체 로고 |
 
 ## 히어로 배경 에셋 기준
 
@@ -41,6 +42,12 @@
 - 텍스트
 
 히어로 문구, CTA, 로고, 네비게이션은 모두 실제 HTML/CSS UI 레이어에서 구성한다.
+
+로고 사용 기준:
+
+- 헤더 로고와 히어로 대형 로고는 `brand-logo-transparent.png`를 사용한다.
+- 로고 주변에 별도 배경 카드, 원형 프레임, 임의 텍스트를 추가하지 않는다.
+- 헤더에서는 로고만 노출하고, 브랜드명 텍스트는 중복 표기하지 않는다.
 
 배경 구성 기준:
 
