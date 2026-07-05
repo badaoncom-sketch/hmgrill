@@ -270,6 +270,15 @@ button {
   box-shadow: var(--hm-shadow-strong);
 }
 
+.hm-tablet-panel {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(247, 230, 193, 0.035), transparent 42%),
+    rgba(18, 18, 18, 0.72);
+  border: 1px solid var(--hm-border);
+  border-radius: 8px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+}
+
 .hm-image-zoom img {
   transition: transform 600ms ease;
 }
