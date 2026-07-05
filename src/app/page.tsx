@@ -36,7 +36,7 @@ const featureCards = [
     icon: Leaf,
   },
   {
-    title: "화심금 재료",
+    title: "최상급 재료",
     description: "신선하고 품격 있는 재료를 엄선해 사용합니다.",
     icon: Utensils,
   },
