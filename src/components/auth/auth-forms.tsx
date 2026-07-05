@@ -3,8 +3,10 @@
 import { useActionState } from "react";
 import {
   loginAction,
+  requestPasswordResetAction,
   resendVerificationAction,
   signupAction,
+  updatePasswordAction,
 } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/field";
@@ -22,12 +24,6 @@ export function SignupForm() {
 
   return (
     <form action={formAction} className="grid gap-4">
-      <Field label="이름">
-        <Input name="name" placeholder="홍길동" required />
-      </Field>
-      <Field label="휴대폰번호">
-        <Input name="phone" placeholder="010-0000-0000" required />
-      </Field>
       <Field label="이메일">
         <Input name="email" type="email" placeholder="member@example.com" required />
       </Field>
@@ -36,6 +32,47 @@ export function SignupForm() {
       </Field>
       <Button type="submit" className="w-full" disabled={isPending}>
         {isPending ? "처리 중" : "회원가입"}
+      </Button>
+      <ActionMessage ok={state.ok} message={state.message} />
+    </form>
+  );
+}
+
+export function PasswordResetRequestForm() {
+  const [state, formAction, isPending] = useActionState(
+    requestPasswordResetAction,
+    initialState,
+  );
+
+  return (
+    <form action={formAction} className="grid gap-4">
+      <Field label="가입 이메일">
+        <Input name="email" type="email" placeholder="member@example.com" required />
+      </Field>
+      <Button type="submit" className="w-full" disabled={isPending}>
+        {isPending ? "발송 중" : "비밀번호 재설정 메일 받기"}
+      </Button>
+      <ActionMessage ok={state.ok} message={state.message} />
+    </form>
+  );
+}
+
+export function UpdatePasswordForm() {
+  const [state, formAction, isPending] = useActionState(
+    updatePasswordAction,
+    initialState,
+  );
+
+  return (
+    <form action={formAction} className="grid gap-4">
+      <Field label="새 비밀번호">
+        <Input name="password" minLength={8} type="password" required />
+      </Field>
+      <Field label="새 비밀번호 확인">
+        <Input name="passwordConfirm" minLength={8} type="password" required />
+      </Field>
+      <Button type="submit" className="w-full" disabled={isPending}>
+        {isPending ? "변경 중" : "비밀번호 변경"}
       </Button>
       <ActionMessage ok={state.ok} message={state.message} />
     </form>

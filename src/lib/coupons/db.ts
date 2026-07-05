@@ -48,18 +48,18 @@ type MemberCouponRow = {
     | null;
   member_profile:
     | {
-        name: string;
+        name: string | null;
       }
     | {
-        name: string;
+        name: string | null;
       }[]
     | null;
   staff_profile:
     | {
-        name: string;
+        name: string | null;
       }
     | {
-        name: string;
+        name: string | null;
       }[]
     | null;
 };
@@ -72,11 +72,11 @@ type CouponEventRow = {
   created_at: string;
   actor_profile:
     | {
-        name: string;
+        name: string | null;
         email: string;
       }
     | {
-        name: string;
+        name: string | null;
         email: string;
       }[]
     | null;
@@ -167,7 +167,7 @@ export function mapMemberCoupon(row: unknown): MemberCoupon {
     validUntil: item.valid_until,
     status: item.status,
     usedAt: item.used_at ?? undefined,
-    usedByStaffName: staff?.name,
+    usedByStaffName: staff?.name ?? undefined,
     conditionText: issue?.condition_text ?? "",
     qrNotice: issue?.qr_notice ?? "",
   };
@@ -182,7 +182,7 @@ export function mapCouponEvent(row: unknown): CouponEvent {
   return {
     id: item.id,
     eventType: item.event_type,
-    actorName: actor?.name,
+    actorName: actor?.name ?? undefined,
     actorEmail: actor?.email,
     memberCouponId: item.member_coupon_id ?? undefined,
     metadata: item.metadata,

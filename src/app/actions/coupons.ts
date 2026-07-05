@@ -11,6 +11,17 @@ type CouponActionState = {
   message: string;
 };
 
+type VerifiedProfile = {
+  id: string;
+  role: "member" | "staff" | "admin";
+  email_verified: boolean;
+  name: string | null;
+  phone: string | null;
+  address: string | null;
+  privacy_accepted_at: string | null;
+  profile_completed_at: string | null;
+};
+
 function readString(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
@@ -33,7 +44,7 @@ async function getCurrentVerifiedUser() {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("id,role,email_verified")
+    .select("id,role,email_verified,name,phone,address,privacy_accepted_at,profile_completed_at")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -50,6 +61,15 @@ async function getCurrentVerifiedUser() {
   }
 
   return { user, profile, message: "" };
+}
+
+function hasCouponProfile(profile: VerifiedProfile) {
+  return Boolean(
+    profile.name?.trim() &&
+      profile.phone?.trim() &&
+      profile.address?.trim() &&
+      profile.privacy_accepted_at,
+  );
 }
 
 export async function issueCouponAction(
@@ -111,7 +131,7 @@ export async function downloadCouponAction(
 ): Promise<CouponActionState> {
   const auth = await getCurrentVerifiedUser();
 
-  if (!auth.user) {
+  if (!auth.user || !auth.profile) {
     return { ok: false, message: auth.message };
   }
 
@@ -121,8 +141,47 @@ export async function downloadCouponAction(
     return { ok: false, message: "쿠폰 정보를 찾을 수 없습니다." };
   }
 
-  const token = `cpn_${randomBytes(24).toString("base64url")}`;
   const admin = createAdminClient();
+
+  if (!hasCouponProfile(auth.profile as VerifiedProfile)) {
+    const name = readString(formData, "name");
+    const phone = readString(formData, "phone");
+    const address = readString(formData, "address");
+    const privacyAccepted = formData.get("privacyAccepted") === "yes";
+
+    if (!name || !phone || !address || !privacyAccepted) {
+      return {
+        ok: false,
+        message: "쿠폰을 받으려면 이름, 연락처, 주소와 개인정보처리 안내 동의가 필요합니다.",
+      };
+    }
+
+    if (phone.replace(/\D/g, "").length < 9) {
+      return {
+        ok: false,
+        message: "연락 가능한 휴대폰번호를 입력해 주세요.",
+      };
+    }
+
+    const now = new Date().toISOString();
+    const { error: profileUpdateError } = await admin
+      .from("profiles")
+      .update({
+        name,
+        phone,
+        address,
+        privacy_accepted_at: now,
+        profile_completed_at: now,
+        updated_at: now,
+      })
+      .eq("id", auth.user.id);
+
+    if (profileUpdateError) {
+      return { ok: false, message: profileUpdateError.message };
+    }
+  }
+
+  const token = `cpn_${randomBytes(24).toString("base64url")}`;
   const { error } = await admin.rpc("download_coupon", {
     p_member_id: auth.user.id,
     p_issue_id: issueId,

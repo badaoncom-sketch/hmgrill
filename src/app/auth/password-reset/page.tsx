@@ -1,18 +1,18 @@
-import { SignupForm } from "@/components/auth/auth-forms";
+import { PasswordResetRequestForm } from "@/components/auth/auth-forms";
 import { SectionHeading } from "@/components/section-heading";
 import { Card, CardContent } from "@/components/ui/card";
 
-export default function SignupPage() {
+export default function PasswordResetRequestPage() {
   return (
     <main className="mx-auto grid max-w-xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
       <SectionHeading
-        eyebrow="JOIN"
-        title="회원가입"
-        description="이메일 하나로 가입하고, 쿠폰을 받을 때 필요한 정보는 최초 1회만 입력합니다."
+        eyebrow="PASSWORD"
+        title="비밀번호 찾기"
+        description="가입한 이메일로 비밀번호 재설정 링크를 보내드립니다."
       />
       <Card>
         <CardContent>
-          <SignupForm />
+          <PasswordResetRequestForm />
         </CardContent>
       </Card>
     </main>

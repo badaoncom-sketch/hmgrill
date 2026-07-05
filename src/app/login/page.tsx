@@ -18,8 +18,8 @@ export default function LoginPage() {
             <Link href="/signup" className="hm-link-focus rounded-sm hover:text-[var(--hm-text)]">
               회원가입
             </Link>
-            <Link href="/mypage" className="hm-link-focus rounded-sm hover:text-[var(--hm-text)]">
-              마이페이지
+            <Link href="/auth/password-reset" className="hm-link-focus rounded-sm hover:text-[var(--hm-text)]">
+              비밀번호 찾기
             </Link>
           </div>
           <div className="mt-6 border-t border-[var(--hm-divider)] pt-6">

@@ -80,6 +80,18 @@
 - Frozen Design v1.0 반영 후 보호 라우트 응답 확인: `/mypage`, `/staff`, `/admin` 모두 비로그인 상태에서 `/login`으로 `307` 리다이렉트
 - Frozen Design v1.0 반영 후 Home HTML 확인: 새 `brand-hero-background.png`와 Hero 타이틀 렌더링 확인
 - 이번 작업은 UI/라우트/문서 변경으로 DB 스키마 변경 없음. Supabase 마이그레이션 미수행
+- 회원가입 간소화: 가입 시 이메일과 비밀번호만 입력하고, 이름/연락처/주소는 쿠폰 수령 시 최초 1회 입력하도록 변경
+- 로그인 화면 보완: 비밀번호 찾기 링크와 `auth/password-reset`, `auth/reset-password`, `auth/callback` 플로우 추가
+- 쿠폰 수령 정보 보완: 이름, 연락처, 주소, 개인정보처리 안내 동의 입력 후 프로필 저장 및 쿠폰 다운로드를 한 번에 처리
+- 마이페이지 보완: 쿠폰 수령 개인정보와 개인정보처리 안내 동의일 확인 영역 추가
+- Supabase 마이그레이션 적용: `20260705061831_add_profile_contact_fields.sql`
+- Supabase 프로필 스키마 보완: `profiles.name` nullable, `address`, `privacy_accepted_at`, `profile_completed_at` 추가
+- Supabase `download_coupon` RPC 보완: 이메일 인증과 프로필 수령 정보 및 개인정보처리 안내 동의 완료 여부를 DB 함수에서 재검증
+- 프로필/비밀번호/쿠폰 수령 기능 반영 후 `npm run db:push:dry-run`, `npm run db:push`, `npm run lint`, `npm run build`, `npm run test:e2e:coupon` 통과
+- Supabase advisors 확인: 이슈 없음
+- 프로필/비밀번호/쿠폰 수령 기능 반영 후 공개 라우트 응답 확인: `/`, `/login`, `/signup`, `/auth/password-reset`, `/coupons` 모두 `200 OK`
+- 프로필/비밀번호/쿠폰 수령 기능 반영 후 보호 라우트 응답 확인: `/auth/reset-password`는 세션 없을 때 `/auth/password-reset`으로 `307`, `/mypage`, `/coupons/my`는 `/login`으로 `307`
+- 화면 HTML 확인: 로그인 비밀번호 찾기, 이메일 단독 가입 안내, 비밀번호 재설정 폼 렌더링 확인
 
 - `npm run lint`: 통과
 - `npm run build`: 통과

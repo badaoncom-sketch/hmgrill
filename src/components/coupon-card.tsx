@@ -9,9 +9,17 @@ import { formatCurrency } from "@/lib/utils";
 export function CouponCard({
   issue,
   memberCoupons = [],
+  profileRequired = false,
+  profile,
 }: {
   issue: CouponIssue;
   memberCoupons?: Parameters<typeof canDownloadCoupon>[1];
+  profileRequired?: boolean;
+  profile?: {
+    name?: string | null;
+    phone?: string | null;
+    address?: string | null;
+  } | null;
 }) {
   const decision = canDownloadCoupon(issue, memberCoupons);
   const remaining = getRemainingQuantity(issue);
@@ -45,7 +53,12 @@ export function CouponCard({
           </p>
           <p className="whitespace-pre-line">{issue.conditionText}</p>
         </div>
-        <CouponDownloadForm issueId={issue.id} disabled={!decision.allowed} />
+        <CouponDownloadForm
+          issueId={issue.id}
+          disabled={!decision.allowed}
+          profileRequired={profileRequired}
+          profile={profile}
+        />
         <p className="text-xs text-[var(--hm-subtext)]">{decision.reason}</p>
       </CardContent>
     </Card>

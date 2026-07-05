@@ -19,15 +19,13 @@ export async function signupAction(
   _prevState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
-  const name = readRequiredString(formData, "name");
-  const phone = readRequiredString(formData, "phone");
   const email = readRequiredString(formData, "email").toLowerCase();
   const password = readRequiredString(formData, "password");
 
-  if (!name || !phone || !email || password.length < 8) {
+  if (!email || password.length < 8) {
     return {
       ok: false,
-      message: "이름, 휴대폰번호, 이메일, 8자 이상 비밀번호를 입력해 주세요.",
+      message: "이메일과 8자 이상 비밀번호를 입력해 주세요.",
     };
   }
 
@@ -37,7 +35,7 @@ export async function signupAction(
       email,
       password,
       email_confirm: false,
-      user_metadata: { name, phone },
+      user_metadata: {},
       app_metadata: { role: "member" },
     });
 
@@ -51,8 +49,6 @@ export async function signupAction(
   const { error: profileError } = await admin.from("profiles").insert({
     id: createdUser.user.id,
     role: "member",
-    name,
-    phone,
     email,
     email_verified: false,
   });
@@ -70,7 +66,7 @@ export async function signupAction(
     await createAndSendVerificationEmail({
       userId: createdUser.user.id,
       email,
-      name,
+      name: email,
     });
   } catch (error) {
     return {
@@ -85,6 +81,72 @@ export async function signupAction(
   return {
     ok: true,
     message: "회원가입이 완료되었습니다. 이메일 인증 후 로그인해 주세요.",
+  };
+}
+
+export async function requestPasswordResetAction(
+  _prevState: AuthActionState,
+  formData: FormData,
+): Promise<AuthActionState> {
+  const email = readRequiredString(formData, "email").toLowerCase();
+
+  if (!email) {
+    return { ok: false, message: "이메일을 입력해 주세요." };
+  }
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${siteUrl}/auth/callback?next=/auth/reset-password`,
+  });
+
+  if (error) {
+    return { ok: false, message: error.message };
+  }
+
+  return {
+    ok: true,
+    message: "가입 정보가 있으면 비밀번호 재설정 메일을 발송합니다.",
+  };
+}
+
+export async function updatePasswordAction(
+  _prevState: AuthActionState,
+  formData: FormData,
+): Promise<AuthActionState> {
+  const password = readRequiredString(formData, "password");
+  const passwordConfirm = readRequiredString(formData, "passwordConfirm");
+
+  if (password.length < 8 || password !== passwordConfirm) {
+    return {
+      ok: false,
+      message: "8자 이상 비밀번호를 동일하게 입력해 주세요.",
+    };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return {
+      ok: false,
+      message: "비밀번호 재설정 링크가 만료되었거나 세션이 없습니다.",
+    };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) {
+    return { ok: false, message: error.message };
+  }
+
+  await supabase.auth.signOut();
+
+  return {
+    ok: true,
+    message: "비밀번호가 변경되었습니다. 새 비밀번호로 다시 로그인해 주세요.",
   };
 }
 
@@ -177,7 +239,7 @@ export async function resendVerificationAction(
   await createAndSendVerificationEmail({
     userId: profile.id,
     email: profile.email,
-    name: profile.name,
+    name: profile.name ?? profile.email,
   });
 
   return { ok: true, message: "인증 메일을 다시 발송했습니다." };

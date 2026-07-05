@@ -25,8 +25,22 @@ export default async function CouponsPage() {
         .select(memberCouponSelect)
         .eq("member_id", user.id)
     : { data: [] };
+  const { data: profile } = user
+    ? await supabase
+        .from("profiles")
+        .select("name,phone,address,privacy_accepted_at")
+        .eq("id", user.id)
+        .maybeSingle()
+    : { data: null };
   const couponIssues = (issueRows ?? []).map(mapCouponIssue);
   const memberCoupons = (memberCouponRows ?? []).map(mapMemberCoupon);
+  const profileRequired = Boolean(
+    user &&
+      (!profile?.name?.trim() ||
+        !profile?.phone?.trim() ||
+        !profile?.address?.trim() ||
+        !profile?.privacy_accepted_at),
+  );
 
   return (
     <main className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:px-8">
@@ -51,6 +65,8 @@ export default async function CouponsPage() {
             key={issue.id}
             issue={issue}
             memberCoupons={memberCoupons}
+            profileRequired={profileRequired}
+            profile={profile}
           />
         ))}
         {couponIssues.length === 0 ? (

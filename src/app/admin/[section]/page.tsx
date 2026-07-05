@@ -64,7 +64,7 @@ const roleTones: Record<UserRole, "neutral" | "green" | "red"> = {
 
 type ProfileRow = {
   id: string;
-  name: string;
+  name: string | null;
   email: string;
   phone: string | null;
   role: UserRole;
@@ -168,7 +168,9 @@ export default async function AdminSectionPage({
               >
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="font-bold text-neutral-950">{profile.name}</h2>
+                    <h2 className="font-bold text-neutral-950">
+                      {profile.name || profile.email}
+                    </h2>
                     <Badge tone={roleTones[profile.role]}>
                       {roleLabels[profile.role]}
                     </Badge>
@@ -197,7 +199,7 @@ export default async function AdminSectionPage({
                   <input name="userId" type="hidden" value={profile.id} />
                   <Select
                     name="role"
-                    aria-label={`${profile.name} 권한`}
+                    aria-label={`${profile.name || profile.email} 권한`}
                     defaultValue={profile.role}
                   >
                     <option value="member">회원</option>

@@ -1,4 +1,4 @@
-import { MailCheck, Ticket } from "lucide-react";
+import { MailCheck, ShieldCheck, Ticket } from "lucide-react";
 import { redirect } from "next/navigation";
 import { logoutAction } from "@/app/actions/auth";
 import { SectionHeading } from "@/components/section-heading";
@@ -20,7 +20,7 @@ export default async function MyPage() {
   const { data: profile } = user
     ? await supabase
         .from("profiles")
-        .select("name,email,email_verified,role")
+        .select("name,phone,address,email,email_verified,role,privacy_accepted_at,profile_completed_at")
         .eq("id", user.id)
         .maybeSingle()
     : { data: null };
@@ -47,7 +47,7 @@ export default async function MyPage() {
               인증 완료
             </Badge>
             <p className="mt-3 text-sm text-[var(--hm-subtext)]">
-              {profile.name} / {profile.email}
+              {profile.email}
             </p>
             <form action={logoutAction} className="mt-5">
               <Button type="submit" variant="outline">
@@ -70,7 +70,58 @@ export default async function MyPage() {
             </ButtonLink>
           </CardContent>
         </Card>
+        <Card className="md:col-span-2">
+          <CardContent>
+            <ShieldCheck className="text-[var(--hm-accent-gold)]" size={30} aria-hidden="true" />
+            <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-[var(--hm-text)]">
+                  개인정보 확인
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--hm-subtext)]">
+                  쿠폰 발급 및 사용 확인을 위해 최초 1회 입력한 정보입니다.
+                </p>
+              </div>
+              {profile.profile_completed_at ? (
+                <Badge tone="green">입력 완료</Badge>
+              ) : (
+                <Badge tone="amber">입력 필요</Badge>
+              )}
+            </div>
+            <div className="mt-6 grid gap-4 text-sm md:grid-cols-3">
+              <InfoItem label="이름" value={profile.name} />
+              <InfoItem label="연락처" value={profile.phone} />
+              <InfoItem label="주소" value={profile.address} />
+            </div>
+            <div className="mt-5 rounded-[16px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-4 text-sm leading-6 text-[var(--hm-subtext)]">
+              개인정보처리 안내 동의일:{" "}
+              {profile.privacy_accepted_at
+                ? new Date(profile.privacy_accepted_at).toLocaleString("ko-KR")
+                : "아직 동의하지 않았습니다."}
+            </div>
+            {!profile.profile_completed_at ? (
+              <ButtonLink href="/coupons" className="mt-5" variant="outline">
+                쿠폰 수령 정보 입력하기
+              </ButtonLink>
+            ) : null}
+          </CardContent>
+        </Card>
       </div>
     </main>
+  );
+}
+
+function InfoItem({
+  label,
+  value,
+}: {
+  label: string;
+  value?: string | null;
+}) {
+  return (
+    <div className="rounded-[16px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-4">
+      <p className="text-xs font-semibold text-[var(--hm-accent-gold)]">{label}</p>
+      <p className="mt-2 text-[var(--hm-text)]">{value || "미입력"}</p>
+    </div>
   );
 }
