@@ -145,7 +145,7 @@ export function SiteHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
       </header>
 
       <MobileMenu open={open} isAuthenticated={isAuthenticated} onClose={() => setOpen(false)} />
-      <MobileBottomNav />
+      <MobileBottomNav hidden={open} />
     </>
   );
 }
@@ -171,7 +171,7 @@ function MobileMenu({
         onClick={onClose}
       />
       <aside
-        className={`absolute inset-y-0 right-0 flex w-full max-w-[390px] flex-col overflow-y-auto border-l border-[var(--hm-border)] bg-[rgba(13,13,13,.96)] p-6 text-[var(--hm-text)] shadow-[0_30px_90px_rgba(0,0,0,.55)] transition-transform duration-300 sm:max-w-[420px] ${
+        className={`absolute inset-y-0 right-0 isolate flex w-full max-w-[390px] flex-col overflow-y-auto border-l border-[var(--hm-border)] bg-[var(--hm-background)] p-6 text-[var(--hm-text)] shadow-[0_30px_90px_rgba(0,0,0,.55)] transition-transform duration-300 sm:max-w-[420px] ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
         role="dialog"
@@ -288,12 +288,18 @@ function MobileMenu({
   );
 }
 
-function MobileBottomNav() {
+function MobileBottomNav({ hidden }: { hidden: boolean }) {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--hm-border-soft)] bg-[rgba(13,13,13,.9)] px-3 pb-[max(10px,env(safe-area-inset-bottom))] pt-2 text-[11px] font-bold text-white/56 backdrop-blur-md xl:hidden">
-      <div className="mx-auto grid max-w-[520px] grid-cols-5">
+    <nav
+      aria-label="모바일 하단 메뉴"
+      aria-hidden={hidden}
+      className={`fixed inset-x-0 bottom-0 z-40 border-t border-[var(--hm-border-soft)] bg-[rgba(13,13,13,.94)] px-3 pb-[max(10px,env(safe-area-inset-bottom))] pt-2 text-[11px] font-bold text-white/56 backdrop-blur-md transition duration-200 xl:hidden ${
+        hidden ? "pointer-events-none translate-y-5 opacity-0" : "translate-y-0 opacity-100"
+      }`}
+    >
+      <div className="mx-auto flex max-w-[520px] items-center justify-around">
         {bottomNavItems.map((item) => {
           const Icon = item.icon;
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -301,7 +307,7 @@ function MobileBottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`hm-link-focus grid min-h-[54px] place-items-center rounded-[16px] transition ${
+              className={`hm-link-focus flex min-h-[54px] flex-1 flex-col items-center justify-center gap-1 rounded-[16px] transition ${
                 active ? "text-[var(--hm-primary)]" : "hover:text-[var(--hm-primary)]"
               }`}
             >

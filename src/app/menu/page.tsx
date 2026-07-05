@@ -32,13 +32,13 @@ export default async function MenuPage() {
           description="장작불의 온기, 숙성 고기의 깊이, 구운 채소와 곁들임의 균형을 담은 화목의 메뉴입니다."
         />
         <div className="grid gap-8 lg:grid-cols-[220px_1fr]">
-          <aside className="lg:sticky lg:top-28 lg:self-start">
-            <div className="rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-card)] p-3">
+          <aside className="min-w-0 lg:sticky lg:top-28 lg:self-start">
+            <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2 lg:mx-0 lg:grid lg:gap-0 lg:overflow-visible lg:rounded-[20px] lg:border lg:border-[var(--hm-border)] lg:bg-[var(--hm-card)] lg:p-3">
               {categories.map((category, index) => (
                 <a
                   key={category}
                   href={index === 0 ? "#menu-grid" : `#category-${index}`}
-                  className="hm-link-focus flex rounded-[14px] px-4 py-3 text-sm font-semibold text-[var(--hm-subtext)] transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)] first:bg-[var(--hm-primary)] first:text-[var(--hm-background)]"
+                  className="hm-link-focus flex shrink-0 rounded-[999px] border border-[var(--hm-border)] bg-[var(--hm-card)] px-5 py-3 text-sm font-semibold text-[var(--hm-subtext)] transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)] first:bg-[var(--hm-primary)] first:text-[var(--hm-background)] lg:rounded-[14px] lg:border-0 lg:bg-transparent lg:px-4"
                 >
                   {category}
                 </a>
