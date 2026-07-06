@@ -182,9 +182,9 @@ export function AdminFrame({
                     </p>
                   </div>
                   <div className="grid py-2">
-                    {notifications.map((item) => (
+                    {notifications.map((item, index) => (
                       <Link
-                        key={`${item.href}-${item.title}`}
+                        key={`${item.href}-${item.title}-${index}`}
                         href={item.href}
                         className="hm-link-focus grid gap-1 rounded-[14px] px-3 py-3 text-left transition hover:bg-white/[0.045]"
                       >
