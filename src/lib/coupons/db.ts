@@ -27,6 +27,7 @@ type MemberCouponRow = {
   id: string;
   issue_id: string;
   token: string;
+  coupon_number: string;
   downloaded_at: string;
   valid_from: string;
   valid_until: string;
@@ -103,6 +104,7 @@ export const memberCouponSelect = [
   "id",
   "issue_id",
   "token",
+  "coupon_number",
   "downloaded_at",
   "valid_from",
   "valid_until",
@@ -159,6 +161,7 @@ export function mapMemberCoupon(row: unknown): MemberCoupon {
     id: item.id,
     issueId: item.issue_id,
     token: item.token,
+    couponNumber: item.coupon_number,
     couponName: issue?.name ?? "쿠폰",
     amount: issue?.amount ?? 0,
     memberName: member?.name ?? "",

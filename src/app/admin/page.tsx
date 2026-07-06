@@ -24,9 +24,25 @@ import {
   mapCouponEvent,
   mapCouponIssue,
 } from "@/lib/coupons/db";
+import {
+  contentPostSelect,
+  inquirySelect,
+  mapContentPost,
+  mapInquiry,
+  mapMenuItem,
+  menuItemSelect,
+} from "@/lib/content/db";
 import { requireAdminAccess } from "@/lib/auth/access";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatCurrency } from "@/lib/utils";
+
+type ProfileSummaryRow = {
+  id: string;
+  role: "member" | "staff" | "admin";
+  email_verified: boolean;
+  profile_completed_at: string | null;
+  created_at: string;
+};
 
 const quickActions = [
   { href: "/admin/coupons", label: "쿠폰 생성", icon: Plus },
@@ -66,16 +82,39 @@ export default async function AdminPage() {
   }
 
   const admin = createAdminClient();
-  const [{ data: rows }, { data: eventRows }] = await Promise.all([
+  const [
+    { data: rows },
+    { data: eventRows },
+    { data: profileRows },
+    { data: menuRows },
+    { data: noticeRows },
+    { data: inquiryRows },
+  ] = await Promise.all([
     admin.from("coupon_issues").select(couponIssueSelect),
     admin
       .from("coupon_events")
       .select(couponEventSelect)
       .order("created_at", { ascending: false })
       .limit(12),
+    admin
+      .from("profiles")
+      .select("id,role,email_verified,profile_completed_at,created_at")
+      .order("created_at", { ascending: false }),
+    admin.from("menu_items").select(menuItemSelect),
+    admin
+      .from("content_posts")
+      .select(contentPostSelect)
+      .eq("type", "notice")
+      .order("created_at", { ascending: false })
+      .limit(5),
+    admin.from("inquiries").select(inquirySelect),
   ]);
   const couponIssues = (rows ?? []).map(mapCouponIssue);
   const recentEvents = (eventRows ?? []).map(mapCouponEvent);
+  const profiles = (profileRows ?? []) as ProfileSummaryRow[];
+  const menuItems = (menuRows ?? []).map(mapMenuItem);
+  const recentNotices = (noticeRows ?? []).map(mapContentPost);
+  const inquiries = (inquiryRows ?? []).map(mapInquiry);
   const todayEvents = recentEvents.filter((event) => isToday(event.createdAt));
 
   const totalIssued = couponIssues.reduce((sum, item) => sum + item.quantity, 0);
@@ -85,7 +124,6 @@ export default async function AdminPage() {
     0,
   );
   const totalUsed = couponIssues.reduce((sum, item) => sum + item.usedCount, 0);
-  const totalExpired = couponIssues.reduce((sum, item) => sum + item.expiredCount, 0);
   const activeIssues = couponIssues.filter((item) => item.status === "issuing").length;
   const totalUsedAmount = couponIssues.reduce(
     (sum, item) => sum + item.usedCount * item.amount,
@@ -96,6 +134,16 @@ export default async function AdminPage() {
   const usageRate = totalDownloaded > 0 ? Math.round((totalUsed / totalDownloaded) * 1000) / 10 : 0;
   const downloadedShare = totalIssued > 0 ? Math.min(100, Math.round((totalDownloaded / totalIssued) * 100)) : 0;
   const usedShare = totalDownloaded > 0 ? Math.min(100, Math.round((totalUsed / totalDownloaded) * 100)) : 0;
+  const memberCount = profiles.filter((profile) => profile.role === "member").length;
+  const verifiedMemberCount = profiles.filter(
+    (profile) => profile.role === "member" && profile.email_verified,
+  ).length;
+  const profileCompletedCount = profiles.filter(
+    (profile) => profile.role === "member" && profile.profile_completed_at,
+  ).length;
+  const unresolvedInquiryCount = inquiries.filter((item) => item.status === "open").length;
+  const activeMenuCount = menuItems.filter((item) => item.isActive).length;
+  const featuredMenuCount = menuItems.filter((item) => item.featured).length;
 
   return (
     <AdminFrame
@@ -137,11 +185,11 @@ export default async function AdminPage() {
           />
           <AdminStatCard
             icon={<UsersRound size={25} strokeWidth={1.8} aria-hidden="true" />}
-            label="사용 금액"
-            value={formatCurrency(totalUsedAmount)}
+            label="회원"
+            value={<>{memberCount}명</>}
             detail={
               <>
-                기간 만료 {totalExpired}장
+                인증 {verifiedMemberCount}명 · 프로필 {profileCompletedCount}명
               </>
             }
           />
@@ -296,21 +344,73 @@ export default async function AdminPage() {
             <AdminPanel>
               <AdminPanelHeader title="공지사항" />
               <div className="grid divide-y divide-[rgba(255,255,255,.06)] px-5">
-                {["휴무일 안내", "시즌 메뉴 업데이트", "쿠폰 운영 정책"].map((title, index) => (
+                {recentNotices.map((notice) => (
                   <Link
-                    key={title}
+                    key={notice.id}
                     href="/admin/notices"
                     className="hm-link-focus flex items-center justify-between gap-4 py-4 text-sm font-bold text-white/72 transition hover:text-[var(--hm-primary)]"
                   >
-                    {title}
-                    <span className="text-xs text-white/34">2026.07.0{index + 4}</span>
+                    {notice.title}
+                    <span className="text-xs text-white/34">
+                      {new Date(notice.createdAt).toLocaleDateString("ko-KR")}
+                    </span>
                   </Link>
                 ))}
+                {recentNotices.length === 0 ? (
+                  <p className="py-8 text-sm font-semibold text-white/42">
+                    등록된 공지사항이 없습니다.
+                  </p>
+                ) : null}
+              </div>
+            </AdminPanel>
+
+            <AdminPanel>
+              <AdminPanelHeader title="운영 체크" />
+              <div className="grid gap-3 p-5 text-sm font-semibold text-white/58">
+                <DashboardCheck
+                  ok={activeIssues > 0}
+                  label="발행중 쿠폰"
+                  value={`${activeIssues}개`}
+                />
+                <DashboardCheck
+                  ok={featuredMenuCount > 0 && activeMenuCount > 0}
+                  label="공개 대표 메뉴"
+                  value={`${featuredMenuCount}개`}
+                />
+                <DashboardCheck
+                  ok={unresolvedInquiryCount === 0}
+                  label="미처리 문의"
+                  value={`${unresolvedInquiryCount}건`}
+                />
+                <DashboardCheck
+                  ok={totalUsedAmount >= 0}
+                  label="누적 할인 처리"
+                  value={formatCurrency(totalUsedAmount)}
+                />
               </div>
             </AdminPanel>
           </div>
         </div>
       </div>
     </AdminFrame>
+  );
+}
+
+function DashboardCheck({
+  ok,
+  label,
+  value,
+}: {
+  ok: boolean;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4 rounded-[14px] border border-[rgba(255,255,255,.08)] bg-black/20 px-4 py-3">
+      <span>{label}</span>
+      <span className={ok ? "text-[var(--hm-primary)]" : "text-[var(--hm-accent-gold)]"}>
+        {value}
+      </span>
+    </div>
   );
 }

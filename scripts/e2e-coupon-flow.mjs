@@ -149,8 +149,16 @@ try {
     "read member coupon",
     await supabase
       .from("member_coupons")
-      .select("status,used_by_staff_id")
+      .select("status,used_by_staff_id,coupon_number")
       .eq("id", memberCouponId)
+      .single(),
+  );
+  const memberProfile = await assertOk(
+    "read member profile",
+    await supabase
+      .from("profiles")
+      .select("member_uid")
+      .eq("id", member.id)
       .single(),
   );
   const events = await assertOk(
@@ -178,12 +186,15 @@ try {
     issue.status !== "issuing" ||
     memberCoupon.status !== "used" ||
     memberCoupon.used_by_staff_id !== staff.id ||
+    !/^[0-9]{8}$/.test(memberCoupon.coupon_number) ||
+    !/^[0-9]{8}$/.test(memberProfile.member_uid) ||
     missingEvents.length > 0
   ) {
     throw new Error(
       `Unexpected E2E state: ${JSON.stringify({
         issue,
         memberCoupon,
+        memberProfile,
         eventTypes,
         missingEvents,
       })}`,
@@ -196,6 +207,8 @@ try {
         ok: true,
         issueId,
         memberCouponId,
+        memberUid: memberProfile.member_uid,
+        couponNumber: memberCoupon.coupon_number,
         eventTypes,
         cleanup: "pending",
       },

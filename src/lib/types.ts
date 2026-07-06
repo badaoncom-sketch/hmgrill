@@ -33,6 +33,7 @@ export type MemberCoupon = {
   id: string;
   issueId: string;
   token: string;
+  couponNumber: string;
   couponName: string;
   amount: number;
   memberName: string;

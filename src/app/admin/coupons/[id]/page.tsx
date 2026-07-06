@@ -232,7 +232,7 @@ export default async function AdminCouponDetailPage({
             <table className="min-w-[920px] w-full border-collapse overflow-hidden rounded-[18px] text-sm">
               <thead className="bg-white/[0.035]">
                 <tr>
-                  {["회원", "상태", "다운로드", "유효기간", "사용 직원", "토큰"].map((head) => (
+                  {["회원", "쿠폰번호", "상태", "다운로드", "유효기간", "사용 직원"].map((head) => (
                     <th
                       key={head}
                       className="px-4 py-4 text-left text-xs font-extrabold text-[var(--hm-accent-gold)]"
@@ -248,6 +248,9 @@ export default async function AdminCouponDetailPage({
                     <td className="px-4 py-4 font-bold text-white">
                       {coupon.memberName || "회원"}
                     </td>
+                    <td className="px-4 py-4 font-extrabold text-[var(--hm-primary)]">
+                      {coupon.couponNumber}
+                    </td>
                     <td className="px-4 py-4">
                       <Badge tone={coupon.status === "available" ? "green" : "neutral"}>
                         {couponStatusLabels[coupon.status]}
@@ -258,9 +261,6 @@ export default async function AdminCouponDetailPage({
                       {formatDate(coupon.validFrom)} - {formatDate(coupon.validUntil)}
                     </td>
                     <td className="px-4 py-4 text-white/62">{coupon.usedByStaffName ?? "-"}</td>
-                    <td className="max-w-[260px] truncate px-4 py-4 text-xs text-white/36">
-                      {coupon.token}
-                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -70,6 +70,9 @@ export default async function CouponHistoryPage() {
                   <p className="mt-1 text-sm text-[var(--hm-subtext)]">
                     다운로드일 {formatDate(coupon.downloadedAt)}
                   </p>
+                  <p className="mt-1 text-xs font-bold text-[var(--hm-primary)]">
+                    쿠폰번호 {coupon.couponNumber}
+                  </p>
                 </div>
                 <div className="text-left md:text-right">
                   <p className="font-bold text-[var(--hm-accent-gold)]">

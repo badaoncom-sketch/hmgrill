@@ -79,6 +79,7 @@ type SectionKey =
 
 type ProfileRow = {
   id: string;
+  member_uid: string;
   name: string | null;
   email: string;
   phone: string | null;
@@ -263,7 +264,7 @@ async function UserSection({ section }: { section: "members" | "staff" }) {
   const query = createAdminClient()
     .from("profiles")
     .select(
-      "id,name,email,phone,address,role,email_verified,privacy_accepted_at,profile_completed_at,created_at",
+      "id,member_uid,name,email,phone,address,role,email_verified,privacy_accepted_at,profile_completed_at,created_at",
     )
     .order("created_at", { ascending: false });
   const { data: rows } =
@@ -323,7 +324,13 @@ async function UserSection({ section }: { section: "members" | "staff" }) {
                       {profile.profile_completed_at ? "프로필 완료" : "프로필 대기"}
                     </Badge>
                   </div>
-                  <dl className="mt-4 grid gap-3 text-sm text-white/58 md:grid-cols-4">
+                  <dl className="mt-4 grid gap-3 text-sm text-white/58 md:grid-cols-5">
+                    <div>
+                      <dt className="text-xs font-bold text-[var(--hm-accent-gold)]">UID</dt>
+                      <dd className="mt-1 font-extrabold text-[var(--hm-primary)]">
+                        {profile.member_uid}
+                      </dd>
+                    </div>
                     <div>
                       <dt className="text-xs font-bold text-[var(--hm-accent-gold)]">이메일</dt>
                       <dd className="mt-1 truncate">{profile.email}</dd>

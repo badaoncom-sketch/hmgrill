@@ -101,7 +101,7 @@ export async function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
             </div>
           )}
           <p className="break-all rounded-[14px] bg-[var(--hm-surface)] p-3 text-xs text-[var(--hm-subtext)]">
-            토큰: {coupon.token}
+            쿠폰번호: <span className="font-bold text-[var(--hm-primary)]">{coupon.couponNumber}</span>
           </p>
         </div>
       </CardContent>

@@ -89,6 +89,10 @@ export function StaffScanner() {
                 <dd className="text-[var(--hm-subtext)]">{coupon.memberName || "-"}</dd>
               </div>
               <div>
+                <dt className="font-semibold text-[var(--hm-text)]">쿠폰번호</dt>
+                <dd className="font-bold text-[var(--hm-primary)]">{coupon.couponNumber}</dd>
+              </div>
+              <div>
                 <dt className="font-semibold text-[var(--hm-text)]">사용기간</dt>
                 <dd className="text-[var(--hm-subtext)]">
                   {formatDate(coupon.validFrom)} - {formatDate(coupon.validUntil)}

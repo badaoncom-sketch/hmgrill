@@ -20,7 +20,7 @@ export default async function MyPage() {
   const { data: profile } = user
     ? await supabase
         .from("profiles")
-        .select("name,phone,address,email,email_verified,role,privacy_accepted_at,profile_completed_at")
+        .select("member_uid,name,phone,address,email,email_verified,role,privacy_accepted_at,profile_completed_at")
         .eq("id", user.id)
         .maybeSingle()
     : { data: null };
@@ -89,9 +89,10 @@ export default async function MyPage() {
               )}
             </div>
             <div className="mt-6 grid gap-4 text-sm md:grid-cols-3">
+              <InfoItem label="회원 UID" value={profile.member_uid} />
               <InfoItem label="이름" value={profile.name} />
               <InfoItem label="연락처" value={profile.phone} />
-              <InfoItem label="주소" value={profile.address} />
+              <InfoItem label="주소" value={profile.address} className="md:col-span-3" />
             </div>
             <div className="mt-5 rounded-[16px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-4 text-sm leading-6 text-[var(--hm-subtext)]">
               개인정보처리 안내 동의일:{" "}
@@ -114,12 +115,14 @@ export default async function MyPage() {
 function InfoItem({
   label,
   value,
+  className = "",
 }: {
   label: string;
   value?: string | null;
+  className?: string;
 }) {
   return (
-    <div className="rounded-[16px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-4">
+    <div className={`rounded-[16px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-4 ${className}`}>
       <p className="text-xs font-semibold text-[var(--hm-accent-gold)]">{label}</p>
       <p className="mt-2 text-[var(--hm-text)]">{value || "미입력"}</p>
     </div>
