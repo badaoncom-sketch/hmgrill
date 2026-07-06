@@ -20,6 +20,7 @@ import { usePathname } from "next/navigation";
 const headerNavItems = [
   { href: "/about", label: "화목 소개" },
   { href: "/menu", label: "메뉴" },
+  { href: "/coupons", label: "쿠폰" },
   { href: "/events", label: "이벤트" },
   { href: "/store", label: "매장 안내" },
   { href: "/support", label: "고객센터" },
@@ -28,7 +29,8 @@ const headerNavItems = [
 const drawerItems = [
   { href: "/about", label: "화목 소개", icon: Home },
   { href: "/menu", label: "메뉴", icon: Utensils },
-  { href: "/events", label: "이벤트 & 쿠폰", icon: Ticket },
+  { href: "/coupons", label: "쿠폰", icon: Ticket },
+  { href: "/events", label: "이벤트", icon: Bell },
   { href: "/notices", label: "공지사항", icon: Bell },
   { href: "/store", label: "매장 안내", icon: MapPin },
   { href: "/support", label: "고객센터", icon: UserRound },
