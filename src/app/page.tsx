@@ -210,7 +210,7 @@ export default async function HomePage() {
           height={916}
           priority
           sizes="(min-width: 1717px) 1717px, 100vw"
-          className="hm-hero-image absolute right-0 top-1/2 hidden h-auto w-[min(100vw,1717px)] -translate-y-1/2 md:block"
+          className="hm-hero-image absolute left-1/2 top-0 hidden h-auto w-[min(100vw,1717px)] -translate-x-1/2 md:block"
         />
         <div className="hm-hero-overlay absolute inset-0" />
         <div className="hm-hero-gradient absolute inset-0" />
