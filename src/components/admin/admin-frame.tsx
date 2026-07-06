@@ -141,6 +141,28 @@ export function AdminFrame({
             </div>
           </div>
 
+          <nav className="mb-5 flex gap-2 overflow-x-auto rounded-[20px] border border-[rgba(255,255,255,.08)] bg-black/30 p-2 xl:hidden">
+            {adminNavItems.map((item) => {
+              const Icon = item.icon;
+              const selected = item.key === active;
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "hm-link-focus inline-flex min-h-11 shrink-0 items-center gap-2 rounded-[14px] px-3 text-xs font-extrabold text-white/58 transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)]",
+                    selected &&
+                      "bg-[var(--hm-primary)] text-[#0d0d0d] hover:bg-[var(--hm-primary)] hover:text-[#0d0d0d]",
+                  )}
+                >
+                  <Icon className="h-4 w-4" strokeWidth={1.9} aria-hidden="true" />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+
           {children}
         </section>
       </div>
