@@ -1,13 +1,25 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+  ArrowLeft,
+  ClipboardList,
+  RotateCcw,
+  StopCircle,
+  Ticket,
+  UsersRound,
+} from "lucide-react";
 import {
   resumeCouponIssueAction,
   stopCouponIssueAction,
 } from "@/app/actions/coupons";
-import { SectionHeading } from "@/components/section-heading";
+import {
+  AdminActionLink,
+  AdminFrame,
+  AdminPanel,
+  AdminPanelHeader,
+  AdminStatCard,
+} from "@/components/admin/admin-frame";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { requireAdminAccess } from "@/lib/auth/access";
 import {
   couponEventSelect,
@@ -45,20 +57,17 @@ export default async function AdminCouponDetailPage({
 
   if (!canAccess) {
     return (
-      <main className="hm-page-shell">
-        <SectionHeading
-          eyebrow="COUPON ADMIN"
-          title="쿠폰 상세"
-          description="쿠폰 발행별 다운로드와 사용 이력을 확인합니다."
-        />
-        <Card>
-          <CardContent>
-            <p className="text-sm font-semibold text-red-700">
-              관리자 권한과 이메일 인증이 필요합니다.
-            </p>
-          </CardContent>
-        </Card>
-      </main>
+      <AdminFrame
+        active="coupons"
+        title="쿠폰 상세"
+        description="관리자 권한과 이메일 인증이 필요합니다."
+      >
+        <AdminPanel className="p-6">
+          <p className="text-sm font-semibold text-[var(--hm-primary)]">
+            관리자 권한이 확인되면 쿠폰 상세 이력이 표시됩니다.
+          </p>
+        </AdminPanel>
+      </AdminFrame>
     );
   }
 
@@ -86,167 +95,184 @@ export default async function AdminCouponDetailPage({
   const coupons = (couponRows ?? []).map(mapMemberCoupon);
   const events = (eventRows ?? []).map(mapCouponEvent);
   const remainingCount = issue.quantity - issue.downloadedCount;
+  const usageRate = issue.downloadedCount > 0 ? Math.round((issue.usedCount / issue.downloadedCount) * 1000) / 10 : 0;
 
   return (
-    <main className="hm-page-shell">
-      <SectionHeading
-        eyebrow="COUPON ADMIN"
-        title={issue.name}
-        description="쿠폰 발행 상태, 다운로드 내역, 사용완료 이력을 확인합니다."
-      />
-      <div className="flex">
-        <Link
-          href="/admin/coupons"
-          className="text-sm font-semibold text-neutral-600 hover:text-neutral-950"
-        >
-          쿠폰 목록으로
-        </Link>
-      </div>
+    <AdminFrame
+      active="coupons"
+      title={issue.name}
+      description="쿠폰 발행 상태, 다운로드 내역, 사용완료 이력을 확인합니다."
+    >
+      <div className="grid gap-5">
+        <div className="flex">
+          <AdminActionLink href="/admin/coupons">
+            <ArrowLeft size={17} aria-hidden="true" />
+            쿠폰 목록으로
+          </AdminActionLink>
+        </div>
 
-      <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <Card>
-          <CardHeader>
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge tone={issue.status === "issuing" ? "green" : "neutral"}>
-                {issue.status === "issuing" ? "발행중" : "발행종료"}
-              </Badge>
-              {issue.endReason ? (
-                <Badge tone={issue.endReason === "admin_stopped" ? "amber" : "red"}>
-                  {issue.endReason === "admin_stopped" ? "관리자 중단" : "수량 소진"}
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <AdminStatCard
+            icon={<Ticket size={25} strokeWidth={1.8} aria-hidden="true" />}
+            label="할인 혜택"
+            value={formatCurrency(issue.amount)}
+            detail={`다운로드 후 ${issue.validityDays}일 사용`}
+          />
+          <AdminStatCard
+            icon={<ClipboardList size={25} strokeWidth={1.8} aria-hidden="true" />}
+            label="총 발행"
+            value={<>{issue.quantity}장</>}
+            detail={`잔여 ${remainingCount}장`}
+          />
+          <AdminStatCard
+            icon={<UsersRound size={25} strokeWidth={1.8} aria-hidden="true" />}
+            label="다운로드"
+            value={<>{issue.downloadedCount}장</>}
+            detail={`사용 완료 ${issue.usedCount}장`}
+          />
+          <AdminStatCard
+            icon={<RotateCcw size={25} strokeWidth={1.8} aria-hidden="true" />}
+            label="사용률"
+            value={<>{usageRate}%</>}
+            detail={`기간 만료 ${issue.expiredCount}장`}
+          />
+        </div>
+
+        <div className="grid gap-5 xl:grid-cols-[420px_minmax(0,1fr)]">
+          <AdminPanel>
+            <AdminPanelHeader title="발행 정보" />
+            <div className="grid gap-5 p-5">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge tone={issue.status === "issuing" ? "green" : "neutral"}>
+                  {issue.status === "issuing" ? "발행중" : "발행종료"}
                 </Badge>
-              ) : null}
-            </div>
-            <h2 className="mt-3 text-xl font-bold text-neutral-950">
-              발행 정보
-            </h2>
-          </CardHeader>
-          <CardContent className="grid gap-5">
-            <dl className="grid gap-3 text-sm sm:grid-cols-2">
-              <div>
-                <dt className="font-semibold text-neutral-950">금액</dt>
-                <dd className="text-neutral-600">{formatCurrency(issue.amount)}</dd>
+                {issue.endReason ? (
+                  <Badge tone={issue.endReason === "admin_stopped" ? "amber" : "red"}>
+                    {issue.endReason === "admin_stopped" ? "관리자 중단" : "수량 소진"}
+                  </Badge>
+                ) : null}
               </div>
-              <div>
-                <dt className="font-semibold text-neutral-950">총 발행</dt>
-                <dd className="text-neutral-600">{issue.quantity}장</dd>
+              <dl className="grid gap-4 text-sm font-semibold text-white/58">
+                <div className="flex justify-between gap-4">
+                  <dt>재다운로드</dt>
+                  <dd className="text-white/78">
+                    {issue.redownloadPolicy === "after_use_allowed"
+                      ? "사용 후 가능"
+                      : "회원당 1회"}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt>사용 처리</dt>
+                  <dd className="text-white/78">
+                    {issue.useFlow === "staff_confirm" ? "직원 확인" : "자동 완료"}
+                  </dd>
+                </div>
+              </dl>
+              <div className="rounded-[18px] border border-[rgba(255,255,255,.08)] bg-black/20 p-4 text-sm leading-6 text-white/64">
+                <p className="font-bold text-[var(--hm-primary)]">사용조건</p>
+                <p className="mt-2 whitespace-pre-line">{issue.conditionText || "조건 없음"}</p>
               </div>
-              <div>
-                <dt className="font-semibold text-neutral-950">다운로드</dt>
-                <dd className="text-neutral-600">{issue.downloadedCount}장</dd>
-              </div>
-              <div>
-                <dt className="font-semibold text-neutral-950">잔여</dt>
-                <dd className="text-neutral-600">{remainingCount}장</dd>
-              </div>
-              <div>
-                <dt className="font-semibold text-neutral-950">사용완료</dt>
-                <dd className="text-neutral-600">{issue.usedCount}장</dd>
-              </div>
-              <div>
-                <dt className="font-semibold text-neutral-950">기간만료</dt>
-                <dd className="text-neutral-600">{issue.expiredCount}장</dd>
-              </div>
-            </dl>
-            <div className="rounded-md bg-neutral-50 p-4 text-sm leading-6 text-neutral-700">
-              <p className="font-semibold text-neutral-950">사용조건</p>
-              <p className="mt-2 whitespace-pre-line">{issue.conditionText}</p>
-            </div>
-            <form
-              action={
-                issue.status === "issuing"
-                  ? stopCouponIssueAction
-                  : resumeCouponIssueAction
-              }
-            >
-              <input name="issueId" type="hidden" value={issue.id} />
-              <Button
-                type="submit"
-                variant={issue.status === "issuing" ? "danger" : "outline"}
-                disabled={
-                  issue.status === "ended" && issue.endReason !== "admin_stopped"
+              <form
+                action={
+                  issue.status === "issuing"
+                    ? stopCouponIssueAction
+                    : resumeCouponIssueAction
                 }
               >
-                {issue.status === "issuing" ? "발행중단" : "재발행"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+                <input name="issueId" type="hidden" value={issue.id} />
+                <Button
+                  type="submit"
+                  variant={issue.status === "issuing" ? "danger" : "outline"}
+                  disabled={
+                    issue.status === "ended" && issue.endReason !== "admin_stopped"
+                  }
+                  className="w-full"
+                >
+                  {issue.status === "issuing" ? (
+                    <StopCircle size={16} aria-hidden="true" />
+                  ) : (
+                    <RotateCcw size={16} aria-hidden="true" />
+                  )}
+                  {issue.status === "issuing" ? "발행중단" : "재발행"}
+                </Button>
+              </form>
+            </div>
+          </AdminPanel>
 
-        <Card>
-          <CardHeader>
-            <h2 className="text-xl font-bold text-neutral-950">이벤트 이력</h2>
-          </CardHeader>
-          <CardContent className="grid gap-3">
-            {events.map((event) => (
-              <div key={event.id} className="rounded-md border border-neutral-200 p-4">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge>{eventLabels[event.eventType] ?? event.eventType}</Badge>
-                  <p className="text-sm font-semibold text-neutral-950">
-                    {new Date(event.createdAt).toLocaleString("ko-KR")}
-                  </p>
+          <AdminPanel>
+            <AdminPanelHeader title="이벤트 이력" />
+            <div className="grid divide-y divide-[rgba(255,255,255,.06)] px-5">
+              {events.map((event) => (
+                <div key={event.id} className="grid gap-2 py-4 sm:grid-cols-[1fr_auto] sm:items-center">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge>{eventLabels[event.eventType] ?? event.eventType}</Badge>
+                      <p className="text-sm font-bold text-white">
+                        {new Date(event.createdAt).toLocaleString("ko-KR")}
+                      </p>
+                    </div>
+                    <p className="mt-2 text-sm font-medium text-white/48">
+                      처리자 {event.actorName ?? event.actorEmail ?? "-"}
+                    </p>
+                  </div>
                 </div>
-                <p className="mt-2 text-sm text-neutral-600">
-                  처리자: {event.actorName ?? event.actorEmail ?? "-"}
+              ))}
+              {events.length === 0 ? (
+                <p className="py-8 text-sm font-semibold text-white/42">
+                  기록된 이벤트가 없습니다.
                 </p>
-              </div>
-            ))}
-            {events.length === 0 ? (
-              <p className="text-sm font-semibold text-neutral-600">
-                기록된 이벤트가 없습니다.
+              ) : null}
+            </div>
+          </AdminPanel>
+        </div>
+
+        <AdminPanel>
+          <AdminPanelHeader title="다운로드 쿠폰" />
+          <div className="overflow-x-auto p-5">
+            <table className="min-w-[920px] w-full border-collapse overflow-hidden rounded-[18px] text-sm">
+              <thead className="bg-white/[0.035]">
+                <tr>
+                  {["회원", "상태", "다운로드", "유효기간", "사용 직원", "토큰"].map((head) => (
+                    <th
+                      key={head}
+                      className="px-4 py-4 text-left text-xs font-extrabold text-[var(--hm-accent-gold)]"
+                    >
+                      {head}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[rgba(255,255,255,.06)]">
+                {coupons.map((coupon) => (
+                  <tr key={coupon.id} className="transition hover:bg-white/[0.025]">
+                    <td className="px-4 py-4 font-bold text-white">
+                      {coupon.memberName || "회원"}
+                    </td>
+                    <td className="px-4 py-4">
+                      <Badge tone={coupon.status === "available" ? "green" : "neutral"}>
+                        {couponStatusLabels[coupon.status]}
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-4 text-white/62">{formatDate(coupon.downloadedAt)}</td>
+                    <td className="px-4 py-4 text-white/62">
+                      {formatDate(coupon.validFrom)} - {formatDate(coupon.validUntil)}
+                    </td>
+                    <td className="px-4 py-4 text-white/62">{coupon.usedByStaffName ?? "-"}</td>
+                    <td className="max-w-[260px] truncate px-4 py-4 text-xs text-white/36">
+                      {coupon.token}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {coupons.length === 0 ? (
+              <p className="py-8 text-sm font-semibold text-white/42">
+                다운로드된 쿠폰이 없습니다.
               </p>
             ) : null}
-          </CardContent>
-        </Card>
+          </div>
+        </AdminPanel>
       </div>
-
-      <Card>
-        <CardHeader>
-          <h2 className="text-xl font-bold text-neutral-950">다운로드 쿠폰</h2>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          {coupons.map((coupon) => (
-            <div
-              key={coupon.id}
-              className="grid gap-4 rounded-md border border-neutral-200 p-4 lg:grid-cols-[1fr_auto]"
-            >
-              <div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-bold text-neutral-950">
-                    {coupon.memberName || "회원"}
-                  </h3>
-                  <Badge tone={coupon.status === "available" ? "green" : "neutral"}>
-                    {couponStatusLabels[coupon.status]}
-                  </Badge>
-                </div>
-                <dl className="mt-3 grid gap-2 text-sm text-neutral-600 sm:grid-cols-3">
-                  <div>
-                    <dt className="font-semibold text-neutral-950">다운로드</dt>
-                    <dd>{formatDate(coupon.downloadedAt)}</dd>
-                  </div>
-                  <div>
-                    <dt className="font-semibold text-neutral-950">유효기간</dt>
-                    <dd>
-                      {formatDate(coupon.validFrom)} - {formatDate(coupon.validUntil)}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="font-semibold text-neutral-950">사용 직원</dt>
-                    <dd>{coupon.usedByStaffName ?? "-"}</dd>
-                  </div>
-                </dl>
-              </div>
-              <p className="break-all rounded-md bg-neutral-50 p-3 text-xs text-neutral-500">
-                {coupon.token}
-              </p>
-            </div>
-          ))}
-          {coupons.length === 0 ? (
-            <p className="text-sm font-semibold text-neutral-600">
-              다운로드된 쿠폰이 없습니다.
-            </p>
-          ) : null}
-        </CardContent>
-      </Card>
-    </main>
+    </AdminFrame>
   );
 }

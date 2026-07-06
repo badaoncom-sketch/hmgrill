@@ -132,7 +132,7 @@ export default async function AdminSectionPage({
         />
         <Card>
           <CardContent>
-            <p className="text-sm font-semibold text-red-700">
+            <p className="text-sm font-semibold text-[#f0a39b]">
               관리자 권한과 이메일 인증이 필요합니다.
             </p>
           </CardContent>
@@ -164,11 +164,11 @@ export default async function AdminSectionPage({
             {profiles.map((profile) => (
               <div
                 key={profile.id}
-                className="grid gap-4 rounded-md border border-neutral-200 p-4 lg:grid-cols-[1fr_auto]"
+                className="grid gap-4 rounded-md border border-[var(--hm-border)] p-4 lg:grid-cols-[1fr_auto]"
               >
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="font-bold text-neutral-950">
+                    <h2 className="font-bold text-white">
                       {profile.name || profile.email}
                     </h2>
                     <Badge tone={roleTones[profile.role]}>
@@ -178,17 +178,17 @@ export default async function AdminSectionPage({
                       {profile.email_verified ? "이메일 인증" : "미인증"}
                     </Badge>
                   </div>
-                  <dl className="mt-3 grid gap-2 text-sm text-neutral-600 sm:grid-cols-2">
+                  <dl className="mt-3 grid gap-2 text-sm text-white/58 sm:grid-cols-2">
                     <div>
-                      <dt className="font-semibold text-neutral-900">이메일</dt>
+                      <dt className="font-semibold text-white/82">이메일</dt>
                       <dd>{profile.email}</dd>
                     </div>
                     <div>
-                      <dt className="font-semibold text-neutral-900">연락처</dt>
+                      <dt className="font-semibold text-white/82">연락처</dt>
                       <dd>{profile.phone || "-"}</dd>
                     </div>
                     <div>
-                      <dt className="font-semibold text-neutral-900">가입일</dt>
+                      <dt className="font-semibold text-white/82">가입일</dt>
                       <dd>
                         {new Date(profile.created_at).toLocaleDateString("ko-KR")}
                       </dd>
@@ -213,7 +213,7 @@ export default async function AdminSectionPage({
               </div>
             ))}
             {profiles.length === 0 ? (
-              <p className="text-sm font-semibold text-neutral-600">
+              <p className="text-sm font-semibold text-white/58">
                 표시할 계정이 없습니다.
               </p>
             ) : null}
@@ -267,10 +267,10 @@ export default async function AdminSectionPage({
                 <Field label="정렬순서">
                   <Input name="sortOrder" defaultValue={0} type="number" />
                 </Field>
-                <label className="flex items-center gap-2 text-sm font-semibold text-neutral-800">
+                <label className="flex items-center gap-2 text-sm font-semibold text-white/72">
                   <input name="featured" type="checkbox" /> 대표 노출
                 </label>
-                <label className="flex items-center gap-2 text-sm font-semibold text-neutral-800">
+                <label className="flex items-center gap-2 text-sm font-semibold text-white/72">
                   <input name="isActive" defaultChecked type="checkbox" /> 공개
                 </label>
                 <Button type="submit">메뉴 추가</Button>
@@ -280,15 +280,15 @@ export default async function AdminSectionPage({
           <Card>
             <CardContent className="grid gap-4">
               {menuItems.map((item) => (
-                <div key={item.id} className="rounded-md border border-neutral-200 p-4">
+                <div key={item.id} className="rounded-md border border-[var(--hm-border)] p-4">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="font-bold text-neutral-950">{item.name}</h2>
+                    <h2 className="font-bold text-white">{item.name}</h2>
                     <Badge tone={item.isActive ? "green" : "neutral"}>
                       {item.isActive ? "공개" : "비공개"}
                     </Badge>
                     <Badge>{item.category}</Badge>
                   </div>
-                  <p className="mt-2 text-sm text-neutral-600">{item.description}</p>
+                  <p className="mt-2 text-sm text-white/58">{item.description}</p>
                   <form
                     action={updateMenuItemAction}
                     className="mt-4 grid gap-3 md:grid-cols-2"
@@ -334,7 +334,7 @@ export default async function AdminSectionPage({
                         />
                       </Field>
                     </div>
-                    <label className="flex items-center gap-2 text-sm font-semibold text-neutral-800">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-white/72">
                       <input
                         name="featured"
                         defaultChecked={item.featured}
@@ -342,7 +342,7 @@ export default async function AdminSectionPage({
                       />
                       대표 노출
                     </label>
-                    <label className="flex items-center gap-2 text-sm font-semibold text-neutral-800">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-white/72">
                       <input
                         name="isActive"
                         defaultChecked={item.isActive}
@@ -408,14 +408,14 @@ export default async function AdminSectionPage({
           <Card>
             <CardContent className="grid gap-4">
               {posts.map((post) => (
-                <div key={post.id} className="rounded-md border border-neutral-200 p-4">
+                <div key={post.id} className="rounded-md border border-[var(--hm-border)] p-4">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="font-bold text-neutral-950">{post.title}</h2>
+                    <h2 className="font-bold text-white">{post.title}</h2>
                     <Badge tone={post.status === "published" ? "green" : "neutral"}>
                       {statusLabels[post.status]}
                     </Badge>
                   </div>
-                  <p className="mt-2 whitespace-pre-line text-sm text-neutral-600">
+                  <p className="mt-2 whitespace-pre-line text-sm text-white/58">
                     {post.body}
                   </p>
                   <form
@@ -474,15 +474,15 @@ export default async function AdminSectionPage({
         <Card>
           <CardContent className="grid gap-4">
             {inquiries.map((inquiry) => (
-              <div key={inquiry.id} className="rounded-md border border-neutral-200 p-4">
+              <div key={inquiry.id} className="rounded-md border border-[var(--hm-border)] p-4">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="font-bold text-neutral-950">{inquiry.name}</h2>
+                  <h2 className="font-bold text-white">{inquiry.name}</h2>
                   <Badge tone={inquiry.status === "open" ? "amber" : "neutral"}>
                     {inquiryStatusLabels[inquiry.status]}
                   </Badge>
                 </div>
-                <p className="mt-1 text-sm text-neutral-500">{inquiry.email}</p>
-                <p className="mt-3 whitespace-pre-line text-sm text-neutral-700">
+                <p className="mt-1 text-sm text-white/42">{inquiry.email}</p>
+                <p className="mt-3 whitespace-pre-line text-sm text-white/64">
                   {inquiry.message}
                 </p>
                 <form
@@ -511,7 +511,7 @@ export default async function AdminSectionPage({
               </div>
             ))}
             {inquiries.length === 0 ? (
-              <p className="text-sm font-semibold text-neutral-600">
+              <p className="text-sm font-semibold text-white/58">
                 접수된 문의가 없습니다.
               </p>
             ) : null}
@@ -571,7 +571,7 @@ export default async function AdminSectionPage({
                 <Field label="정렬순서">
                   <Input name="sortOrder" defaultValue={0} type="number" />
                 </Field>
-                <label className="flex items-center gap-2 text-sm font-semibold text-neutral-800">
+                <label className="flex items-center gap-2 text-sm font-semibold text-white/72">
                   <input name="isActive" defaultChecked type="checkbox" /> 활성
                 </label>
                 <Button type="submit">{isBanner ? "배너 추가" : "팝업 추가"}</Button>
@@ -581,14 +581,14 @@ export default async function AdminSectionPage({
           <Card>
             <CardContent className="grid gap-4">
               {items.map((item) => (
-                <div key={item.id} className="rounded-md border border-neutral-200 p-4">
+                <div key={item.id} className="rounded-md border border-[var(--hm-border)] p-4">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="font-bold text-neutral-950">{item.title}</h2>
+                    <h2 className="font-bold text-white">{item.title}</h2>
                     <Badge tone={item.isActive ? "green" : "neutral"}>
                       {item.isActive ? "활성" : "비활성"}
                     </Badge>
                   </div>
-                  <p className="mt-2 text-sm text-neutral-600">{item.body}</p>
+                  <p className="mt-2 text-sm text-white/58">{item.body}</p>
                   <form
                     action={isBanner ? updateSiteBannerAction : updateSitePopupAction}
                     className="mt-4 grid gap-3"
@@ -633,7 +633,7 @@ export default async function AdminSectionPage({
                         />
                       </Field>
                     </div>
-                    <label className="flex items-center gap-2 text-sm font-semibold text-neutral-800">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-white/72">
                       <input
                         name="isActive"
                         defaultChecked={item.isActive}
@@ -663,7 +663,7 @@ export default async function AdminSectionPage({
       />
       <Card>
         <CardContent>
-          <p className="text-sm leading-6 text-neutral-600">
+          <p className="text-sm leading-6 text-white/58">
             현재 1차 구현에서는 관리자 메뉴 라우트와 접근 구조를 먼저
             구성했습니다. 이후 Supabase 테이블, RLS, 서버 액션 연결 단계에서
             실제 목록과 편집 기능을 구현합니다.

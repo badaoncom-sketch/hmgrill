@@ -67,7 +67,7 @@ export function CouponIssueForm() {
         {isPending ? "발행 중" : "쿠폰 발행"}
       </Button>
       {state.message ? (
-        <p className={state.ok ? "text-sm text-emerald-700" : "text-sm text-red-700"}>
+        <p className={state.ok ? "text-sm font-semibold text-emerald-200" : "text-sm font-semibold text-[#f0a39b]"}>
           {state.message}
         </p>
       ) : null}
