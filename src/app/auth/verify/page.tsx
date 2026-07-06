@@ -24,7 +24,7 @@ export default async function VerifyEmailPage({
       <Card>
         <CardContent>
           <MailCheck
-            className={result.ok ? "text-emerald-700" : "text-red-700"}
+            className={result.ok ? "text-emerald-200" : "text-[#f0a39b]"}
             size={32}
             aria-hidden="true"
           />

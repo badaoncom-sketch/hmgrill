@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { type ComponentPropsWithoutRef, useActionState, useState } from "react";
 import {
   loginAction,
   requestPasswordResetAction,
@@ -25,14 +26,18 @@ export function SignupForm() {
   return (
     <form action={formAction} className="grid gap-4">
       <Field label="이메일">
-        <Input name="email" type="email" placeholder="member@example.com" required />
+        <Input
+          name="email"
+          type="email"
+          placeholder="member@example.com"
+          required
+          disabled={isPending}
+        />
       </Field>
       <Field label="비밀번호">
-        <Input name="password" minLength={8} type="password" required />
+        <PasswordInput name="password" minLength={8} required disabled={isPending} />
       </Field>
-      <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "처리 중" : "회원가입"}
-      </Button>
+      <SubmitButton pending={isPending} label="회원가입" pendingLabel="가입 처리 중" />
       <ActionMessage ok={state.ok} message={state.message} />
     </form>
   );
@@ -47,11 +52,19 @@ export function PasswordResetRequestForm() {
   return (
     <form action={formAction} className="grid gap-4">
       <Field label="가입 이메일">
-        <Input name="email" type="email" placeholder="member@example.com" required />
+        <Input
+          name="email"
+          type="email"
+          placeholder="member@example.com"
+          required
+          disabled={isPending}
+        />
       </Field>
-      <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "발송 중" : "비밀번호 재설정 메일 받기"}
-      </Button>
+      <SubmitButton
+        pending={isPending}
+        label="비밀번호 재설정 메일 받기"
+        pendingLabel="메일 발송 중"
+      />
       <ActionMessage ok={state.ok} message={state.message} />
     </form>
   );
@@ -66,14 +79,17 @@ export function UpdatePasswordForm() {
   return (
     <form action={formAction} className="grid gap-4">
       <Field label="새 비밀번호">
-        <Input name="password" minLength={8} type="password" required />
+        <PasswordInput name="password" minLength={8} required disabled={isPending} />
       </Field>
       <Field label="새 비밀번호 확인">
-        <Input name="passwordConfirm" minLength={8} type="password" required />
+        <PasswordInput
+          name="passwordConfirm"
+          minLength={8}
+          required
+          disabled={isPending}
+        />
       </Field>
-      <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "변경 중" : "비밀번호 변경"}
-      </Button>
+      <SubmitButton pending={isPending} label="비밀번호 변경" pendingLabel="변경 중" />
       <ActionMessage ok={state.ok} message={state.message} />
     </form>
   );
@@ -85,14 +101,33 @@ export function LoginForm() {
   return (
     <form action={formAction} className="grid gap-4">
       <Field label="이메일">
-        <Input name="email" type="email" placeholder="member@example.com" required />
+        <Input
+          name="email"
+          type="email"
+          placeholder="member@example.com"
+          required
+          disabled={isPending}
+        />
       </Field>
       <Field label="비밀번호">
-        <Input name="password" type="password" required />
+        <PasswordInput name="password" required disabled={isPending} />
       </Field>
-      <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "처리 중" : "로그인"}
-      </Button>
+      <label className="hm-link-focus flex items-start gap-3 rounded-[14px] border border-[var(--hm-border)] bg-white/[0.03] p-3 text-sm text-[var(--hm-subtext)] transition hover:border-[rgba(247,230,193,.22)]">
+        <input
+          name="rememberMe"
+          type="checkbox"
+          defaultChecked
+          disabled={isPending}
+          className="mt-0.5 size-4 rounded border-[var(--hm-border)] accent-[var(--hm-primary)]"
+        />
+        <span className="grid gap-1">
+          <span className="font-semibold text-[var(--hm-text)]">자동 로그인</span>
+          <span className="text-xs leading-5">
+            개인 기기에서는 로그인 상태를 유지합니다. 공용 기기에서는 선택을 해제해 주세요.
+          </span>
+        </span>
+      </label>
+      <SubmitButton pending={isPending} label="로그인" pendingLabel="로그인 중" />
       <ActionMessage ok={state.ok} message={state.message} />
     </form>
   );
@@ -107,13 +142,70 @@ export function ResendVerificationForm() {
   return (
     <form action={formAction} className="grid gap-3">
       <Field label="인증 메일 재발송">
-        <Input name="email" type="email" placeholder="member@example.com" required />
+        <Input
+          name="email"
+          type="email"
+          placeholder="member@example.com"
+          required
+          disabled={isPending}
+        />
       </Field>
-      <Button type="submit" variant="outline" disabled={isPending}>
-        {isPending ? "발송 중" : "재발송"}
-      </Button>
+      <SubmitButton
+        pending={isPending}
+        label="재발송"
+        pendingLabel="발송 중"
+        variant="outline"
+      />
       <ActionMessage ok={state.ok} message={state.message} />
     </form>
+  );
+}
+
+function PasswordInput({ className, ...props }: ComponentPropsWithoutRef<"input">) {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <span className="relative block">
+      <Input
+        {...props}
+        type={visible ? "text" : "password"}
+        className={["w-full pr-12", className].filter(Boolean).join(" ")}
+      />
+      <button
+        type="button"
+        onClick={() => setVisible((current) => !current)}
+        className="hm-link-focus absolute right-3 top-1/2 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-[var(--hm-subtext)] transition hover:bg-white/[0.05] hover:text-[var(--hm-primary)] disabled:pointer-events-none disabled:opacity-50"
+        disabled={props.disabled}
+        aria-label={visible ? "비밀번호 숨기기" : "비밀번호 보기"}
+      >
+        {visible ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+      </button>
+    </span>
+  );
+}
+
+function SubmitButton({
+  pending,
+  label,
+  pendingLabel,
+  variant = "primary",
+}: {
+  pending: boolean;
+  label: string;
+  pendingLabel: string;
+  variant?: "primary" | "outline";
+}) {
+  return (
+    <Button type="submit" className="w-full" variant={variant} disabled={pending}>
+      {pending ? (
+        <>
+          <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+          <span>{pendingLabel}</span>
+        </>
+      ) : (
+        label
+      )}
+    </Button>
   );
 }
 
@@ -123,7 +215,12 @@ function ActionMessage({ ok, message }: { ok: boolean; message: string }) {
   }
 
   return (
-    <p className={ok ? "text-sm text-emerald-700" : "text-sm text-red-700"}>
+    <p
+      className={
+        ok ? "text-sm text-emerald-200" : "text-sm text-[#f0a39b]"
+      }
+      aria-live="polite"
+    >
       {message}
     </p>
   );

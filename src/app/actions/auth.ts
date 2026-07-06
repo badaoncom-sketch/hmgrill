@@ -1,5 +1,6 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createAndSendVerificationEmail } from "@/lib/auth/verification";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -13,6 +14,28 @@ type AuthActionState = {
 function readRequiredString(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
+}
+
+function readCheckbox(formData: FormData, key: string) {
+  return formData.get(key) === "on";
+}
+
+async function applyBrowserSessionCookies() {
+  const cookieStore = await cookies();
+  const authCookies = cookieStore
+    .getAll()
+    .filter(
+      (cookie) =>
+        cookie.name.startsWith("sb-") && cookie.name.includes("auth-token"),
+    );
+
+  for (const cookie of authCookies) {
+    cookieStore.set(cookie.name, cookie.value, {
+      path: "/",
+      sameSite: "lax",
+      secure: process.env.NEXT_PUBLIC_SITE_URL?.startsWith("https://") ?? false,
+    });
+  }
 }
 
 export async function signupAction(
@@ -158,6 +181,7 @@ export async function loginAction(
 ): Promise<AuthActionState> {
   const email = readRequiredString(formData, "email").toLowerCase();
   const password = readRequiredString(formData, "password");
+  const rememberMe = readCheckbox(formData, "rememberMe");
 
   if (!email || !password) {
     return { ok: false, message: "이메일과 비밀번호를 입력해 주세요." };
@@ -193,6 +217,10 @@ export async function loginAction(
       ok: false,
       message: "이메일 인증 후 로그인할 수 있습니다.",
     };
+  }
+
+  if (!rememberMe) {
+    await applyBrowserSessionCookies();
   }
 
   redirect("/mypage");
