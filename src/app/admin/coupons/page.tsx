@@ -107,6 +107,9 @@ export default async function AdminCouponsPage({
   const maxQuantity = Math.max(1, ...chartSeed.map((issue) => issue.quantity));
   const notifications = [
     {
+      id: query
+        ? `coupon-search-${query}-${filteredCouponIssues.length}`
+        : "coupon-search-ready",
       title: "쿠폰 목록 검색 가능",
       description: query
         ? `"${query}" 검색 결과 ${filteredCouponIssues.length}개를 확인 중입니다.`
@@ -115,6 +118,7 @@ export default async function AdminCouponsPage({
       tone: "green" as const,
     },
     ...recentEvents.map((event) => ({
+      id: `coupon-event-${event.id}`,
       title:
         event.eventType === "coupon_used"
           ? "쿠폰 사용 처리"

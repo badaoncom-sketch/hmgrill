@@ -7,6 +7,7 @@ import {
   CalendarDays,
   ChevronDown,
   ClipboardList,
+  Inbox,
   LayoutDashboard,
   LogOut,
   MenuSquare,
@@ -17,10 +18,13 @@ import {
   UserRound,
   UsersRound,
 } from "lucide-react";
+import { AdminNotificationCenter } from "@/components/admin/admin-notification-center";
+import type { AdminNotification } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const adminNavItems = [
   { href: "/admin", label: "대시보드", icon: LayoutDashboard, key: "dashboard" },
+  { href: "/admin/notifications", label: "알림함", icon: Inbox, key: "notifications" },
   { href: "/admin/coupons", label: "쿠폰 관리", icon: Ticket, key: "coupons" },
   { href: "/admin/members", label: "회원 관리", icon: UsersRound, key: "members" },
   { href: "/admin/staff", label: "직원 관리", icon: UserRound, key: "staff" },
@@ -35,26 +39,22 @@ const adminNavItems = [
 
 type AdminNavKey = (typeof adminNavItems)[number]["key"];
 
-export type AdminNotification = {
-  title: string;
-  description: string;
-  href: string;
-  tone?: "amber" | "red" | "green";
-};
-
 const defaultNotifications: AdminNotification[] = [
   {
+    id: "default-dashboard",
     title: "운영 현황 확인",
     description: "대시보드에서 쿠폰, 문의, 콘텐츠 상태를 점검합니다.",
     href: "/admin",
     tone: "amber",
   },
   {
+    id: "default-notices",
     title: "공지사항 관리",
     description: "고객에게 노출되는 안내를 최신 상태로 유지합니다.",
     href: "/admin/notices",
   },
   {
+    id: "default-inquiries",
     title: "문의 응답 대기",
     description: "접수된 문의가 있으면 고객센터 메뉴에서 처리합니다.",
     href: "/admin/inquiries",
@@ -163,57 +163,7 @@ export function AdminFrame({
               <span>{today}</span>
               <span className="hidden h-4 w-px bg-white/14 md:block" />
               <span>28°C</span>
-              <div className="group relative">
-                <button
-                  type="button"
-                  aria-label="관리자 알림"
-                  className="hm-link-focus relative grid h-11 w-11 place-items-center rounded-[14px] border border-[rgba(255,255,255,.09)] bg-white/[0.035] text-[var(--hm-primary)] transition hover:border-[rgba(247,230,193,.28)] hover:bg-white/[0.06]"
-                >
-                  <Bell size={19} aria-hidden="true" />
-                  {notifications.length > 0 ? (
-                    <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[var(--hm-accent-red)]" />
-                  ) : null}
-                </button>
-                <div className="invisible absolute right-0 top-[calc(100%+10px)] z-50 w-[min(360px,calc(100vw-32px))] translate-y-2 rounded-[20px] border border-[rgba(255,255,255,.1)] bg-[linear-gradient(145deg,rgba(24,24,24,.98),rgba(10,10,10,.98))] p-2 opacity-0 shadow-[0_28px_80px_rgba(0,0,0,.5)] transition group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                  <div className="border-b border-[rgba(255,255,255,.06)] px-3 py-3">
-                    <p className="text-sm font-extrabold text-white">알림</p>
-                    <p className="mt-1 text-xs font-semibold text-white/42">
-                      운영자가 바로 확인할 항목입니다.
-                    </p>
-                  </div>
-                  <div className="grid py-2">
-                    {notifications.map((item, index) => (
-                      <Link
-                        key={`${item.href}-${item.title}-${index}`}
-                        href={item.href}
-                        className="hm-link-focus grid gap-1 rounded-[14px] px-3 py-3 text-left transition hover:bg-white/[0.045]"
-                      >
-                        <span className="flex items-center gap-2 text-sm font-extrabold text-white">
-                          <i
-                            className={cn(
-                              "h-2 w-2 rounded-full",
-                              item.tone === "red"
-                                ? "bg-[var(--hm-accent-red)]"
-                                : item.tone === "green"
-                                  ? "bg-emerald-400"
-                                  : "bg-[var(--hm-accent-gold)]",
-                            )}
-                          />
-                          {item.title}
-                        </span>
-                        <span className="text-xs font-semibold leading-5 text-white/48">
-                          {item.description}
-                        </span>
-                      </Link>
-                    ))}
-                    {notifications.length === 0 ? (
-                      <p className="px-3 py-5 text-sm font-semibold text-white/42">
-                        새 알림이 없습니다.
-                      </p>
-                    ) : null}
-                  </div>
-                </div>
-              </div>
+              <AdminNotificationCenter notifications={notifications} />
             </div>
           </div>
 

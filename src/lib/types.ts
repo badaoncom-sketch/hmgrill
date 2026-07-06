@@ -1,5 +1,17 @@
 export type UserRole = "member" | "staff" | "admin";
 
+export type AdminNotificationTone = "amber" | "red" | "green";
+
+export type AdminNotification = {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  tone?: AdminNotificationTone;
+  category?: string;
+  createdAt?: string;
+};
+
 export type CouponIssueStatus = "issuing" | "ended";
 
 export type CouponEndReason = "quantity_sold_out" | "admin_stopped";
