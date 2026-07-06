@@ -200,7 +200,7 @@ export default async function HomePage() {
           alt=""
           fill
           priority
-          sizes="100vw"
+          sizes="(max-width: 767px) 100vw, 0px"
           className="object-contain object-center brightness-[1.1] saturate-[1.05] md:hidden"
         />
         <Image
@@ -523,40 +523,40 @@ function TabletHome({
   const tabletInstagram = instagramImages.slice(0, 4);
 
   return (
-    <div className="hidden min-h-[calc(100svh-80px)] bg-[var(--hm-background)] px-3 pb-[94px] pt-3 md:block xl:hidden">
-      <div className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_360px]">
+    <div className="hidden min-h-[calc(100svh-80px)] bg-[var(--hm-background)] px-2 pb-[78px] pt-2 md:block xl:hidden lg:px-3">
+      <div className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(330px,0.44fr)]">
         <section className="grid gap-2">
           <div className="grid gap-2 lg:grid-cols-[minmax(0,.95fr)_minmax(0,1.05fr)]">
-            <article className="hm-tablet-panel relative h-[360px] overflow-hidden">
+            <article className="hm-tablet-panel relative h-[328px] overflow-hidden lg:h-[336px]">
               <Image
                 src="/images/brand/brand-hero-background.png"
                 alt=""
                 fill
                 priority
                 sizes="55vw"
-                className="object-contain object-center"
+                className="object-cover object-center"
               />
               <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,.86),rgba(0,0,0,.38)_72%,rgba(0,0,0,.12))]" />
-              <div className="relative flex h-full flex-col justify-center p-8">
-                <h1 className="hm-serif text-[clamp(34px,3.6vw,44px)] font-bold leading-[1.28] text-[var(--hm-primary)]">
+              <div className="relative flex h-full flex-col justify-center p-7 lg:p-8">
+                <h1 className="hm-serif text-[clamp(31px,3.25vw,40px)] font-bold leading-[1.28] text-[var(--hm-primary)]">
                   <span className="block whitespace-nowrap">참나무 장작의</span>
                   <span className="block whitespace-nowrap">깊은 향,</span>
                   <span className="block whitespace-nowrap">화목의 시간</span>
                 </h1>
-                <p className="mt-7 text-[15px] font-semibold leading-7 text-white/72">
+                <p className="mt-6 text-[14px] font-semibold leading-7 text-white/72">
                   좋은 사람과 함께하는 시간,
                   <br />
                   정성으로 구워낸 특별한 맛을 전합니다.
                 </p>
-                <ButtonLink href="/menu" className="mt-8 w-fit min-h-11 px-5 text-[13px] font-bold">
+                <ButtonLink href="/menu" className="mt-7 w-fit min-h-11 px-5 text-[13px] font-bold">
                   화목 둘러보기
                   <ArrowRight size={14} aria-hidden="true" />
                 </ButtonLink>
               </div>
             </article>
 
-            <article className="hm-tablet-panel h-[360px] overflow-hidden p-5">
-              <div className="mb-5 flex items-center justify-between">
+            <article className="hm-tablet-panel h-[328px] overflow-hidden p-4 lg:h-[336px] lg:p-5">
+              <div className="mb-4 flex items-center justify-between">
                 <h2 className="hm-serif text-[22px] font-bold text-[var(--hm-primary)]">화목의 대표 메뉴</h2>
                 <ButtonLink href="/menu" variant="ghost" className="h-auto min-h-0 px-0 py-0 text-[12px] font-bold">
                   전체 메뉴 보기
@@ -578,18 +578,18 @@ function TabletHome({
           </div>
 
           <div className="grid gap-2 lg:grid-cols-[1fr_1fr]">
-            <article className="hm-tablet-panel h-[178px] overflow-hidden p-5">
-              <div className="mb-5 flex items-start justify-between gap-4">
+            <article className="hm-tablet-panel h-[198px] overflow-hidden p-4 lg:p-5">
+              <div className="mb-3 flex items-start justify-between gap-3">
                 <div>
                   <p className="hm-eyebrow">ABOUT HWAMOK</p>
-                  <h2 className="hm-serif mt-2 text-[20px] font-bold text-[var(--hm-primary)]">화목, 그 특별한 이야기</h2>
+                  <h2 className="hm-serif mt-2 whitespace-nowrap text-[18px] font-bold text-[var(--hm-primary)] lg:text-[19px]">화목, 그 특별한 이야기</h2>
                 </div>
-                <ButtonLink href="/about" variant="ghost" className="h-auto min-h-0 px-0 py-0 text-[12px] font-bold">
+                <ButtonLink href="/about" variant="ghost" className="h-auto min-h-0 whitespace-nowrap px-0 py-0 text-[11px] font-bold">
                   더 알아보기
                   <ArrowRight size={13} aria-hidden="true" />
                 </ButtonLink>
               </div>
-              <div className="relative h-[74px] overflow-hidden rounded-[14px] border border-[var(--hm-border)]">
+              <div className="relative h-[58px] overflow-hidden rounded-[14px] border border-[var(--hm-border)]">
                 <Image
                   src="/images/brand/brand-storefront.png"
                   alt="화목 공간"
@@ -598,16 +598,16 @@ function TabletHome({
                   className="object-cover"
                 />
               </div>
-              <p className="mt-3 line-clamp-2 text-[12px] font-medium leading-5 text-white/68">
+              <p className="mt-3 line-clamp-1 text-[12px] font-medium leading-5 text-white/68">
                 화목은 참나무 장작구이를 통해 음식 본연의 맛과 향을 살리고,
                 좋은 사람들과 함께하는 소중한 시간을 만들어가는 공간입니다.
               </p>
             </article>
 
-            <article className="hm-tablet-panel h-[178px] overflow-hidden p-5">
-              <div className="mb-5 flex items-center justify-between">
+            <article className="hm-tablet-panel h-[198px] overflow-hidden p-4 lg:p-5">
+              <div className="mb-4 flex items-center justify-between">
                 <h2 className="hm-serif text-[20px] font-bold text-[var(--hm-primary)]">이벤트 & 쿠폰</h2>
-                <ButtonLink href="/events" variant="ghost" className="h-auto min-h-0 px-0 py-0 text-[12px] font-bold">
+                <ButtonLink href="/events" variant="ghost" className="h-auto min-h-0 whitespace-nowrap px-0 py-0 text-[11px] font-bold">
                   전체 보기
                   <ArrowRight size={13} aria-hidden="true" />
                 </ButtonLink>
@@ -619,13 +619,12 @@ function TabletHome({
                     href={item.href}
                     className="hm-card-hover overflow-hidden rounded-[14px] border border-[var(--hm-border)] bg-[rgba(255,255,255,.035)]"
                   >
-                    <div className="relative aspect-square">
+                    <div className="relative h-[42px]">
                       <Image src={item.imageUrl} alt={item.title} fill sizes="16vw" className="object-cover" />
                     </div>
-                    <div className="p-3">
-                      <h3 className="line-clamp-2 text-[13px] font-bold leading-5 text-white">{item.title}</h3>
-                      <p className="mt-2 line-clamp-2 text-[11px] font-medium leading-5 text-white/55">{item.body}</p>
-                      <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-[var(--hm-primary)]">
+                    <div className="p-2.5">
+                      <h3 className="line-clamp-1 text-[12px] font-bold leading-5 text-white">{item.title}</h3>
+                      <span className="mt-1.5 inline-flex items-center gap-0.5 whitespace-nowrap text-[10px] font-bold text-[var(--hm-primary)]">
                         자세히 보기 <ArrowRight size={11} aria-hidden="true" />
                       </span>
                     </div>
@@ -636,9 +635,9 @@ function TabletHome({
           </div>
         </section>
 
-        <aside className="grid gap-2">
-          <article className="hm-tablet-panel h-[416px] overflow-hidden p-5">
-            <div className="mb-5 flex items-center justify-between">
+        <aside className="grid content-start gap-2">
+          <article className="hm-tablet-panel overflow-hidden p-4">
+            <div className="mb-4 flex items-center justify-between">
               <h2 className="hm-serif text-[24px] font-bold text-[var(--hm-primary)]">매장 안내</h2>
               <ButtonLink href="/store" variant="ghost" className="h-auto min-h-0 px-0 py-0 text-[12px] font-bold">
                 전체 매장 보기
@@ -646,17 +645,17 @@ function TabletHome({
               </ButtonLink>
             </div>
             <div
-              className="h-[170px] overflow-hidden rounded-[14px] border border-[var(--hm-border)] bg-[url('/images/brand/brand-storefront.png')] bg-cover bg-center"
+              className="h-[144px] overflow-hidden rounded-[14px] border border-[var(--hm-border)] bg-[url('/images/brand/brand-storefront.png')] bg-cover bg-center lg:h-[152px]"
               role="img"
               aria-label={storeInfo.name}
             >
             </div>
-            <div className="mt-5 rounded-[18px] border border-[var(--hm-border)] bg-[rgba(255,255,255,.035)] p-5">
+            <div className="mt-3 rounded-[18px] border border-[var(--hm-border)] bg-[rgba(255,255,255,.035)] p-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-[20px] font-bold text-white">{storeInfo.name}</h3>
+                <h3 className="text-[18px] font-bold text-white">{storeInfo.name}</h3>
                 <span className="rounded-full bg-[rgba(70,155,90,.2)] px-3 py-1 text-[11px] font-bold text-[#77d091]">영업중</span>
               </div>
-              <div className="mt-4 grid gap-3 text-[13px] font-medium text-white/68">
+              <div className="mt-3 grid gap-2 text-[12px] font-medium leading-5 text-white/68">
                 <p className="flex gap-3">
                   <MapPin className="mt-0.5 shrink-0 text-[var(--hm-accent-gold)]" size={16} aria-hidden="true" />
                   {storeInfo.address}
@@ -667,18 +666,22 @@ function TabletHome({
                 </p>
                 <p className="flex gap-3">
                   <Clock className="mt-0.5 shrink-0 text-[var(--hm-accent-gold)]" size={16} aria-hidden="true" />
-                  {storeInfo.hours.join(" / ")}
+                  <span>
+                    {storeInfo.hours[0]}
+                    <br />
+                    {storeInfo.hours[1]}
+                  </span>
                 </p>
               </div>
-              <div className="mt-5 grid grid-cols-2 gap-3">
-                <ButtonLink href="/store" variant="outline" className="min-h-10 text-[12px]">길찾기</ButtonLink>
-                <ButtonLink href="/support" variant="outline" className="min-h-10 text-[12px]">전화하기</ButtonLink>
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <ButtonLink href="/store" variant="outline" className="min-h-9 text-[12px]">길찾기</ButtonLink>
+                <ButtonLink href="/support" variant="outline" className="min-h-9 text-[12px]">전화하기</ButtonLink>
               </div>
             </div>
           </article>
 
-          <article className="hm-tablet-panel h-[126px] overflow-hidden p-5">
-            <div className="mb-5 flex items-center justify-between">
+          <article className="hm-tablet-panel overflow-hidden p-4">
+            <div className="mb-3 flex items-center justify-between">
               <h2 className="hm-serif text-[22px] font-bold text-[var(--hm-primary)]">인스타그램</h2>
               <ButtonLink href="/events" variant="ghost" className="h-auto min-h-0 px-0 py-0 text-[12px] font-bold">
                 더보기
@@ -712,7 +715,7 @@ function TabletMenuCard({
       href={`/menu/${item.id}`}
       className="hm-card-hover overflow-hidden rounded-[14px] border border-[var(--hm-border)] bg-[rgba(255,255,255,.035)]"
     >
-      <div className="relative h-[78px]">
+      <div className="relative h-[52px] lg:h-[56px]">
         <Image
           src={item.imageUrl ?? "/images/menu/1783221304773.png"}
           alt={item.name}
@@ -723,10 +726,9 @@ function TabletMenuCard({
         />
         <Badge tone="neutral" className="absolute left-2 top-2 text-[10px]">{item.category}</Badge>
       </div>
-      <div className="p-3">
-        <h3 className="line-clamp-2 text-[13px] font-bold leading-5 text-white">{item.name}</h3>
-        <p className="mt-1 line-clamp-1 text-[11px] font-medium leading-5 text-white/55">{item.description}</p>
-        <p className="mt-2 text-[13px] font-bold text-[var(--hm-primary)]">{formatCurrency(item.price)}</p>
+      <div className="p-2.5">
+        <h3 className="line-clamp-1 text-[13px] font-bold leading-5 text-white">{item.name}</h3>
+        <p className="mt-1.5 text-[13px] font-bold text-[var(--hm-primary)]">{formatCurrency(item.price)}</p>
       </div>
     </Link>
   );
