@@ -25,8 +25,14 @@ import {
   AdminStatCard,
 } from "@/components/admin/admin-frame";
 import { Badge } from "@/components/ui/badge";
+import { Input, Select } from "@/components/ui/field";
 import { requireAdminAccess } from "@/lib/auth/access";
-import { couponIssueSelect, mapCouponIssue } from "@/lib/coupons/db";
+import {
+  couponEventSelect,
+  couponIssueSelect,
+  mapCouponEvent,
+  mapCouponIssue,
+} from "@/lib/coupons/db";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatCurrency } from "@/lib/utils";
 
@@ -37,15 +43,59 @@ function percent(value: number, total: number) {
   return Math.round((value / total) * 1000) / 10;
 }
 
-export default async function AdminCouponsPage() {
+function readSearchValue(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+}
+
+export default async function AdminCouponsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = (await searchParams) ?? {};
+  const query = readSearchValue(params.q).trim();
+  const statusFilter = readSearchValue(params.status);
   const { canAccess } = await requireAdminAccess();
-  const { data: rows } = canAccess
-    ? await createAdminClient()
-        .from("coupon_issues")
-        .select(couponIssueSelect)
-        .order("created_at", { ascending: false })
-    : { data: [] };
+  const admin = createAdminClient();
+  const [{ data: rows }, { data: matchedCouponRows }, { data: eventRows }] = canAccess
+    ? await Promise.all([
+        admin
+          .from("coupon_issues")
+          .select(couponIssueSelect)
+          .order("created_at", { ascending: false }),
+        query
+          ? admin
+              .from("member_coupons")
+              .select("issue_id,coupon_number")
+              .ilike("coupon_number", `%${query}%`)
+          : Promise.resolve({ data: [] }),
+        admin
+          .from("coupon_events")
+          .select(couponEventSelect)
+          .order("created_at", { ascending: false })
+          .limit(3),
+      ])
+    : [{ data: [] }, { data: [] }, { data: [] }];
   const couponIssues = (rows ?? []).map(mapCouponIssue);
+  const matchedIssueIds = new Set(
+    ((matchedCouponRows ?? []) as { issue_id: string }[]).map((row) => row.issue_id),
+  );
+  const normalizedQuery = query.toLowerCase();
+  const filteredCouponIssues = couponIssues.filter((issue) => {
+    const matchesStatus =
+      !statusFilter ||
+      statusFilter === "all" ||
+      (statusFilter === "issuing" && issue.status === "issuing") ||
+      (statusFilter === "ended" && issue.status === "ended");
+    const matchesQuery =
+      !normalizedQuery ||
+      issue.name.toLowerCase().includes(normalizedQuery) ||
+      issue.id.toLowerCase().includes(normalizedQuery) ||
+      matchedIssueIds.has(issue.id);
+
+    return matchesStatus && matchesQuery;
+  });
+  const recentEvents = (eventRows ?? []).map(mapCouponEvent);
 
   const totalIssued = couponIssues.reduce((sum, item) => sum + item.quantity, 0);
   const activeCount = couponIssues.filter((issue) => issue.status === "issuing").length;
@@ -55,12 +105,38 @@ export default async function AdminCouponsPage() {
   const usageRate = percent(totalUsed, totalDownloaded);
   const chartSeed = couponIssues.slice(0, 7);
   const maxQuantity = Math.max(1, ...chartSeed.map((issue) => issue.quantity));
+  const notifications = [
+    {
+      title: "쿠폰 목록 검색 가능",
+      description: query
+        ? `"${query}" 검색 결과 ${filteredCouponIssues.length}개를 확인 중입니다.`
+        : "쿠폰명, ID, 쿠폰번호로 운영 쿠폰을 찾을 수 있습니다.",
+      href: "/admin/coupons",
+      tone: "green" as const,
+    },
+    ...recentEvents.map((event) => ({
+      title:
+        event.eventType === "coupon_used"
+          ? "쿠폰 사용 처리"
+          : event.eventType === "coupon_downloaded"
+            ? "쿠폰 다운로드"
+            : "쿠폰 운영 변경",
+      description: `${event.actorName ?? event.actorEmail ?? "시스템"} · ${new Date(
+        event.createdAt,
+      ).toLocaleString("ko-KR")}`,
+      href: event.memberCouponId
+        ? "/admin/coupons/insights/used"
+        : "/admin/coupons/insights/overview",
+      tone: event.eventType === "coupon_used" ? ("amber" as const) : ("green" as const),
+    })),
+  ];
 
   return (
     <AdminFrame
       active="coupons"
       title="QR 쿠폰 관리"
       description="쿠폰 생성부터 발급, 사용 내역까지 한 화면에서 관리합니다."
+      notifications={notifications}
     >
       {!canAccess ? (
         <AdminPanel className="p-6">
@@ -72,6 +148,7 @@ export default async function AdminCouponsPage() {
         <div className="grid gap-5">
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <AdminStatCard
+              href="/admin/coupons/insights/overview"
               icon={<Ticket size={25} strokeWidth={1.8} aria-hidden="true" />}
               label="전체 쿠폰"
               value={<>{couponIssues.length}개</>}
@@ -82,6 +159,7 @@ export default async function AdminCouponsPage() {
               }
             />
             <AdminStatCard
+              href="/admin/coupons/insights/issued"
               icon={<Store size={25} strokeWidth={1.8} aria-hidden="true" />}
               label="발급 수량"
               value={<>{totalDownloaded}장</>}
@@ -92,6 +170,7 @@ export default async function AdminCouponsPage() {
               }
             />
             <AdminStatCard
+              href="/admin/coupons/insights/used"
               icon={<ClipboardList size={25} strokeWidth={1.8} aria-hidden="true" />}
               label="사용 수량"
               value={<>{totalUsed}장</>}
@@ -102,6 +181,7 @@ export default async function AdminCouponsPage() {
               }
             />
             <AdminStatCard
+              href="/admin/coupons/insights/discount"
               icon={<TimerReset size={25} strokeWidth={1.8} aria-hidden="true" />}
               label="할인 처리액"
               value={formatCurrency(totalUsedAmount)}
@@ -112,28 +192,36 @@ export default async function AdminCouponsPage() {
           <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px] 2xl:grid-cols-[minmax(0,1fr)_420px]">
             <div className="grid gap-5">
               <AdminPanel>
-                <AdminPanelHeader
-                  title="쿠폰 목록"
-                  action={
-                    <Link href="#coupon-create" className="text-xs font-bold text-[var(--hm-primary)]">
-                      쿠폰 생성 →
-                    </Link>
-                  }
-                />
+                <AdminPanelHeader title="쿠폰 목록" />
                 <div className="grid gap-4 p-5">
-                  <div className="grid gap-3 lg:grid-cols-[150px_150px_minmax(0,1fr)_auto]">
+                  <form
+                    action="/admin/coupons"
+                    className="grid gap-3 lg:grid-cols-[150px_minmax(0,1fr)_auto_auto]"
+                  >
                     <div className="flex min-h-11 items-center justify-between rounded-[12px] border border-[rgba(255,255,255,.09)] bg-black/20 px-3 text-sm font-semibold text-white/62">
                       전체 매장
                       <CalendarDays size={15} aria-hidden="true" />
                     </div>
-                    <div className="flex min-h-11 items-center justify-between rounded-[12px] border border-[rgba(255,255,255,.09)] bg-black/20 px-3 text-sm font-semibold text-white/62">
-                      전체 상태
-                      <CalendarDays size={15} aria-hidden="true" />
-                    </div>
-                    <div className="flex min-h-11 items-center gap-3 rounded-[12px] border border-[rgba(255,255,255,.09)] bg-black/20 px-3 text-sm font-semibold text-white/42">
+                    <Select name="status" defaultValue={statusFilter || "all"} aria-label="쿠폰 상태">
+                      <option value="all">전체 상태</option>
+                      <option value="issuing">활성</option>
+                      <option value="ended">종료</option>
+                    </Select>
+                    <label className="flex min-h-11 items-center gap-3 rounded-[12px] border border-[rgba(255,255,255,.09)] bg-black/20 px-3 text-sm font-semibold text-white/42">
                       <Search size={16} aria-hidden="true" />
-                      쿠폰명, 쿠폰 코드 검색
-                    </div>
+                      <Input
+                        name="q"
+                        defaultValue={query}
+                        placeholder="쿠폰명, ID, 쿠폰번호 검색"
+                        className="min-h-0 border-0 bg-transparent px-0 shadow-none"
+                      />
+                    </label>
+                    <button
+                      type="submit"
+                      className="hm-link-focus inline-flex min-h-11 items-center justify-center rounded-[12px] border border-[rgba(247,230,193,.24)] px-4 text-sm font-extrabold text-[var(--hm-primary)] transition hover:bg-[var(--hm-primary)] hover:text-[#0d0d0d]"
+                    >
+                      검색
+                    </button>
                     <Link
                       href="#coupon-create"
                       className="hm-link-focus inline-flex min-h-11 items-center justify-center gap-2 rounded-[12px] bg-[var(--hm-primary)] px-4 text-sm font-extrabold text-[#0d0d0d] transition hover:bg-[var(--hm-accent-gold)] hover:text-white"
@@ -141,7 +229,17 @@ export default async function AdminCouponsPage() {
                       <Plus size={17} aria-hidden="true" />
                       쿠폰 생성
                     </Link>
-                  </div>
+                  </form>
+                  {query || (statusFilter && statusFilter !== "all") ? (
+                    <div className="flex flex-wrap items-center justify-between gap-3 rounded-[14px] border border-[rgba(255,255,255,.08)] bg-black/20 px-4 py-3 text-sm font-semibold text-white/54">
+                      <span>
+                        검색 결과 {filteredCouponIssues.length}개 · 전체 {couponIssues.length}개
+                      </span>
+                      <Link href="/admin/coupons" className="text-[var(--hm-primary)]">
+                        필터 초기화
+                      </Link>
+                    </div>
+                  ) : null}
 
                   <div className="overflow-x-auto rounded-[18px] border border-[rgba(255,255,255,.08)]">
                     <table className="min-w-[860px] w-full border-collapse text-sm">
@@ -158,7 +256,7 @@ export default async function AdminCouponsPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[rgba(255,255,255,.06)]">
-                        {couponIssues.map((issue) => (
+                        {filteredCouponIssues.map((issue) => (
                           <tr key={issue.id} className="transition hover:bg-white/[0.025]">
                             <td className="px-4 py-4 font-bold text-white">{issue.name}</td>
                             <td className="px-4 py-4 text-white/64">{formatCurrency(issue.amount)}</td>
@@ -209,9 +307,9 @@ export default async function AdminCouponsPage() {
                         ))}
                       </tbody>
                     </table>
-                    {couponIssues.length === 0 ? (
+                    {filteredCouponIssues.length === 0 ? (
                       <p className="px-5 py-8 text-sm font-semibold text-white/42">
-                        등록된 쿠폰이 없습니다.
+                        조건에 맞는 쿠폰이 없습니다.
                       </p>
                     ) : null}
                   </div>
@@ -286,23 +384,19 @@ export default async function AdminCouponsPage() {
               </AdminPanel>
 
               <AdminPanel>
-                <AdminPanelHeader title="빠른 작업" />
-                <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
-                  <AdminActionLink href="#coupon-create">
-                    <Plus size={17} aria-hidden="true" />
-                    쿠폰 생성
-                  </AdminActionLink>
-                  <AdminActionLink href="/admin/coupons">
-                    <Send size={17} aria-hidden="true" />
-                    쿠폰 일괄 발급
-                  </AdminActionLink>
-                  <AdminActionLink href="/admin/coupons">
-                    <Download size={17} aria-hidden="true" />
-                    엑셀 다운로드
-                  </AdminActionLink>
-                  <AdminActionLink href="/admin/coupons">
+                <AdminPanelHeader title="운영 안내" />
+                <div className="grid gap-3 p-5">
+                  <AdminActionLink href="/admin/coupons/insights/overview">
                     <BarChart3 size={17} aria-hidden="true" />
-                    통계 리포트
+                    전체 쿠폰 분석
+                  </AdminActionLink>
+                  <AdminActionLink href="/admin/coupons/insights/issued">
+                    <Send size={17} aria-hidden="true" />
+                    발급 수량 안내
+                  </AdminActionLink>
+                  <AdminActionLink href="/admin/coupons/insights/used">
+                    <Download size={17} aria-hidden="true" />
+                    사용 수량 안내
                   </AdminActionLink>
                 </div>
               </AdminPanel>
