@@ -206,10 +206,11 @@ export default async function HomePage() {
         <Image
           src="/images/brand/brand-hero-background.png"
           alt=""
-          fill
+          width={1717}
+          height={916}
           priority
-          sizes="100vw"
-          className="hm-hero-image hidden object-contain object-center md:block"
+          sizes="(min-width: 2094px) 1717px, 82vw"
+          className="hm-hero-image absolute left-1/2 top-1/2 hidden h-auto w-[min(82vw,1717px)] -translate-x-1/2 -translate-y-1/2 md:block"
         />
         <div className="hm-hero-overlay absolute inset-0" />
         <div className="hm-hero-gradient absolute inset-0" />
