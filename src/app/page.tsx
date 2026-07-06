@@ -194,14 +194,14 @@ export default async function HomePage() {
       <TabletHome homeMenus={homeMenus} promotions={promotions} storeInfo={storeInfo} />
 
       <div className="md:hidden xl:block">
-      <section className="relative -mt-20 min-h-screen overflow-hidden bg-[var(--hm-background)] text-white lg:min-h-[860px]">
+      <section className="relative -mt-20 min-h-screen overflow-hidden bg-[var(--hm-background)] text-white lg:min-h-[860px] xl:mt-0 xl:aspect-[1717/916] xl:min-h-0">
         <Image
           src="/images/brand/brand-hero-mobile.png"
           alt=""
           fill
           priority
           sizes="100vw"
-          className="object-cover object-center brightness-[1.1] saturate-[1.05] md:hidden"
+          className="object-contain object-center brightness-[1.1] saturate-[1.05] md:hidden"
         />
         <Image
           src="/images/brand/brand-hero-background.png"
@@ -209,14 +209,14 @@ export default async function HomePage() {
           fill
           priority
           sizes="100vw"
-          className="hm-hero-image hidden object-cover md:block"
+          className="hm-hero-image hidden object-contain object-center md:block"
         />
         <div className="hm-hero-overlay absolute inset-0" />
         <div className="hm-hero-gradient absolute inset-0" />
         <div className="absolute inset-x-0 bottom-0 h-52 bg-[linear-gradient(180deg,transparent,rgba(13,13,13,.82)_72%,#0d0d0d)]" />
-        <Container className="relative flex min-h-screen flex-col pb-[108px] pt-20 sm:pb-10 lg:min-h-[860px]">
+        <Container className="relative flex min-h-screen flex-col pb-[108px] pt-20 sm:pb-10 lg:min-h-[860px] xl:h-full xl:min-h-0 xl:pb-8 xl:pt-0">
           <div className="flex flex-1 items-start pt-24 sm:items-center sm:pt-4">
-            <div className="hm-hero-shadow hm-reveal w-full max-w-[48rem] py-8 sm:py-16 lg:w-[54%]">
+            <div className="hm-hero-shadow hm-reveal w-full max-w-[48rem] py-8 sm:py-16 lg:w-[54%] xl:py-6">
               <h1 className="hm-display-title">
                 <span className="hidden whitespace-nowrap xl:block">참나무 장작의 깊은 향,</span>
                 <span className="block xl:hidden">
@@ -533,7 +533,7 @@ function TabletHome({
                 fill
                 priority
                 sizes="55vw"
-                className="object-cover object-[72%_center]"
+                className="object-contain object-center"
               />
               <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,.86),rgba(0,0,0,.38)_72%,rgba(0,0,0,.12))]" />
               <div className="relative flex h-full flex-col justify-center p-8">

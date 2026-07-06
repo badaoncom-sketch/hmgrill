@@ -79,7 +79,6 @@ button {
 
 .hm-hero-image {
   filter: brightness(1.34) saturate(1.08);
-  object-position: 100% center;
 }
 
 .hm-hero-overlay {
@@ -347,7 +346,7 @@ button {
 @media (min-width: 1024px) {
   .hm-hero-image {
     filter: none;
-    object-position: 66% center;
+    object-position: center;
   }
 
   .hm-page-shell {
@@ -362,7 +361,7 @@ button {
 @media (min-width: 641px) and (max-width: 1023px) {
   .hm-hero-image {
     filter: none;
-    object-position: 70% center;
+    object-position: center;
   }
 }
 
