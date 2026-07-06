@@ -69,6 +69,8 @@ export async function signupAction(
       name: email,
     });
   } catch (error) {
+    await admin.auth.admin.deleteUser(createdUser.user.id);
+
     return {
       ok: false,
       message:
