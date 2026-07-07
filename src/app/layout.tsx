@@ -5,6 +5,7 @@ import type { HeaderUser } from "@/components/header-user-controls";
 import { NavigationProgress } from "@/components/navigation-progress";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { MobileBottomNav } from "@/components/site-header-client";
 import {
   mapMemberNotification,
   memberNotificationSelect,
@@ -102,6 +103,7 @@ export default async function RootLayout({
         <SiteHeader user={headerUser} notifications={notifications} unreadCount={unreadCount} />
         <div className="hm-surface min-h-screen pt-16 md:pt-20">{children}</div>
         <SiteFooter />
+        <MobileBottomNav />
       </body>
     </html>
   );

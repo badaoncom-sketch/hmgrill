@@ -87,7 +87,6 @@ export function HeaderMobileControls({ user }: { user: HeaderUser | null }) {
         {open ? <X size={21} aria-hidden="true" /> : <Menu size={21} aria-hidden="true" />}
       </button>
       <MobileMenu open={open} user={user} onClose={() => setOpen(false)} />
-      <MobileBottomNav hidden={open} />
     </>
   );
 }
@@ -271,16 +270,16 @@ function MobileMenu({
   );
 }
 
-function MobileBottomNav({ hidden }: { hidden: boolean }) {
+// 주의: 이 컴포넌트는 반드시 header 바깥(레이아웃 레벨)에서 렌더링해야 한다.
+// header의 backdrop-blur가 containing block이 되어 fixed bottom-0이
+// 뷰포트가 아닌 헤더 기준으로 붙어버리기 때문이다.
+export function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
     <nav
       aria-label="모바일 하단 메뉴"
-      aria-hidden={hidden}
-      className={`fixed inset-x-0 bottom-0 z-40 border-t border-[var(--hm-border-soft)] bg-[rgba(13,13,13,.94)] px-3 pb-[max(10px,env(safe-area-inset-bottom))] pt-2 text-[11px] font-bold text-white/56 backdrop-blur-md transition duration-200 md:hidden ${
-        hidden ? "pointer-events-none translate-y-5 opacity-0" : "translate-y-0 opacity-100"
-      }`}
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--hm-border-soft)] bg-[rgba(13,13,13,.94)] px-3 pb-[max(10px,env(safe-area-inset-bottom))] pt-2 text-[11px] font-bold text-white/56 backdrop-blur-md md:hidden"
     >
       <div className="mx-auto flex max-w-[520px] items-center justify-around">
         {bottomNavItems.map((item) => {
