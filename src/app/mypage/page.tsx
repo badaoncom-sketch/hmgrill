@@ -1,11 +1,16 @@
-import { MailCheck, ShieldCheck, Ticket } from "lucide-react";
+import type { Metadata } from "next";
+import Image from "next/image";
 import { redirect } from "next/navigation";
-import { logoutAction } from "@/app/actions/auth";
-import { SectionHeading } from "@/components/section-heading";
+import { Bell, Ticket } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button, ButtonLink } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { ButtonLink } from "@/components/ui/button";
+import { Container } from "@/components/ui/layout";
 import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = {
+  title: "마이페이지",
+  description: "회원 인증 상태와 화목 방문 혜택을 확인합니다.",
+};
 
 export default async function MyPage() {
   const supabase = await createClient();
@@ -17,114 +22,181 @@ export default async function MyPage() {
     redirect("/login");
   }
 
-  const { data: profile } = user
-    ? await supabase
-        .from("profiles")
-        .select("member_uid,name,phone,address,email,email_verified,role,privacy_accepted_at,profile_completed_at")
-        .eq("id", user.id)
-        .maybeSingle()
-    : { data: null };
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select(
+      "member_uid,name,phone,address,email,email_verified,role,privacy_accepted_at,profile_completed_at",
+    )
+    .eq("id", user.id)
+    .maybeSingle();
 
   if (!profile?.email_verified) {
     redirect("/login");
   }
 
+  const [{ count: availableCount }, { count: unreadNotifications }] = await Promise.all([
+    supabase
+      .from("member_coupons")
+      .select("id", { count: "exact", head: true })
+      .eq("member_id", user.id)
+      .eq("status", "available"),
+    supabase
+      .from("member_notifications")
+      .select("id", { count: "exact", head: true })
+      .eq("member_id", user.id)
+      .is("read_at", null)
+      .is("archived_at", null)
+      .is("deleted_at", null),
+  ]);
+
+  const profileRows = [
+    { label: "회원 UID", value: profile.member_uid },
+    { label: "이름", value: profile.name || "미입력" },
+    { label: "연락처", value: profile.phone || "미입력" },
+    { label: "주소", value: profile.address || "미입력" },
+    {
+      label: "개인정보 동의일",
+      value: profile.privacy_accepted_at
+        ? new Date(profile.privacy_accepted_at).toLocaleString("ko-KR")
+        : "아직 동의하지 않았습니다",
+    },
+  ];
+
   return (
-    <main className="hm-page-shell">
-      <SectionHeading
-        eyebrow="MY PAGE"
-        title="마이페이지"
-        description="회원 인증 상태와 화목 방문 혜택을 확인합니다."
-      />
-      <div className="grid gap-5 md:grid-cols-2">
-        <Card>
-          <CardContent>
-            <MailCheck className="text-emerald-700" size={30} aria-hidden="true" />
-            <h2 className="mt-4 text-xl font-bold text-[var(--hm-text)]">
-              이메일 인증 상태
-            </h2>
-            <Badge tone="green" className="mt-3">
-              인증 완료
-            </Badge>
-            <p className="mt-3 text-sm text-[var(--hm-subtext)]">
-              {profile.email}
+    <main className="hm-page-main">
+      <Container>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <p className="hm-eyebrow">My Page</p>
+            <h1 className="hm-section-title mt-5">마이페이지</h1>
+            <p className="hm-body mt-5 text-[var(--hm-subtext)]">
+              회원 인증 상태와 화목 방문 혜택을 확인합니다.
             </p>
-            <form action={logoutAction} className="mt-5">
-              <Button type="submit" variant="outline">
-                로그아웃
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent>
-            <Ticket className="text-[var(--hm-accent-gold)]" size={30} aria-hidden="true" />
-            <h2 className="mt-4 text-xl font-bold text-[var(--hm-text)]">
-              내 쿠폰 관리
-            </h2>
-            <p className="mt-3 text-sm text-[var(--hm-subtext)]">
-              다운로드한 쿠폰과 사용내역을 확인할 수 있습니다.
-            </p>
-            <ButtonLink href="/coupons/my" className="mt-5">
-              내 쿠폰 보기
+          </div>
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
+            <ButtonLink href="/notifications" variant="outline" className="relative">
+              <Bell size={16} aria-hidden="true" />
+              알림센터
+              {(unreadNotifications ?? 0) > 0 ? (
+                <span className="grid h-5 min-w-5 place-items-center rounded-full bg-[var(--hm-accent-red)] px-1.5 text-[11px] font-bold leading-none text-white">
+                  {(unreadNotifications ?? 0) > 9 ? "9+" : unreadNotifications}
+                </span>
+              ) : null}
             </ButtonLink>
-          </CardContent>
-        </Card>
-        <Card className="md:col-span-2">
-          <CardContent>
-            <ShieldCheck className="text-[var(--hm-accent-gold)]" size={30} aria-hidden="true" />
-            <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-              <div>
-                <h2 className="text-xl font-bold text-[var(--hm-text)]">
-                  개인정보 확인
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-[var(--hm-subtext)]">
-                  쿠폰 발급 및 사용 확인을 위해 최초 1회 입력한 정보입니다.
+            {profile.role === "admin" ? (
+              <ButtonLink href="/admin" variant="outline">
+                관리자 콘솔
+              </ButtonLink>
+            ) : null}
+            {profile.role === "staff" || profile.role === "admin" ? (
+              <ButtonLink href="/qr-coupon" variant="outline">
+                QR 쿠폰 스캔
+              </ButtonLink>
+            ) : null}
+          </div>
+        </div>
+
+        <section className="mt-12 grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
+          <article className="relative overflow-hidden rounded-[24px] border border-[rgba(247,230,193,.16)] bg-[linear-gradient(135deg,#1a1510,#0d0c0a_52%,#161009)] p-8 shadow-[var(--hm-shadow-strong)] lg:p-10">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_80%_at_85%_0%,rgba(184,130,30,.14),transparent_70%)]"
+            />
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-6 top-1/2 h-52 w-52 -translate-y-1/2 opacity-[0.07]"
+            >
+              <Image
+                src="/images/brand/brand-logo-transparent.png"
+                alt=""
+                fill
+                sizes="208px"
+                className="object-contain"
+              />
+            </span>
+
+            <div className="relative">
+              <p className="hm-eyebrow">Hwamok Member</p>
+              <p className="hm-serif mt-5 text-[clamp(26px,2.4vw,32px)] font-bold leading-[1.3] text-[var(--hm-primary)]">
+                {profile.name || "화목 회원"} 님
+              </p>
+              <Badge tone="green" className="mt-4">
+                이메일 인증 완료
+              </Badge>
+
+              <div className="mt-10">
+                <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/36">
+                  Member UID
+                </p>
+                <p className="mt-2 font-mono text-[24px] font-semibold tracking-[0.18em] text-white">
+                  {profile.member_uid}
                 </p>
               </div>
+              <p className="mt-3 text-sm font-medium text-white/45">{profile.email}</p>
+            </div>
+          </article>
+
+          <article className="flex flex-col justify-between rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-7 lg:p-8">
+            <div>
+              <div className="flex items-start justify-between gap-4">
+                <p className="hm-eyebrow">Coupon</p>
+                <span className="grid h-11 w-11 place-items-center rounded-[14px] border border-[rgba(247,230,193,.18)] text-[var(--hm-accent-gold)]">
+                  <Ticket size={20} aria-hidden="true" />
+                </span>
+              </div>
+              <p className="mt-4 text-sm font-semibold text-[var(--hm-subtext)]">
+                사용 가능한 쿠폰
+              </p>
+              <p className="mt-3 text-[46px] font-bold leading-none text-[var(--hm-primary)]">
+                {availableCount ?? 0}
+                <span className="ml-1.5 text-[18px] font-semibold text-white/50">장</span>
+              </p>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <ButtonLink href="/coupons/my">내 쿠폰 보기</ButtonLink>
+              <ButtonLink href="/coupons/history" variant="outline">
+                사용내역
+              </ButtonLink>
+            </div>
+          </article>
+        </section>
+
+        <section className="mt-14 grid gap-10 border-t border-[var(--hm-warm-border)] pt-12 lg:grid-cols-[.9fr_1.1fr] lg:gap-16">
+          <div>
+            <p className="hm-eyebrow">Profile</p>
+            <h2 className="hm-subsection-title mt-4">개인정보 확인</h2>
+            <p className="hm-body mt-4 text-[var(--hm-subtext)]">
+              쿠폰 발급 및 사용 확인을 위해 최초 1회 입력한 정보입니다.
+            </p>
+            <div className="mt-5">
               {profile.profile_completed_at ? (
                 <Badge tone="green">입력 완료</Badge>
               ) : (
                 <Badge tone="amber">입력 필요</Badge>
               )}
             </div>
-            <div className="mt-6 grid gap-4 text-sm md:grid-cols-3">
-              <InfoItem label="회원 UID" value={profile.member_uid} />
-              <InfoItem label="이름" value={profile.name} />
-              <InfoItem label="연락처" value={profile.phone} />
-              <InfoItem label="주소" value={profile.address} className="md:col-span-3" />
-            </div>
-            <div className="mt-5 rounded-[16px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-4 text-sm leading-6 text-[var(--hm-subtext)]">
-              개인정보처리 안내 동의일:{" "}
-              {profile.privacy_accepted_at
-                ? new Date(profile.privacy_accepted_at).toLocaleString("ko-KR")
-                : "아직 동의하지 않았습니다."}
-            </div>
             {!profile.profile_completed_at ? (
-              <ButtonLink href="/coupons" className="mt-5" variant="outline">
+              <ButtonLink href="/coupons" variant="outline" className="mt-6">
                 쿠폰 수령 정보 입력하기
               </ButtonLink>
             ) : null}
-          </CardContent>
-        </Card>
-      </div>
-    </main>
-  );
-}
+          </div>
 
-function InfoItem({
-  label,
-  value,
-  className = "",
-}: {
-  label: string;
-  value?: string | null;
-  className?: string;
-}) {
-  return (
-    <div className={`rounded-[16px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-4 ${className}`}>
-      <p className="text-xs font-semibold text-[var(--hm-accent-gold)]">{label}</p>
-      <p className="mt-2 text-[var(--hm-text)]">{value || "미입력"}</p>
-    </div>
+          <dl className="self-start border-t border-[var(--hm-border)]">
+            {profileRows.map((row) => (
+              <div
+                key={row.label}
+                className="flex items-baseline justify-between gap-6 border-b border-[var(--hm-border)] py-4"
+              >
+                <dt className="shrink-0 text-sm font-bold text-[var(--hm-text)]">
+                  {row.label}
+                </dt>
+                <dd className="text-right text-sm text-[var(--hm-subtext)]">{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      </Container>
+    </main>
   );
 }

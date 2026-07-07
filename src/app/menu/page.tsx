@@ -1,14 +1,43 @@
-import Link from "next/link";
-import { MenuImage } from "@/components/menu-image";
-import { SectionHeading } from "@/components/section-heading";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import type { Metadata } from "next";
+import { MenuCard } from "@/components/menu-card";
 import { Container } from "@/components/ui/layout";
 import { mapMenuItem, menuItemSelect } from "@/lib/content/db";
+import type { MenuItem } from "@/lib/types";
 import { createClient } from "@/lib/supabase/server";
-import { formatCurrency } from "@/lib/utils";
 
-const baseCategories = ["전체", "대표메뉴", "소고기", "돼지고기", "사이드", "식사", "주류"];
+export const metadata: Metadata = {
+  title: "메뉴",
+  description: "장작불의 온기와 숙성 고기의 깊이를 담은 화목의 메뉴입니다.",
+};
+
+const preferredCategoryOrder = [
+  "대표메뉴",
+  "세트메뉴",
+  "소고기",
+  "돼지고기",
+  "사이드",
+  "식사",
+  "주류",
+];
+
+function groupByCategory(items: MenuItem[]) {
+  const grouped = new Map<string, MenuItem[]>();
+  for (const item of items) {
+    const list = grouped.get(item.category) ?? [];
+    list.push(item);
+    grouped.set(item.category, list);
+  }
+  const ordered = [
+    ...preferredCategoryOrder.filter((category) => grouped.has(category)),
+    ...Array.from(grouped.keys()).filter(
+      (category) => !preferredCategoryOrder.includes(category),
+    ),
+  ];
+  return ordered.map((category) => ({
+    category,
+    items: grouped.get(category) ?? [],
+  }));
+}
 
 export default async function MenuPage() {
   const supabase = await createClient();
@@ -19,65 +48,73 @@ export default async function MenuPage() {
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
   const menuItems = (rows ?? []).map(mapMenuItem);
-  const categories = Array.from(
-    new Set([...baseCategories, ...menuItems.map((item) => item.category)]),
-  );
+  const menuSections = groupByCategory(menuItems);
 
   return (
     <main className="hm-page-main">
-      <Container className="grid gap-10">
-        <SectionHeading
-          eyebrow="MENU"
-          title="메뉴"
-          description="장작불의 온기, 숙성 고기의 깊이, 구운 채소와 곁들임의 균형을 담은 화목의 메뉴입니다."
-        />
-        <div className="grid gap-8 lg:grid-cols-[220px_1fr]">
-          <aside className="min-w-0 lg:sticky lg:top-28 lg:self-start">
-            <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2 lg:mx-0 lg:grid lg:gap-0 lg:overflow-visible lg:rounded-[20px] lg:border lg:border-[var(--hm-border)] lg:bg-[var(--hm-card)] lg:p-3">
-              {categories.map((category, index) => (
+      <Container>
+        <div className="max-w-2xl">
+          <p className="hm-eyebrow">Menu</p>
+          <h1 className="hm-section-title mt-5">화목의 메뉴</h1>
+          <p className="hm-body mt-5 text-[var(--hm-subtext)]">
+            장작불의 온기, 숙성 고기의 깊이, 구운 채소와 곁들임의 균형을 담았습니다.
+          </p>
+        </div>
+
+        {menuSections.length > 0 ? (
+          <nav
+            aria-label="메뉴 카테고리"
+            className="sticky top-20 z-30 mt-10 -mx-5 bg-[rgba(13,13,13,.88)] px-5 py-3 backdrop-blur-md sm:-mx-6 sm:px-6"
+          >
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {menuSections.map((section, index) => (
                 <a
-                  key={category}
-                  href={index === 0 ? "#menu-grid" : `#category-${index}`}
-                  className="hm-link-focus flex shrink-0 rounded-[999px] border border-[var(--hm-border)] bg-[var(--hm-card)] px-5 py-3 text-sm font-semibold text-[var(--hm-subtext)] transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)] first:bg-[var(--hm-primary)] first:text-[var(--hm-background)] lg:rounded-[14px] lg:border-0 lg:bg-transparent lg:px-4"
+                  key={section.category}
+                  href={`#category-${index}`}
+                  className="hm-link-focus flex shrink-0 items-center gap-2 rounded-full border border-[var(--hm-border)] bg-[var(--hm-card)] px-5 py-2.5 text-sm font-semibold text-[var(--hm-subtext)] transition hover:border-[rgba(247,230,193,.32)] hover:text-[var(--hm-primary)]"
                 >
-                  {category}
+                  {section.category}
+                  <span className="font-mono text-[11px] text-[var(--hm-accent-gold)]">
+                    {section.items.length}
+                  </span>
                 </a>
               ))}
             </div>
-          </aside>
+          </nav>
+        ) : null}
 
-          <section id="menu-grid" className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {menuItems.map((item, index) => (
-              <Link key={item.id} href={`/menu/${item.id}`} className="hm-link-focus group">
-                <Card className="h-full overflow-hidden hover:-translate-y-1">
-                  <CardContent className="p-0">
-                    <MenuImage src={item.imageUrl} alt={item.name} priority={index < 4} />
-                    <div className="grid gap-3 p-5">
-                      <Badge tone={item.featured ? "amber" : "neutral"}>
-                        {item.category}
-                      </Badge>
-                      <h2 className="text-lg font-bold text-[var(--hm-text)]">{item.name}</h2>
-                      <p className="min-h-12 text-sm leading-6 text-[var(--hm-subtext)]">
-                        {item.description}
-                      </p>
-                      <p className="text-lg font-bold text-[var(--hm-primary)]">
-                        {formatCurrency(item.price)}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-            {menuItems.length === 0 ? (
-              <Card>
-                <CardContent>
-                  <p className="text-sm font-semibold text-[var(--hm-subtext)]">
-                    등록된 메뉴가 없습니다.
-                  </p>
-                </CardContent>
-              </Card>
-            ) : null}
-          </section>
+        <div className="mt-12 grid gap-16 lg:gap-20">
+          {menuSections.map((section, index) => (
+            <section
+              key={section.category}
+              id={`category-${index}`}
+              className="scroll-mt-40"
+            >
+              <div className="flex items-baseline justify-between gap-4 border-b border-[var(--hm-warm-border)] pb-5">
+                <h2 className="hm-subsection-title">{section.category}</h2>
+                <p className="font-mono text-[13px] tracking-[0.12em] text-[var(--hm-accent-gold)]">
+                  {String(section.items.length).padStart(2, "0")}
+                </p>
+              </div>
+              <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {section.items.map((item, itemIndex) => (
+                  <MenuCard
+                    key={item.id}
+                    item={item}
+                    priority={index === 0 && itemIndex < 3}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+
+          {menuItems.length === 0 ? (
+            <div className="rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)] px-8 py-16 text-center">
+              <p className="text-sm font-semibold text-[var(--hm-subtext)]">
+                등록된 메뉴가 없습니다.
+              </p>
+            </div>
+          ) : null}
         </div>
       </Container>
     </main>

@@ -1,5 +1,11 @@
 import type { CouponIssue, MemberCoupon, MenuItem } from "@/lib/types";
 
+export const eventImages = [
+  "/images/brand/brand-fire-wall.png",
+  "/images/menu/1783221305281.png",
+  "/images/brand/brand-storefront.png",
+];
+
 export const menuItems: MenuItem[] = [
   {
     id: "signature-grill",

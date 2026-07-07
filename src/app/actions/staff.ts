@@ -73,8 +73,10 @@ function getUseFlow(row: unknown) {
   return value?.use_flow ?? "staff_confirm";
 }
 
-async function fetchCouponByToken(token: string) {
+async function fetchCouponByToken(tokenOrNumber: string) {
   const admin = createAdminClient();
+  // QR은 토큰을, 수동 입력은 쿠폰 하단의 8자리 쿠폰번호를 쓸 수 있게 둘 다 지원한다.
+  const isCouponNumber = /^[0-9]{8}$/.test(tokenOrNumber);
   const { data, error } = await admin
     .from("member_coupons")
     .select(
@@ -83,7 +85,7 @@ async function fetchCouponByToken(token: string) {
         "coupon_issues(name,amount,condition_text,qr_notice,use_flow)",
       ),
     )
-    .eq("token", token)
+    .eq(isCouponNumber ? "coupon_number" : "token", tokenOrNumber)
     .maybeSingle();
 
   if (error) {
@@ -139,7 +141,7 @@ export async function lookupCouponAction(
     const admin = createAdminClient();
     const { error } = await admin.rpc("use_coupon", {
       p_staff_id: auth.user.id,
-      p_token: token,
+      p_token: lookup.coupon.token,
     });
 
     if (error) {

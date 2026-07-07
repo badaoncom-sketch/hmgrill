@@ -1,5 +1,9 @@
-import Link from "next/link";
+"use client";
+
+import Link, { useLinkStatus } from "next/link";
+import { useFormStatus } from "react-dom";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 
 type ButtonProps = ComponentPropsWithoutRef<"button"> & {
@@ -18,8 +22,14 @@ export function Button({
   className,
   variant = "primary",
   type = "button",
+  disabled,
+  children,
   ...props
 }: ButtonProps) {
+  // form 안의 제출 버튼이면 서버 액션 처리 중 자동으로 스피너를 보여준다.
+  const { pending } = useFormStatus();
+  const isPending = pending && type === "submit";
+
   return (
     <button
       className={cn(
@@ -28,8 +38,12 @@ export function Button({
         className,
       )}
       type={type}
+      disabled={disabled || isPending}
       {...props}
-    />
+    >
+      {isPending ? <Spinner /> : null}
+      {children}
+    </button>
   );
 }
 
@@ -38,9 +52,16 @@ type ButtonLinkProps = ComponentPropsWithoutRef<typeof Link> & {
   variant?: ButtonProps["variant"];
 };
 
+function LinkPendingSpinner() {
+  // 이 링크로 시작된 페이지 이동이 진행 중일 때만 표시된다.
+  const { pending } = useLinkStatus();
+  return pending ? <Spinner className="h-3.5 w-3.5" /> : null;
+}
+
 export function ButtonLink({
   className,
   variant = "primary",
+  children,
   ...props
 }: ButtonLinkProps) {
   return (
@@ -51,6 +72,9 @@ export function ButtonLink({
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+      <LinkPendingSpinner />
+    </Link>
   );
 }
