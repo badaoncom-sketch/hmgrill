@@ -100,7 +100,7 @@ export default async function RootLayout({
           <NavigationProgress />
         </Suspense>
         <SiteHeader user={headerUser} notifications={notifications} unreadCount={unreadCount} />
-        <div className="hm-surface min-h-screen pt-20">{children}</div>
+        <div className="hm-surface min-h-screen pt-16 md:pt-20">{children}</div>
         <SiteFooter />
       </body>
     </html>

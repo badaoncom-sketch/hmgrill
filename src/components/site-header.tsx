@@ -20,10 +20,10 @@ export function SiteHeader({
   unreadCount: number;
 }) {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 h-20 border-b border-[var(--hm-border-soft)] bg-[rgba(13,13,13,.28)] text-[var(--hm-text)] backdrop-blur-md">
-      <div className="hm-container grid h-full grid-cols-[auto_1fr_auto] items-center gap-4">
+    <header className="fixed inset-x-0 top-0 z-50 h-16 border-b border-[var(--hm-border-soft)] bg-[rgba(13,13,13,.4)] text-[var(--hm-text)] backdrop-blur-md md:h-20 md:bg-[rgba(13,13,13,.28)]">
+      <div className="hm-container grid h-full grid-cols-[auto_1fr_auto] items-center gap-3 md:gap-4">
         <Link href="/" className="hm-link-focus flex items-center gap-3" aria-label="화목 홈">
-          <span className="relative block h-[62px] w-[92px] md:h-[66px] md:w-[96px]">
+          <span className="relative block h-[46px] w-[68px] md:h-[66px] md:w-[96px]">
             <Image
               src="/images/brand/brand-logo-transparent.png"
               alt="화목"
@@ -46,13 +46,13 @@ export function SiteHeader({
           ))}
         </nav>
 
-        <div className="flex items-center justify-end gap-1.5 text-sm font-semibold">
+        <div className="flex items-center justify-end gap-0.5 text-sm font-semibold md:gap-1.5">
           <a
             href={siteContact.phoneHref}
-            className="hm-link-focus grid h-10 w-10 place-items-center rounded-[14px] text-[var(--hm-primary)] transition hover:bg-white/[0.04]"
+            className="hm-link-focus grid h-9 w-9 place-items-center rounded-[14px] text-[var(--hm-primary)] transition hover:bg-white/[0.04] md:h-10 md:w-10"
             aria-label="전화하기"
           >
-            <Phone size={20} aria-hidden="true" />
+            <Phone size={19} aria-hidden="true" />
           </a>
           {user ? <NotificationBell notifications={notifications} unreadCount={unreadCount} /> : null}
           {user ? (

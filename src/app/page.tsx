@@ -185,7 +185,7 @@ export default async function HomePage() {
 
   return (
     <main>
-      <section className="relative -mt-20 min-h-[calc(100svh-40px)] overflow-hidden bg-[var(--hm-background)] text-white sm:min-h-[620px] lg:min-h-[640px] xl:mt-0 xl:h-[min(700px,calc(100svh-96px))] xl:min-h-[600px]">
+      <section className="relative -mt-16 min-h-[calc(100svh-40px)] overflow-hidden bg-[var(--hm-background)] text-white sm:min-h-[620px] md:-mt-20 lg:min-h-[640px] xl:mt-0 xl:h-[min(700px,calc(100svh-96px))] xl:min-h-[600px]">
         <Image
           src="/images/brand/brand-hero-mobile.png"
           alt=""
@@ -304,7 +304,7 @@ export default async function HomePage() {
             href="/menu"
             linkLabel="전체 메뉴 보기"
           />
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 xl:grid-cols-4">
             {homeMenus.map((item, index) => (
               <MenuCard key={item.id} item={item} priority={index === 0} />
             ))}

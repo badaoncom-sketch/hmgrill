@@ -166,7 +166,7 @@ export default async function MenuDetailPage({
                 <ArrowRight size={15} aria-hidden="true" />
               </ButtonLink>
             </div>
-            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
               {related.map((other) => (
                 <MenuCard key={other.id} item={other} />
               ))}

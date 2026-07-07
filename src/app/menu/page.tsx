@@ -64,7 +64,7 @@ export default async function MenuPage() {
         {menuSections.length > 0 ? (
           <nav
             aria-label="메뉴 카테고리"
-            className="sticky top-20 z-30 mt-10 -mx-5 bg-[rgba(13,13,13,.88)] px-5 py-3 backdrop-blur-md sm:-mx-6 sm:px-6"
+            className="sticky top-16 z-30 mt-10 -mx-5 bg-[rgba(13,13,13,.88)] px-5 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 md:top-20"
           >
             <div className="flex gap-2 overflow-x-auto pb-1">
               {menuSections.map((section, index) => (
@@ -96,7 +96,7 @@ export default async function MenuPage() {
                   {String(section.items.length).padStart(2, "0")}
                 </p>
               </div>
-              <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
                 {section.items.map((item, itemIndex) => (
                   <MenuCard
                     key={item.id}

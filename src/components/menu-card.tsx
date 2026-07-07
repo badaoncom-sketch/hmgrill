@@ -31,15 +31,17 @@ export function MenuCard({
             </div>
           )}
         </div>
-        <div className="flex flex-1 flex-col gap-3 p-6">
+        <div className="flex flex-1 flex-col gap-2 p-3.5 sm:gap-3 sm:p-6">
           <Badge tone={item.featured ? "amber" : "neutral"} className="w-fit">
             {item.featured ? "대표" : item.category}
           </Badge>
-          <h3 className="hm-card-title">{item.name}</h3>
-          <p className="hm-caption min-h-12 text-[var(--hm-subtext)]">
+          <h3 className="text-[15px] font-bold leading-[1.35] text-[var(--hm-text)] sm:text-[19px]">
+            {item.name}
+          </h3>
+          <p className="hm-caption hidden min-h-12 text-[var(--hm-subtext)] sm:block">
             {item.description}
           </p>
-          <p className="mt-auto pt-1 text-[19px] font-bold leading-none text-[var(--hm-primary)]">
+          <p className="mt-auto pt-0.5 text-[15px] font-bold leading-none text-[var(--hm-primary)] sm:pt-1 sm:text-[19px]">
             {formatCurrency(item.price)}
           </p>
         </div>

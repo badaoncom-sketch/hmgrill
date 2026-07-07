@@ -14,8 +14,8 @@ export function SiteFooter() {
         className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[radial-gradient(58%_120%_at_50%_0%,rgba(184,130,30,.08),transparent_72%)]"
       />
 
-      <div className="hm-container relative pt-16 md:pt-20">
-        <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-20">
+      <div className="hm-container relative pt-10 md:pt-20">
+        <div className="grid gap-8 md:gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-20">
           <div>
             <p className="hm-eyebrow">Hwamok · 참나무 장작구이</p>
             <p className="hm-serif mt-4 text-[clamp(23px,2.6vw,31px)] font-semibold leading-[1.42] text-[var(--hm-primary)]">
@@ -24,7 +24,7 @@ export function SiteFooter() {
               화목의 시간
             </p>
 
-            <a href={siteContact.phoneHref} className="hm-link-focus group mt-9 inline-block">
+            <a href={siteContact.phoneHref} className="hm-link-focus group mt-6 inline-block md:mt-9">
               <span className="block text-[11px] font-bold uppercase tracking-[0.2em] text-white/36">
                 Reservation
               </span>
@@ -55,7 +55,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <dl className="mt-14 flex flex-wrap gap-x-5 gap-y-1.5 border-t border-white/[0.07] pt-6 text-[12.5px] leading-[1.7]">
+        <dl className="mt-10 flex flex-wrap gap-x-4 gap-y-1 border-t border-white/[0.07] pt-5 text-[11px] leading-[1.7] md:mt-14 md:gap-x-5 md:gap-y-1.5 md:pt-6 md:text-[12.5px]">
           {businessInfo.map((item) => (
             <div key={item.label} className="flex gap-1.5">
               <dt className="font-semibold text-white/30">{item.label}</dt>
@@ -64,8 +64,8 @@ export function SiteFooter() {
           ))}
         </dl>
 
-        <div className="mt-8 flex flex-col gap-3 pb-24 text-[13px] sm:flex-row sm:items-center sm:justify-between md:pb-4">
-          <div className="flex items-center gap-5">
+        <div className="mt-5 flex flex-col gap-2 pb-20 text-[11px] sm:flex-row sm:items-center sm:justify-between md:mt-8 md:gap-3 md:pb-4 md:text-[13px]">
+          <div className="flex items-center gap-4 md:gap-5">
             {policyLinks.map((link) => (
               <Link
                 key={link.label}
@@ -84,7 +84,7 @@ export function SiteFooter() {
 
       <p
         aria-hidden="true"
-        className="hm-serif pointer-events-none relative -mb-[0.38em] select-none whitespace-nowrap text-center text-[clamp(72px,15vw,220px)] font-bold leading-none text-[rgba(247,230,193,0.04)]"
+        className="hm-serif pointer-events-none relative -mb-[0.38em] hidden select-none whitespace-nowrap text-center text-[clamp(72px,15vw,220px)] font-bold leading-none text-[rgba(247,230,193,0.04)] md:block"
       >
         화목 장작구이
       </p>

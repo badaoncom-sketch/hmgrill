@@ -44,7 +44,7 @@ const principles = [
 export default function AboutPage() {
   return (
     <main>
-      <section className="relative -mt-20 overflow-hidden bg-[var(--hm-background)]">
+      <section className="relative -mt-16 overflow-hidden bg-[var(--hm-background)] md:-mt-20">
         <Image
           src="/images/brand/brand-fire-wall.png"
           alt=""
