@@ -1,15 +1,17 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useFormStatus } from "react-dom";
-import type { LucideIcon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 
+// 서버 컴포넌트에서 아이콘을 렌더링해 children으로 넘긴다.
+// (컴포넌트 함수 자체는 서버→클라이언트 prop으로 직렬화할 수 없다.)
 export function IconSubmitButton({
-  icon: Icon,
+  children,
   label,
   danger = false,
 }: {
-  icon: LucideIcon;
+  children: ReactNode;
   label: string;
   danger?: boolean;
 }) {
@@ -25,7 +27,7 @@ export function IconSubmitButton({
         danger ? "hover:text-[var(--hm-accent-red)]" : "hover:text-[var(--hm-primary)]"
       }`}
     >
-      {pending ? <Spinner className="h-4 w-4" /> : <Icon size={16} aria-hidden="true" />}
+      {pending ? <Spinner className="h-4 w-4" /> : children}
     </button>
   );
 }

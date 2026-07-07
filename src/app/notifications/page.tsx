@@ -44,7 +44,7 @@ type NotificationTab = keyof typeof emptyMessages;
 function RowAction({
   action,
   id,
-  icon,
+  icon: Icon,
   label,
   danger = false,
   extra,
@@ -60,7 +60,9 @@ function RowAction({
     <form action={action}>
       <input type="hidden" name="id" value={id} />
       {extra}
-      <IconSubmitButton icon={icon} label={label} danger={danger} />
+      <IconSubmitButton label={label} danger={danger}>
+        <Icon size={16} aria-hidden="true" />
+      </IconSubmitButton>
     </form>
   );
 }
