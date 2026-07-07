@@ -6,7 +6,13 @@ import {
   siteContact,
 } from "@/lib/navigation";
 
-export function SiteFooter() {
+export function SiteFooter({
+  eyebrow,
+  tagline,
+}: {
+  eyebrow: string;
+  tagline: string;
+}) {
   return (
     <footer className="relative overflow-hidden border-t border-[var(--hm-warm-border)] bg-[#080706]">
       <div
@@ -17,11 +23,9 @@ export function SiteFooter() {
       <div className="hm-container relative pt-10 md:pt-20">
         <div className="grid gap-8 md:gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-20">
           <div>
-            <p className="hm-eyebrow">Hwamok · 참나무 장작구이</p>
-            <p className="hm-serif mt-4 text-[clamp(23px,2.6vw,31px)] font-semibold leading-[1.42] text-[var(--hm-primary)]">
-              참나무 장작의 깊은 향,
-              <br />
-              화목의 시간
+            <p className="hm-eyebrow">{eyebrow}</p>
+            <p className="hm-serif mt-4 whitespace-pre-line text-[clamp(23px,2.6vw,31px)] font-semibold leading-[1.42] text-[var(--hm-primary)]">
+              {tagline}
             </p>
 
             <a href={siteContact.phoneHref} className="hm-link-focus group mt-6 inline-block md:mt-9">

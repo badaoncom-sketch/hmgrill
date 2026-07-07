@@ -7,6 +7,7 @@ import {
   CalendarDays,
   ChevronDown,
   ClipboardList,
+  Home,
   Inbox,
   LayoutDashboard,
   LogOut,
@@ -24,6 +25,7 @@ import { cn } from "@/lib/utils";
 
 const adminNavItems = [
   { href: "/admin", label: "대시보드", icon: LayoutDashboard, key: "dashboard" },
+  { href: "/admin/home", label: "홈페이지 관리", icon: Home, key: "home" },
   { href: "/admin/notifications", label: "알림함", icon: Inbox, key: "notifications" },
   { href: "/admin/coupons", label: "쿠폰 관리", icon: Ticket, key: "coupons" },
   { href: "/admin/members", label: "회원 관리", icon: UsersRound, key: "members" },

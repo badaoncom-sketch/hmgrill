@@ -11,6 +11,7 @@ import {
   memberNotificationSelect,
   type MemberNotification,
 } from "@/lib/notifications/db";
+import { fetchSiteSettings } from "@/lib/site-settings";
 import { createClient } from "@/lib/supabase/server";
 import "./globals.css";
 
@@ -47,9 +48,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const [
+    {
+      data: { user },
+    },
+    settings,
+  ] = await Promise.all([supabase.auth.getUser(), fetchSiteSettings(supabase)]);
 
   let headerUser: HeaderUser | null = null;
   let notifications: MemberNotification[] = [];
@@ -100,9 +104,17 @@ export default async function RootLayout({
         <Suspense fallback={null}>
           <NavigationProgress />
         </Suspense>
-        <SiteHeader user={headerUser} notifications={notifications} unreadCount={unreadCount} />
+        <SiteHeader
+          user={headerUser}
+          notifications={notifications}
+          unreadCount={unreadCount}
+          logoSrc={settings["logo.image"]}
+        />
         <div className="hm-surface min-h-screen pt-16 md:pt-20">{children}</div>
-        <SiteFooter />
+        <SiteFooter
+          eyebrow={settings["footer.eyebrow"]}
+          tagline={settings["footer.tagline"]}
+        />
         <MobileBottomNav user={headerUser} />
       </body>
     </html>

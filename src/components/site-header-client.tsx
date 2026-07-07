@@ -52,7 +52,13 @@ function useMounted() {
   );
 }
 
-export function HeaderMobileControls({ user }: { user: HeaderUser | null }) {
+export function HeaderMobileControls({
+  user,
+  logoSrc,
+}: {
+  user: HeaderUser | null;
+  logoSrc: string;
+}) {
   const [open, setOpen] = useState(false);
   const mounted = useMounted();
 
@@ -102,7 +108,12 @@ export function HeaderMobileControls({ user }: { user: HeaderUser | null }) {
           되어 fixed 위치가 헤더 기준으로 틀어지는 것을 원천 차단. */}
       {mounted
         ? createPortal(
-            <MobileMenu open={open} user={user} onClose={() => setOpen(false)} />,
+            <MobileMenu
+              open={open}
+              user={user}
+              logoSrc={logoSrc}
+              onClose={() => setOpen(false)}
+            />,
             document.body,
           )
         : null}
@@ -113,10 +124,12 @@ export function HeaderMobileControls({ user }: { user: HeaderUser | null }) {
 function MobileMenu({
   open,
   user,
+  logoSrc,
   onClose,
 }: {
   open: boolean;
   user: HeaderUser | null;
+  logoSrc: string;
   onClose: () => void;
 }) {
   const isAuthenticated = Boolean(user);
@@ -142,7 +155,7 @@ function MobileMenu({
         <div className="flex items-center justify-between">
           <Link href="/" className="hm-link-focus relative block h-[64px] w-[92px]" aria-label="화목 홈">
             <Image
-              src="/images/brand/brand-logo-transparent.png"
+              src={logoSrc}
               alt="화목"
               fill
               sizes="92px"
@@ -240,7 +253,7 @@ function MobileMenu({
         >
           <span className="pointer-events-none absolute right-10 top-1/2 h-24 w-24 -translate-y-1/2 opacity-[0.07]">
             <Image
-              src="/images/brand/brand-logo-transparent.png"
+              src={logoSrc}
               alt=""
               fill
               sizes="96px"

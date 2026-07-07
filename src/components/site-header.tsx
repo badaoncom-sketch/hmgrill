@@ -14,10 +14,12 @@ export function SiteHeader({
   user,
   notifications,
   unreadCount,
+  logoSrc,
 }: {
   user: HeaderUser | null;
   notifications: MemberNotification[];
   unreadCount: number;
+  logoSrc: string;
 }) {
   return (
     <header className="fixed inset-x-0 top-0 z-50 h-16 border-b border-[var(--hm-border-soft)] bg-[rgba(13,13,13,.4)] text-[var(--hm-text)] backdrop-blur-md md:h-20 md:bg-[rgba(13,13,13,.28)]">
@@ -25,7 +27,7 @@ export function SiteHeader({
         <Link href="/" className="hm-link-focus flex items-center gap-3" aria-label="화목 홈">
           <span className="relative block h-[46px] w-[68px] md:h-[66px] md:w-[96px]">
             <Image
-              src="/images/brand/brand-logo-transparent.png"
+              src={logoSrc}
               alt="화목"
               fill
               sizes="96px"
@@ -75,7 +77,7 @@ export function SiteHeader({
               </Link>
             </div>
           )}
-          <HeaderMobileControls user={user} />
+          <HeaderMobileControls user={user} logoSrc={logoSrc} />
         </div>
       </div>
     </header>

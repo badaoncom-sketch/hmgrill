@@ -39,8 +39,14 @@ import {
   updateMenuItemAction,
   updateSiteBannerAction,
   updateSitePopupAction,
+  updateSiteSettingsAction,
 } from "@/app/actions/content";
 import { IconSubmitButton } from "@/components/icon-submit-button";
+import {
+  fetchSiteSettings,
+  type SiteSettingKey,
+  type SiteSettings,
+} from "@/lib/site-settings";
 import {
   AdminFrame,
   AdminPanel,
@@ -79,6 +85,7 @@ import type {
 import { formatCurrency } from "@/lib/utils";
 
 type SectionKey =
+  | "home"
   | "members"
   | "staff"
   | "menu"
@@ -104,6 +111,10 @@ type ProfileRow = {
 };
 
 const sectionMeta: Record<SectionKey, { title: string; description: string }> = {
+  home: {
+    title: "홈페이지 관리",
+    description: "로고, 히어로, 소개 섹션, 갤러리, 푸터의 문구와 이미지를 관리합니다.",
+  },
   members: {
     title: "회원 관리",
     description: "회원 프로필, 인증 상태, 개인정보 입력 여부를 한 화면에서 관리합니다.",
@@ -246,6 +257,10 @@ export default async function AdminSectionPage({
     return <SectionAccessDenied section={section} />;
   }
 
+  if (section === "home") {
+    return <HomeSection />;
+  }
+
   if (section === "members" || section === "staff") {
     return <UserSection section={section} />;
   }
@@ -373,6 +388,168 @@ async function UserSection({ section }: { section: "members" | "staff" }) {
             {profiles.length === 0 ? <EmptyState>표시할 계정이 없습니다.</EmptyState> : null}
           </div>
         </AdminPanel>
+      </div>
+    </AdminFrame>
+  );
+}
+
+function SettingTextField({
+  label,
+  name,
+  settings,
+  textarea = false,
+}: {
+  label: string;
+  name: SiteSettingKey;
+  settings: SiteSettings;
+  textarea?: boolean;
+}) {
+  return (
+    <Field label={label}>
+      {textarea ? (
+        <Textarea name={`text:${name}`} defaultValue={settings[name]} />
+      ) : (
+        <Input name={`text:${name}`} defaultValue={settings[name]} />
+      )}
+    </Field>
+  );
+}
+
+function SettingImageField({
+  label,
+  name,
+  settings,
+}: {
+  label: string;
+  name: SiteSettingKey;
+  settings: SiteSettings;
+}) {
+  const current = settings[name];
+  return (
+    <div className="grid gap-2 text-sm font-medium text-[var(--hm-text)]">
+      {label}
+      <div className="flex items-start gap-3">
+        <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-[10px] border border-white/[0.08] bg-white/[0.04]">
+          <Image src={current} alt="" fill sizes="96px" className="object-contain" />
+        </div>
+        <div className="grid min-w-0 flex-1 gap-2">
+          <Input
+            name={`image:${name}`}
+            type="file"
+            accept="image/*"
+            className="cursor-pointer pt-2 text-xs text-white/55 file:mr-3 file:cursor-pointer file:rounded-[10px] file:border-0 file:bg-[var(--hm-primary)] file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-[var(--hm-background)]"
+          />
+          <Input name={`text:${name}`} defaultValue={current} className="min-h-9 text-xs" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SettingsSaveButton() {
+  return (
+    <Button type="submit" variant="outline" className="w-fit">
+      <Check size={15} aria-hidden="true" />
+      저장
+    </Button>
+  );
+}
+
+async function HomeSection() {
+  const meta = sectionMeta.home;
+  const settings = await fetchSiteSettings(createAdminClient());
+
+  return (
+    <AdminFrame active="home" title={meta.title} description={meta.description}>
+      <div className="grid gap-5">
+        <div className="grid gap-5 lg:grid-cols-2">
+          <FormPanel title="브랜드 로고">
+            <form action={updateSiteSettingsAction} className="grid gap-4">
+              <SettingImageField label="로고 이미지 — 헤더·모바일 메뉴에 사용" name="logo.image" settings={settings} />
+              <SettingsSaveButton />
+            </form>
+          </FormPanel>
+
+          <FormPanel title="푸터 문구">
+            <form action={updateSiteSettingsAction} className="grid gap-4">
+              <SettingTextField label="상단 라벨" name="footer.eyebrow" settings={settings} />
+              <SettingTextField label="태그라인 (줄바꿈 유지)" name="footer.tagline" settings={settings} textarea />
+              <SettingsSaveButton />
+            </form>
+          </FormPanel>
+        </div>
+
+        <FormPanel title="히어로 섹션">
+          <form action={updateSiteSettingsAction} className="grid gap-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <SettingTextField label="제목 1행" name="hero.title_line1" settings={settings} />
+              <SettingTextField label="제목 2행" name="hero.title_line2" settings={settings} />
+            </div>
+            <SettingTextField label="부제 (줄바꿈 유지)" name="hero.subtitle" settings={settings} textarea />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <SettingTextField label="버튼 문구" name="hero.cta_label" settings={settings} />
+              <SettingTextField label="버튼 링크" name="hero.cta_href" settings={settings} />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <SettingImageField label="배경 이미지 (PC)" name="hero.image_desktop" settings={settings} />
+              <SettingImageField label="배경 이미지 (모바일)" name="hero.image_mobile" settings={settings} />
+            </div>
+            <SettingsSaveButton />
+          </form>
+        </FormPanel>
+
+        <FormPanel title="특징 카드 4개">
+          <form action={updateSiteSettingsAction} className="grid gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              {([1, 2, 3, 4] as const).map((n) => (
+                <div key={n} className="grid gap-3 rounded-[14px] border border-white/[0.06] bg-black/15 p-4">
+                  <SettingTextField label={`카드 ${n} 제목`} name={`feature.${n}.title` as SiteSettingKey} settings={settings} />
+                  <SettingTextField label={`카드 ${n} 설명`} name={`feature.${n}.desc` as SiteSettingKey} settings={settings} textarea />
+                </div>
+              ))}
+            </div>
+            <SettingsSaveButton />
+          </form>
+        </FormPanel>
+
+        <div className="grid gap-5 lg:grid-cols-2">
+          <FormPanel title="브랜드 스토리 섹션">
+            <form action={updateSiteSettingsAction} className="grid gap-4">
+              <SettingTextField label="제목" name="about.title" settings={settings} />
+              <SettingTextField label="본문" name="about.body" settings={settings} textarea />
+              <SettingImageField label="대표 이미지" name="about.image_main" settings={settings} />
+              <SettingImageField label="보조 이미지" name="about.image_sub" settings={settings} />
+              <SettingsSaveButton />
+            </form>
+          </FormPanel>
+
+          <FormPanel title="매장 안내 섹션">
+            <form action={updateSiteSettingsAction} className="grid gap-4">
+              <SettingTextField label="소개 문구" name="store.body" settings={settings} textarea />
+              <SettingImageField label="매장 이미지" name="store.image" settings={settings} />
+              <SettingsSaveButton />
+              <p className="text-xs leading-5 text-white/40">
+                주소·전화·영업시간은 사이트 공통 연락처 설정을 따릅니다.
+              </p>
+            </form>
+          </FormPanel>
+        </div>
+
+        <FormPanel title="인스타그램 갤러리 (8칸)">
+          <form action={updateSiteSettingsAction} className="grid gap-4">
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {([1, 2, 3, 4, 5, 6, 7, 8] as const).map((n) => (
+                <SettingImageField
+                  key={n}
+                  label={`이미지 ${n}`}
+                  name={`instagram.${n}` as SiteSettingKey}
+                  settings={settings}
+                />
+              ))}
+            </div>
+            <SettingsSaveButton />
+          </form>
+        </FormPanel>
       </div>
     </AdminFrame>
   );

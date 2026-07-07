@@ -24,32 +24,12 @@ import {
 } from "@/lib/content/db";
 import { couponIssueSelect, mapCouponIssue } from "@/lib/coupons/db";
 import { siteContact } from "@/lib/navigation";
+import { fetchSiteSettings, type SiteSettingKey } from "@/lib/site-settings";
 import { createClient } from "@/lib/supabase/server";
 import type { MenuItem } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
-const featureCards = [
-  {
-    title: "참나무 장작",
-    description: "입체적인 향과 온도로 고기의 결을 완성합니다.",
-    icon: Flame,
-  },
-  {
-    title: "정성의 손길",
-    description: "숙성의 균형과 굽는 시간을 섬세하게 맞춥니다.",
-    icon: Leaf,
-  },
-  {
-    title: "최상급 재료",
-    description: "신선하고 품격 있는 재료를 엄선해 사용합니다.",
-    icon: Utensils,
-  },
-  {
-    title: "소중한 시간",
-    description: "좋은 사람과 머무는 시간을 깊게 만듭니다.",
-    icon: UsersRound,
-  },
-];
+const featureIcons = [Flame, Leaf, Utensils, UsersRound];
 
 const fallbackFeaturedMenu: MenuItem[] = [
   {
@@ -127,23 +107,11 @@ const storeInfo = {
   address: siteContact.address,
   phone: siteContact.phoneDisplay,
   hours: [siteContact.hoursWeekday, siteContact.hoursWeekend],
-  imageUrl: "/images/brand/brand-storefront.png",
 };
-
-const instagramImages = [
-  "/images/menu/1783221305383.png",
-  "/images/brand/brand-fire-wall.png",
-  "/images/brand/brand-storefront.png",
-  "/images/menu/1783221305470.png",
-  "/images/menu/1783221305545.png",
-  "/images/menu/1783221305205.png",
-  "/images/brand/brand-sign-collage.jpg",
-  "/images/menu/1783221305136.png",
-];
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const [{ data: menuRows }, { data: couponRows }, { data: bannerRows }] =
+  const [{ data: menuRows }, { data: couponRows }, { data: bannerRows }, settings] =
     await Promise.all([
       supabase
         .from("menu_items")
@@ -161,7 +129,17 @@ export default async function HomePage() {
         .select(siteBannerSelect)
         .eq("placement", "home")
         .order("sort_order", { ascending: true }),
+      fetchSiteSettings(supabase),
     ]);
+
+  const featureCards = featureIcons.map((icon, index) => ({
+    icon,
+    title: settings[`feature.${index + 1}.title` as SiteSettingKey],
+    description: settings[`feature.${index + 1}.desc` as SiteSettingKey],
+  }));
+  const instagramImages = ([1, 2, 3, 4, 5, 6, 7, 8] as const).map(
+    (n) => settings[`instagram.${n}` as SiteSettingKey],
+  );
 
   const featuredMenu = (menuRows ?? []).map(mapMenuItem);
   const activeCoupon = (couponRows ?? []).map(mapCouponIssue)[0];
@@ -189,7 +167,7 @@ export default async function HomePage() {
     <main>
       <section className="relative -mt-16 min-h-[calc(100svh-40px)] overflow-hidden bg-[var(--hm-background)] text-white sm:min-h-[620px] md:-mt-20 lg:min-h-[640px] xl:mt-0 xl:h-[min(700px,calc(100svh-96px))] xl:min-h-[600px]">
         <Image
-          src="/images/brand/brand-hero-mobile.png"
+          src={settings["hero.image_mobile"]}
           alt=""
           fill
           priority
@@ -197,7 +175,7 @@ export default async function HomePage() {
           className="object-contain object-center brightness-[1.1] saturate-[1.05] md:hidden"
         />
         <Image
-          src="/images/brand/brand-hero-background.png"
+          src={settings["hero.image_desktop"]}
           alt=""
           fill
           priority
@@ -211,22 +189,22 @@ export default async function HomePage() {
           <div className="flex flex-1 items-start pt-16 sm:items-center sm:pt-0">
             <div className="hm-hero-shadow hm-reveal w-full max-w-[48rem] py-6 sm:py-10 lg:w-[54%] xl:py-4">
               <h1 className="hm-display-title">
-                <span className="hidden whitespace-nowrap xl:block">참나무 장작의 깊은 향,</span>
-                <span className="block xl:hidden">
-                  참나무 장작의
-                  <br />
-                  깊은 향,
+                <span className="block [text-wrap:balance] xl:whitespace-nowrap">
+                  {settings["hero.title_line1"]}
                 </span>
-                <span className="block">화목의 시간</span>
+                <span className="block [text-wrap:balance] xl:whitespace-nowrap">
+                  {settings["hero.title_line2"]}
+                </span>
               </h1>
-              <p className="hm-body-lg mt-5 max-w-[29rem] text-white/74">
-                좋은 사람과 함께하는 시간.
-                <br />
-                정성으로 구워낸 특별한 맛을 전합니다.
+              <p className="hm-body-lg mt-5 max-w-[29rem] whitespace-pre-line text-white/74">
+                {settings["hero.subtitle"]}
               </p>
               <div className="mt-8">
-                <ButtonLink href="/menu" className="min-h-14 rounded-[14px] px-7 py-4 text-[15px] font-bold">
-                  화목 둘러보기
+                <ButtonLink
+                  href={settings["hero.cta_href"]}
+                  className="min-h-14 rounded-[14px] px-7 py-4 text-[15px] font-bold"
+                >
+                  {settings["hero.cta_label"]}
                   <ArrowRight size={17} aria-hidden="true" />
                 </ButtonLink>
               </div>
@@ -261,11 +239,10 @@ export default async function HomePage() {
                 ABOUT HWAMOK
               </p>
               <h2 className="hm-section-title mt-5 sm:whitespace-nowrap">
-                화목, 그 특별한 이야기
+                {settings["about.title"]}
               </h2>
               <p className="hm-body mt-5 max-w-md text-[var(--hm-subtext)]">
-                화목은 참나무 장작구이를 통해 음식 본연의 맛과 향을 살리고,
-                좋은 사람들과 함께하는 소중한 시간을 만들어가는 공간입니다.
+                {settings["about.body"]}
               </p>
               <ButtonLink href="/about" variant="ghost" className="mt-6 px-0 text-[15px] font-bold text-[var(--hm-primary)]">
                 더 알아보기
@@ -275,7 +252,7 @@ export default async function HomePage() {
             <div className="grid gap-5 sm:grid-cols-[1.3fr_.7fr]">
               <div className="hm-image-zoom relative min-h-[340px] overflow-hidden rounded-[24px] border border-[var(--hm-border)] shadow-[var(--hm-shadow-strong)]">
                 <Image
-                  src="/images/brand/brand-storefront.png"
+                  src={settings["about.image_main"]}
                   alt="화목 매장 분위기"
                   fill
                   sizes="(min-width: 1024px) 45vw, 100vw"
@@ -285,7 +262,7 @@ export default async function HomePage() {
               </div>
               <div className="hm-image-zoom relative min-h-[340px] overflow-hidden rounded-[24px] border border-[var(--hm-border)] shadow-[var(--hm-shadow)]">
                 <Image
-                  src="/images/brand/brand-fire-wall.png"
+                  src={settings["about.image_sub"]}
                   alt="화목 장작불 공간"
                   fill
                   sizes="(min-width: 1024px) 24vw, 100vw"
@@ -403,7 +380,7 @@ export default async function HomePage() {
           <div className="mt-10 grid gap-5 lg:grid-cols-[1.25fr_.75fr] lg:items-stretch">
             <div className="hm-image-zoom relative min-h-[360px] overflow-hidden rounded-[24px] border border-[var(--hm-border)] bg-[var(--hm-card)] shadow-[var(--hm-shadow-strong)]">
               <Image
-                src={storeInfo.imageUrl}
+                src={settings["store.image"]}
                 alt={`${storeInfo.name} 공간`}
                 fill
                 sizes="(min-width: 1024px) 62vw, 100vw"
@@ -416,7 +393,7 @@ export default async function HomePage() {
                 <p className="hm-eyebrow">MAIN STORE</p>
                 <h3 className="hm-subsection-title mt-5">{storeInfo.name}</h3>
                 <p className="hm-body mt-4 text-[var(--hm-subtext)]">
-                  장작불의 온기와 차분한 조명을 중심으로 설계한 화목의 대표 공간입니다.
+                  {settings["store.body"]}
                 </p>
               </div>
               <div className="mt-7 grid gap-4">

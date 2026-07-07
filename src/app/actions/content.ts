@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdminAccess } from "@/lib/auth/access";
+import { siteSettingKeys } from "@/lib/site-settings";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { ContentPostType, ContentStatus, InquiryStatus } from "@/lib/types";
 
@@ -61,19 +62,14 @@ function readImagePath(formData: FormData, key: string) {
   return value;
 }
 
-const MAX_MENU_IMAGE_BYTES = 8 * 1024 * 1024;
+const MAX_UPLOAD_IMAGE_BYTES = 8 * 1024 * 1024;
 
-// 업로드 파일이 있으면 스토리지에 올리고 공개 URL을 돌려준다. 없으면 null.
-async function uploadMenuImage(formData: FormData, key: string) {
-  const file = formData.get(key);
-
-  if (!(file instanceof File) || file.size === 0) {
-    return null;
-  }
+// 파일을 지정 버킷에 올리고 공개 URL을 돌려준다.
+async function uploadImageFile(bucket: string, file: File) {
   if (!file.type.startsWith("image/")) {
     throw new Error("이미지 파일만 업로드할 수 있습니다.");
   }
-  if (file.size > MAX_MENU_IMAGE_BYTES) {
+  if (file.size > MAX_UPLOAD_IMAGE_BYTES) {
     throw new Error("이미지는 8MB 이하만 업로드할 수 있습니다.");
   }
 
@@ -81,14 +77,25 @@ async function uploadMenuImage(formData: FormData, key: string) {
   const path = `${crypto.randomUUID()}.${extension}`;
   const admin = createAdminClient();
   const { error } = await admin.storage
-    .from("menu-images")
+    .from(bucket)
     .upload(path, file, { contentType: file.type });
 
   if (error) {
     throw new Error(`이미지 업로드에 실패했습니다: ${error.message}`);
   }
 
-  return admin.storage.from("menu-images").getPublicUrl(path).data.publicUrl;
+  return admin.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+}
+
+// 폼에 업로드 파일이 있으면 스토리지에 올리고 공개 URL을 돌려준다. 없으면 null.
+async function uploadMenuImage(formData: FormData, key: string) {
+  const file = formData.get(key);
+
+  if (!(file instanceof File) || file.size === 0) {
+    return null;
+  }
+
+  return uploadImageFile("menu-images", file);
 }
 
 async function requireContentAdmin() {
@@ -415,6 +422,55 @@ export async function updateMenuCopyAction(formData: FormData) {
   }
 
   revalidateMenuPaths();
+}
+
+export async function updateSiteSettingsAction(formData: FormData) {
+  await requireContentAdmin();
+  const admin = createAdminClient();
+  const now = new Date().toISOString();
+  const updates: { key: string; value: string; updated_at: string }[] = [];
+  const resets: string[] = [];
+
+  for (const key of siteSettingKeys) {
+    // 업로드 파일이 있으면 그 값이 우선한다.
+    const file = formData.get(`image:${key}`);
+    if (file instanceof File && file.size > 0) {
+      const url = await uploadImageFile("site-images", file);
+      updates.push({ key, value: url, updated_at: now });
+      continue;
+    }
+
+    if (formData.has(`text:${key}`)) {
+      const value = readString(formData, `text:${key}`);
+      if (value) {
+        updates.push({ key, value, updated_at: now });
+      } else {
+        // 비우면 기본값으로 복원한다.
+        resets.push(key);
+      }
+    }
+  }
+
+  if (updates.length > 0) {
+    const { error } = await admin.from("site_settings").upsert(updates);
+    if (error) {
+      throw error;
+    }
+  }
+
+  if (resets.length > 0) {
+    const { error } = await admin
+      .from("site_settings")
+      .delete()
+      .in("key", resets);
+    if (error) {
+      throw error;
+    }
+  }
+
+  revalidatePath("/", "layout");
+  revalidatePath("/");
+  revalidatePath("/admin/home");
 }
 
 export async function createContentPostAction(formData: FormData) {
