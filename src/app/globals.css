@@ -37,11 +37,18 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-hm-sans), "Pretendard Variable", "Pretendard", "Noto Sans KR", Arial, Helvetica, sans-serif;
   text-rendering: optimizeLegibility;
+  /* 한국어는 어절(띄어쓰기) 단위로만 줄바꿈한다. 긴 토큰·이메일은 넘칠 때만 강제 줄바꿈. */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 button,
@@ -166,41 +173,15 @@ button {
 }
 
 .hm-footer-link {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 15px;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 14px;
   font-weight: 600;
-  line-height: 1.5;
+  line-height: 1.25;
   transition: color 180ms ease;
 }
 
 .hm-footer-link:hover {
   color: var(--hm-primary);
-}
-
-.hm-social-link {
-  align-items: center;
-  background:
-    radial-gradient(circle at 35% 25%, rgba(247, 230, 193, 0.16), transparent 42%),
-    #15120e;
-  border: 1px solid var(--hm-warm-border);
-  border-radius: 999px;
-  color: #9d8867;
-  display: inline-flex;
-  height: 38px;
-  justify-content: center;
-  transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease,
-    color 180ms ease,
-    transform 180ms ease;
-  width: 38px;
-}
-
-.hm-social-link:hover {
-  border-color: rgba(247, 230, 193, 0.32);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
-  color: var(--hm-primary);
-  transform: translateY(-2px);
 }
 
 .hm-container {
@@ -219,7 +200,7 @@ button {
   gap: 2rem;
   margin-inline: auto;
   max-width: 1200px;
-  padding: 96px 24px 112px;
+  padding: 40px 24px 104px;
   width: 100%;
 }
 
@@ -232,11 +213,11 @@ button {
 }
 
 .hm-page-main {
-  padding-block: 96px 112px;
+  padding-block: 40px 104px;
 }
 
 .hm-section {
-  padding-block: 150px;
+  padding-block: 96px;
 }
 
 .hm-section-band {
@@ -290,6 +271,82 @@ button {
   animation: hm-fade-up 620ms ease both;
 }
 
+@keyframes hm-scan-sweep {
+  0% {
+    top: 10%;
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  88% {
+    opacity: 1;
+  }
+
+  100% {
+    top: 86%;
+    opacity: 0;
+  }
+}
+
+.hm-scan-beam {
+  animation: hm-scan-sweep 2.6s ease-in-out infinite;
+}
+
+@keyframes hm-bot-blink {
+  0%,
+  91%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  94%,
+  97% {
+    transform: scaleY(0.12);
+  }
+}
+
+.hm-bot-blink {
+  animation: hm-bot-blink 4.4s ease-in-out infinite;
+}
+
+.hm-bot-wink {
+  animation: hm-bot-blink 7.6s ease-in-out infinite;
+  animation-delay: 1.2s;
+}
+
+@keyframes hm-bot-eyes-scan {
+  0%,
+  100% {
+    transform: translateX(-7px);
+  }
+
+  50% {
+    transform: translateX(7px);
+  }
+}
+
+.hm-bot-eyes-scan {
+  animation: hm-bot-eyes-scan 1.1s ease-in-out infinite;
+}
+
+@keyframes hm-bot-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.hm-bot-float {
+  animation: hm-bot-float 4.5s ease-in-out infinite;
+}
+
 @keyframes hm-fade-up {
   from {
     opacity: 0;
@@ -317,7 +374,7 @@ button {
   }
 
   .hm-section {
-    padding-block: 88px;
+    padding-block: 64px;
   }
 
   .hm-surface {
@@ -325,11 +382,11 @@ button {
   }
 
   .hm-page-shell {
-    padding: 80px 20px 96px;
+    padding: 32px 20px 88px;
   }
 
   .hm-page-main {
-    padding-block: 80px 96px;
+    padding-block: 32px 88px;
   }
 
   .hm-hero-overlay {
@@ -350,11 +407,11 @@ button {
   }
 
   .hm-page-shell {
-    padding: 120px 24px;
+    padding: 48px 24px 104px;
   }
 
   .hm-page-main {
-    padding-block: 120px;
+    padding-block: 48px 104px;
   }
 }
 

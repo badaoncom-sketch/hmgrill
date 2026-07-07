@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import {
   ArrowRight,
   Camera,
@@ -12,7 +11,7 @@ import {
   UsersRound,
   Utensils,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { MenuCard } from "@/components/menu-card";
 import { ButtonLink } from "@/components/ui/button";
 import { Container, Section } from "@/components/ui/layout";
 import {
@@ -22,7 +21,9 @@ import {
   siteBannerSelect,
 } from "@/lib/content/db";
 import { couponIssueSelect, mapCouponIssue } from "@/lib/coupons/db";
+import { siteContact } from "@/lib/navigation";
 import { createClient } from "@/lib/supabase/server";
+import type { MenuItem } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
 const featureCards = [
@@ -48,38 +49,50 @@ const featureCards = [
   },
 ];
 
-const fallbackFeaturedMenu = [
+const fallbackFeaturedMenu: MenuItem[] = [
   {
     id: "fallback-1",
-    category: "대표",
+    category: "대표메뉴",
     name: "참나무 장작구이 모둠",
     description: "엄선한 숙성육을 장작불 향으로 구워낸 구성",
     price: 68000,
     imageUrl: "/images/menu/1783221304773.png",
+    featured: true,
+    isActive: true,
+    sortOrder: 1,
   },
   {
     id: "fallback-2",
-    category: "인기",
+    category: "대표메뉴",
     name: "화목 숙성 꽃갈비살",
     description: "부드러운 식감과 진한 육향을 살린 한 접시",
     price: 42000,
     imageUrl: "/images/menu/1783221304868.png",
+    featured: true,
+    isActive: true,
+    sortOrder: 2,
   },
   {
     id: "fallback-3",
-    category: "추천",
+    category: "대표메뉴",
     name: "참나무 통삼겹",
     description: "겉은 바삭하고 속은 촉촉한 장작구이",
     price: 38000,
     imageUrl: "/images/menu/1783221304957.png",
+    featured: true,
+    isActive: true,
+    sortOrder: 3,
   },
   {
     id: "fallback-4",
-    category: "프리미엄",
+    category: "대표메뉴",
     name: "한우 안심",
     description: "부드러운 결과 은은한 불향이 조화로운 메뉴",
     price: 55000,
     imageUrl: "/images/menu/1783221305035.png",
+    featured: true,
+    isActive: true,
+    sortOrder: 4,
   },
 ];
 
@@ -109,9 +122,9 @@ const fallbackPromotions = [
 
 const storeInfo = {
   name: "화목 본점",
-  address: "서울 강남구 테헤란로 123",
-  phone: "02-1234-5678",
-  hours: ["평일 10:00 - 22:00", "주말/공휴일 11:00 - 22:00"],
+  address: siteContact.address,
+  phone: siteContact.phoneDisplay,
+  hours: [siteContact.hoursWeekday, siteContact.hoursWeekend],
   imageUrl: "/images/brand/brand-storefront.png",
 };
 
@@ -125,25 +138,6 @@ const instagramImages = [
   "/images/brand/brand-sign-collage.jpg",
   "/images/menu/1783221305136.png",
 ];
-
-type HomeMenuCardItem = {
-  id: string;
-  category: string;
-  name: string;
-  description: string;
-  price: number;
-  imageUrl?: string | null;
-};
-
-type HomePromotionCardItem = {
-  id: string;
-  title: string;
-  body: string;
-  href: string;
-  imageUrl: string;
-};
-
-type HomeStoreInfo = typeof storeInfo;
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -191,10 +185,7 @@ export default async function HomePage() {
 
   return (
     <main>
-      <TabletHome homeMenus={homeMenus} promotions={promotions} storeInfo={storeInfo} />
-
-      <div className="md:hidden xl:block">
-      <section className="relative -mt-20 min-h-screen overflow-hidden bg-[var(--hm-background)] text-white lg:min-h-[860px] xl:mt-0 xl:aspect-[1717/916] xl:min-h-0">
+      <section className="relative -mt-20 min-h-[calc(100svh-40px)] overflow-hidden bg-[var(--hm-background)] text-white sm:min-h-[620px] lg:min-h-[640px] xl:mt-0 xl:h-[min(700px,calc(100svh-96px))] xl:min-h-[600px]">
         <Image
           src="/images/brand/brand-hero-mobile.png"
           alt=""
@@ -206,18 +197,17 @@ export default async function HomePage() {
         <Image
           src="/images/brand/brand-hero-background.png"
           alt=""
-          width={1717}
-          height={916}
+          fill
           priority
-          sizes="(min-width: 1717px) 1717px, 100vw"
-          className="hm-hero-image absolute left-1/2 top-0 hidden h-auto w-[min(100vw,1717px)] -translate-x-1/2 md:block"
+          sizes="100vw"
+          className="hm-hero-image hidden object-cover object-center md:block"
         />
         <div className="hm-hero-overlay absolute inset-0" />
         <div className="hm-hero-gradient absolute inset-0" />
         <div className="absolute inset-x-0 bottom-0 h-52 bg-[linear-gradient(180deg,transparent,rgba(13,13,13,.82)_72%,#0d0d0d)]" />
-        <Container className="relative flex min-h-screen flex-col pb-[108px] pt-20 sm:pb-10 lg:min-h-[860px] xl:h-full xl:min-h-0 xl:pb-8 xl:pt-0">
-          <div className="flex flex-1 items-start pt-24 sm:items-center sm:pt-4">
-            <div className="hm-hero-shadow hm-reveal w-full max-w-[48rem] py-8 sm:py-16 lg:w-[54%] xl:py-6">
+        <Container className="relative flex min-h-[calc(100svh-40px)] flex-col pb-[96px] pt-20 sm:min-h-[620px] sm:pb-8 lg:min-h-[640px] xl:h-full xl:min-h-0 xl:pb-6 xl:pt-0">
+          <div className="flex flex-1 items-start pt-16 sm:items-center sm:pt-0">
+            <div className="hm-hero-shadow hm-reveal w-full max-w-[48rem] py-6 sm:py-10 lg:w-[54%] xl:py-4">
               <h1 className="hm-display-title">
                 <span className="hidden whitespace-nowrap xl:block">참나무 장작의 깊은 향,</span>
                 <span className="block xl:hidden">
@@ -227,12 +217,12 @@ export default async function HomePage() {
                 </span>
                 <span className="block">화목의 시간</span>
               </h1>
-              <p className="hm-body-lg mt-8 max-w-[29rem] text-white/74">
+              <p className="hm-body-lg mt-5 max-w-[29rem] text-white/74">
                 좋은 사람과 함께하는 시간.
                 <br />
                 정성으로 구워낸 특별한 맛을 전합니다.
               </p>
-              <div className="mt-12">
+              <div className="mt-8">
                 <ButtonLink href="/menu" className="min-h-14 rounded-[14px] px-7 py-4 text-[15px] font-bold">
                   화목 둘러보기
                   <ArrowRight size={17} aria-hidden="true" />
@@ -247,7 +237,7 @@ export default async function HomePage() {
               return (
                 <div
                   key={item.title}
-                  className="hm-card-hover rounded-[16px] border border-[var(--hm-border)] bg-[rgba(18,18,18,.78)] p-3 text-center shadow-[0_24px_70px_rgba(0,0,0,.3)] sm:rounded-[20px] sm:p-8"
+                  className="hm-card-hover rounded-[16px] border border-[var(--hm-border)] bg-[rgba(18,18,18,.78)] p-3 text-center shadow-[0_24px_70px_rgba(0,0,0,.3)] sm:rounded-[20px] sm:p-6"
                 >
                   <Icon className="mx-auto h-7 w-7 text-[var(--hm-accent-gold)] sm:h-[42px] sm:w-[42px]" aria-hidden="true" />
                   <h2 className="mt-3 whitespace-nowrap text-[11px] font-bold leading-tight text-[var(--hm-text)] sm:mt-6 sm:whitespace-normal sm:text-[var(--hm-type-card-title)] sm:leading-[1.38]">
@@ -263,7 +253,7 @@ export default async function HomePage() {
 
       <Section className="hm-section-band">
         <Container>
-          <div className="grid gap-16 lg:grid-cols-[0.48fr_0.52fr] lg:items-center">
+          <div className="grid gap-10 lg:grid-cols-[0.48fr_0.52fr] lg:items-center">
             <div className="hm-reveal">
               <p className="hm-eyebrow">
                 ABOUT HWAMOK
@@ -271,17 +261,17 @@ export default async function HomePage() {
               <h2 className="hm-section-title mt-5 sm:whitespace-nowrap">
                 화목, 그 특별한 이야기
               </h2>
-              <p className="hm-body mt-7 max-w-md text-[var(--hm-subtext)]">
+              <p className="hm-body mt-5 max-w-md text-[var(--hm-subtext)]">
                 화목은 참나무 장작구이를 통해 음식 본연의 맛과 향을 살리고,
                 좋은 사람들과 함께하는 소중한 시간을 만들어가는 공간입니다.
               </p>
-              <ButtonLink href="/about" variant="ghost" className="mt-8 px-0 text-[15px] font-bold text-[var(--hm-primary)]">
+              <ButtonLink href="/about" variant="ghost" className="mt-6 px-0 text-[15px] font-bold text-[var(--hm-primary)]">
                 더 알아보기
                 <ArrowRight size={16} aria-hidden="true" />
               </ButtonLink>
             </div>
             <div className="grid gap-5 sm:grid-cols-[1.3fr_.7fr]">
-              <div className="hm-image-zoom relative min-h-[460px] overflow-hidden rounded-[24px] border border-[var(--hm-border)] shadow-[var(--hm-shadow-strong)]">
+              <div className="hm-image-zoom relative min-h-[340px] overflow-hidden rounded-[24px] border border-[var(--hm-border)] shadow-[var(--hm-shadow-strong)]">
                 <Image
                   src="/images/brand/brand-storefront.png"
                   alt="화목 매장 분위기"
@@ -291,7 +281,7 @@ export default async function HomePage() {
                 />
                 <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.38))]" />
               </div>
-              <div className="hm-image-zoom relative min-h-[460px] overflow-hidden rounded-[24px] border border-[var(--hm-border)] shadow-[var(--hm-shadow)]">
+              <div className="hm-image-zoom relative min-h-[340px] overflow-hidden rounded-[24px] border border-[var(--hm-border)] shadow-[var(--hm-shadow)]">
                 <Image
                   src="/images/brand/brand-fire-wall.png"
                   alt="화목 장작불 공간"
@@ -314,33 +304,9 @@ export default async function HomePage() {
             href="/menu"
             linkLabel="전체 메뉴 보기"
           />
-          <div className="mt-16 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             {homeMenus.map((item, index) => (
-              <article
-                key={item.id}
-                className="hm-card-hover group overflow-hidden rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)]"
-              >
-                <div className="hm-image-zoom relative aspect-[4/3] overflow-hidden bg-[var(--hm-card)]">
-                  <Image
-                    src={item.imageUrl ?? "/images/menu/1783221304773.png"}
-                    alt={item.name}
-                    fill
-                    priority={index === 0}
-                    sizes="(min-width: 1280px) 280px, (min-width: 768px) 50vw, 100vw"
-                    className="object-cover"
-                  />
-                </div>
-                <div className="grid gap-3 p-6">
-                  <Badge tone="neutral" className="w-fit">{item.category}</Badge>
-                  <h3 className="hm-card-title">{item.name}</h3>
-                  <p className="hm-caption min-h-14 text-[var(--hm-subtext)]">
-                    {item.description}
-                  </p>
-                  <p className="pt-1 text-[19px] font-bold leading-none text-[var(--hm-primary)]">
-                    {formatCurrency(item.price)}
-                  </p>
-                </div>
-              </article>
+              <MenuCard key={item.id} item={item} priority={index === 0} />
             ))}
           </div>
         </Container>
@@ -354,7 +320,7 @@ export default async function HomePage() {
             href="/events"
             linkLabel="전체 보기"
           />
-          <div className="mt-16 grid gap-8 lg:grid-cols-3">
+          <div className="mt-10 grid gap-5 lg:grid-cols-3">
             {promotionCards.map((item) => (
               <article
                 key={item.id}
@@ -422,8 +388,8 @@ export default async function HomePage() {
             href="/store"
             linkLabel="매장 정보 보기"
           />
-          <div className="mt-16 grid gap-8 lg:grid-cols-[1.25fr_.75fr] lg:items-stretch">
-            <div className="hm-image-zoom relative min-h-[500px] overflow-hidden rounded-[24px] border border-[var(--hm-border)] bg-[var(--hm-card)] shadow-[var(--hm-shadow-strong)]">
+          <div className="mt-10 grid gap-5 lg:grid-cols-[1.25fr_.75fr] lg:items-stretch">
+            <div className="hm-image-zoom relative min-h-[360px] overflow-hidden rounded-[24px] border border-[var(--hm-border)] bg-[var(--hm-card)] shadow-[var(--hm-shadow-strong)]">
               <Image
                 src={storeInfo.imageUrl}
                 alt={`${storeInfo.name} 공간`}
@@ -433,15 +399,15 @@ export default async function HomePage() {
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.42))]" />
             </div>
-            <article className="flex flex-col justify-between rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-8 shadow-[var(--hm-shadow)]">
+            <article className="flex flex-col justify-between rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-6 shadow-[var(--hm-shadow)]">
               <div>
                 <p className="hm-eyebrow">MAIN STORE</p>
                 <h3 className="hm-subsection-title mt-5">{storeInfo.name}</h3>
-                <p className="hm-body mt-5 text-[var(--hm-subtext)]">
+                <p className="hm-body mt-4 text-[var(--hm-subtext)]">
                   장작불의 온기와 차분한 조명을 중심으로 설계한 화목의 대표 공간입니다.
                 </p>
               </div>
-              <div className="mt-10 grid gap-5">
+              <div className="mt-7 grid gap-4">
                 <div className="flex gap-3 text-[var(--hm-subtext)]">
                   <MapPin className="mt-1 shrink-0 text-[var(--hm-accent-gold)]" size={18} aria-hidden="true" />
                   <p className="hm-caption">{storeInfo.address}</p>
@@ -459,7 +425,7 @@ export default async function HomePage() {
                   </div>
                 </div>
               </div>
-              <div className="mt-10 flex flex-wrap gap-3">
+              <div className="mt-7 flex flex-wrap gap-3">
                 <ButtonLink href="/store">오시는 길</ButtonLink>
                 <ButtonLink href="/support" variant="outline">문의하기</ButtonLink>
               </div>
@@ -468,7 +434,7 @@ export default async function HomePage() {
         </Container>
       </Section>
 
-      <Section className="hm-section-band">
+      <Section className="hm-section-band pb-16 lg:pb-20">
         <Container>
           <div className="mx-auto max-w-xl text-center">
             <Camera className="mx-auto text-[var(--hm-accent-gold)]" size={30} aria-hidden="true" />
@@ -479,7 +445,7 @@ export default async function HomePage() {
               화목의 일상을 만나보세요
             </h2>
           </div>
-          <div className="mt-14 grid grid-cols-2 gap-5 sm:grid-cols-4">
+          <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {instagramImages.map((src, index) => (
               <div
                 key={`${src}-${index}`}
@@ -496,7 +462,7 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
-          <div className="mt-10 text-center">
+          <div className="mt-7 text-center">
             <ButtonLink href="/events" variant="secondary" className="px-7">
               인스타그램 더보기
               <ArrowRight size={16} aria-hidden="true" />
@@ -504,233 +470,7 @@ export default async function HomePage() {
           </div>
         </Container>
       </Section>
-      </div>
     </main>
-  );
-}
-
-function TabletHome({
-  homeMenus,
-  promotions,
-  storeInfo,
-}: {
-  homeMenus: HomeMenuCardItem[];
-  promotions: HomePromotionCardItem[];
-  storeInfo: HomeStoreInfo;
-}) {
-  const tabletMenus = homeMenus.slice(0, 4);
-  const tabletPromotions = promotions.slice(0, 3);
-  const tabletInstagram = instagramImages.slice(0, 4);
-
-  return (
-    <div className="hidden min-h-[calc(100svh-80px)] bg-[var(--hm-background)] px-2 pb-[78px] pt-2 md:block xl:hidden lg:px-3">
-      <div className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(330px,0.44fr)]">
-        <section className="grid gap-2">
-          <div className="grid gap-2 lg:grid-cols-[minmax(0,.95fr)_minmax(0,1.05fr)]">
-            <article className="hm-tablet-panel relative h-[328px] overflow-hidden lg:h-[336px]">
-              <Image
-                src="/images/brand/brand-hero-background.png"
-                alt=""
-                fill
-                priority
-                sizes="55vw"
-                className="object-cover object-center"
-              />
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,.86),rgba(0,0,0,.38)_72%,rgba(0,0,0,.12))]" />
-              <div className="relative flex h-full flex-col justify-center p-7 lg:p-8">
-                <h1 className="hm-serif text-[clamp(31px,3.25vw,40px)] font-bold leading-[1.28] text-[var(--hm-primary)]">
-                  <span className="block whitespace-nowrap">참나무 장작의</span>
-                  <span className="block whitespace-nowrap">깊은 향,</span>
-                  <span className="block whitespace-nowrap">화목의 시간</span>
-                </h1>
-                <p className="mt-6 text-[14px] font-semibold leading-7 text-white/72">
-                  좋은 사람과 함께하는 시간,
-                  <br />
-                  정성으로 구워낸 특별한 맛을 전합니다.
-                </p>
-                <ButtonLink href="/menu" className="mt-7 w-fit min-h-11 px-5 text-[13px] font-bold">
-                  화목 둘러보기
-                  <ArrowRight size={14} aria-hidden="true" />
-                </ButtonLink>
-              </div>
-            </article>
-
-            <article className="hm-tablet-panel h-[328px] overflow-hidden p-4 lg:h-[336px] lg:p-5">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="hm-serif text-[22px] font-bold text-[var(--hm-primary)]">화목의 대표 메뉴</h2>
-                <ButtonLink href="/menu" variant="ghost" className="h-auto min-h-0 px-0 py-0 text-[12px] font-bold">
-                  전체 메뉴 보기
-                  <ArrowRight size={13} aria-hidden="true" />
-                </ButtonLink>
-              </div>
-              <div className="grid grid-cols-3 gap-3">
-                {tabletMenus.slice(0, 3).map((item, index) => (
-                  <TabletMenuCard key={item.id} item={item} priority={index === 0} />
-                ))}
-                {tabletMenus[3] ? <TabletMenuCard item={tabletMenus[3]} /> : null}
-                <div className="grid min-h-[126px] place-items-center rounded-[14px] border border-[var(--hm-border)] bg-[rgba(255,255,255,.025)] p-4 text-center text-[12px] font-semibold leading-5 text-white/42">
-                  더 많은 메뉴를
-                  <br />
-                  준비 중입니다.
-                </div>
-              </div>
-            </article>
-          </div>
-
-          <div className="grid gap-2 lg:grid-cols-[1fr_1fr]">
-            <article className="hm-tablet-panel h-[198px] overflow-hidden p-4 lg:p-5">
-              <div className="mb-3 flex items-start justify-between gap-3">
-                <div>
-                  <p className="hm-eyebrow">ABOUT HWAMOK</p>
-                  <h2 className="hm-serif mt-2 whitespace-nowrap text-[18px] font-bold text-[var(--hm-primary)] lg:text-[19px]">화목, 그 특별한 이야기</h2>
-                </div>
-                <ButtonLink href="/about" variant="ghost" className="h-auto min-h-0 whitespace-nowrap px-0 py-0 text-[11px] font-bold">
-                  더 알아보기
-                  <ArrowRight size={13} aria-hidden="true" />
-                </ButtonLink>
-              </div>
-              <div className="relative h-[58px] overflow-hidden rounded-[14px] border border-[var(--hm-border)]">
-                <Image
-                  src="/images/brand/brand-storefront.png"
-                  alt="화목 공간"
-                  fill
-                  sizes="45vw"
-                  className="object-cover"
-                />
-              </div>
-              <p className="mt-3 line-clamp-1 text-[12px] font-medium leading-5 text-white/68">
-                화목은 참나무 장작구이를 통해 음식 본연의 맛과 향을 살리고,
-                좋은 사람들과 함께하는 소중한 시간을 만들어가는 공간입니다.
-              </p>
-            </article>
-
-            <article className="hm-tablet-panel h-[198px] overflow-hidden p-4 lg:p-5">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="hm-serif text-[20px] font-bold text-[var(--hm-primary)]">이벤트 & 쿠폰</h2>
-                <ButtonLink href="/events" variant="ghost" className="h-auto min-h-0 whitespace-nowrap px-0 py-0 text-[11px] font-bold">
-                  전체 보기
-                  <ArrowRight size={13} aria-hidden="true" />
-                </ButtonLink>
-              </div>
-              <div className="grid grid-cols-3 gap-3">
-                {tabletPromotions.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={item.href}
-                    className="hm-card-hover overflow-hidden rounded-[14px] border border-[var(--hm-border)] bg-[rgba(255,255,255,.035)]"
-                  >
-                    <div className="relative h-[42px]">
-                      <Image src={item.imageUrl} alt={item.title} fill sizes="16vw" className="object-cover" />
-                    </div>
-                    <div className="p-2.5">
-                      <h3 className="line-clamp-1 text-[12px] font-bold leading-5 text-white">{item.title}</h3>
-                      <span className="mt-1.5 inline-flex items-center gap-0.5 whitespace-nowrap text-[10px] font-bold text-[var(--hm-primary)]">
-                        자세히 보기 <ArrowRight size={11} aria-hidden="true" />
-                      </span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <aside className="grid content-start gap-2">
-          <article className="hm-tablet-panel overflow-hidden p-4">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="hm-serif text-[24px] font-bold text-[var(--hm-primary)]">매장 안내</h2>
-              <ButtonLink href="/store" variant="ghost" className="h-auto min-h-0 px-0 py-0 text-[12px] font-bold">
-                전체 매장 보기
-                <ArrowRight size={13} aria-hidden="true" />
-              </ButtonLink>
-            </div>
-            <div
-              className="h-[144px] overflow-hidden rounded-[14px] border border-[var(--hm-border)] bg-[url('/images/brand/brand-storefront.png')] bg-cover bg-center lg:h-[152px]"
-              role="img"
-              aria-label={storeInfo.name}
-            >
-            </div>
-            <div className="mt-3 rounded-[18px] border border-[var(--hm-border)] bg-[rgba(255,255,255,.035)] p-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-[18px] font-bold text-white">{storeInfo.name}</h3>
-                <span className="rounded-full bg-[rgba(70,155,90,.2)] px-3 py-1 text-[11px] font-bold text-[#77d091]">영업중</span>
-              </div>
-              <div className="mt-3 grid gap-2 text-[12px] font-medium leading-5 text-white/68">
-                <p className="flex gap-3">
-                  <MapPin className="mt-0.5 shrink-0 text-[var(--hm-accent-gold)]" size={16} aria-hidden="true" />
-                  {storeInfo.address}
-                </p>
-                <p className="flex gap-3">
-                  <Phone className="mt-0.5 shrink-0 text-[var(--hm-accent-gold)]" size={16} aria-hidden="true" />
-                  {storeInfo.phone}
-                </p>
-                <p className="flex gap-3">
-                  <Clock className="mt-0.5 shrink-0 text-[var(--hm-accent-gold)]" size={16} aria-hidden="true" />
-                  <span>
-                    {storeInfo.hours[0]}
-                    <br />
-                    {storeInfo.hours[1]}
-                  </span>
-                </p>
-              </div>
-              <div className="mt-3 grid grid-cols-2 gap-3">
-                <ButtonLink href="/store" variant="outline" className="min-h-9 text-[12px]">길찾기</ButtonLink>
-                <ButtonLink href="/support" variant="outline" className="min-h-9 text-[12px]">전화하기</ButtonLink>
-              </div>
-            </div>
-          </article>
-
-          <article className="hm-tablet-panel overflow-hidden p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="hm-serif text-[22px] font-bold text-[var(--hm-primary)]">인스타그램</h2>
-              <ButtonLink href="/events" variant="ghost" className="h-auto min-h-0 px-0 py-0 text-[12px] font-bold">
-                더보기
-                <ArrowRight size={13} aria-hidden="true" />
-              </ButtonLink>
-            </div>
-            <div className="grid grid-cols-4 gap-3">
-              {tabletInstagram.map((src, index) => (
-                <div key={`${src}-${index}`} className="relative aspect-square overflow-hidden rounded-[12px] border border-[var(--hm-border)]">
-                  <Image src={src} alt={`화목 이미지 ${index + 1}`} fill sizes="80px" className="object-cover" />
-                </div>
-              ))}
-            </div>
-          </article>
-
-        </aside>
-      </div>
-    </div>
-  );
-}
-
-function TabletMenuCard({
-  item,
-  priority = false,
-}: {
-  item: HomeMenuCardItem;
-  priority?: boolean;
-}) {
-  return (
-    <Link
-      href={`/menu/${item.id}`}
-      className="hm-card-hover overflow-hidden rounded-[14px] border border-[var(--hm-border)] bg-[rgba(255,255,255,.035)]"
-    >
-      <div className="relative h-[52px] lg:h-[56px]">
-        <Image
-          src={item.imageUrl ?? "/images/menu/1783221304773.png"}
-          alt={item.name}
-          fill
-          priority={priority}
-          sizes="18vw"
-          className="object-cover"
-        />
-        <Badge tone="neutral" className="absolute left-2 top-2 text-[10px]">{item.category}</Badge>
-      </div>
-      <div className="p-2.5">
-        <h3 className="line-clamp-1 text-[13px] font-bold leading-5 text-white">{item.name}</h3>
-        <p className="mt-1.5 text-[13px] font-bold text-[var(--hm-primary)]">{formatCurrency(item.price)}</p>
-      </div>
-    </Link>
   );
 }
 
@@ -751,7 +491,7 @@ function SectionHeader({
         <p className="hm-eyebrow">
           {eyebrow}
         </p>
-        <h2 className="hm-section-title mt-4">
+        <h2 className="hm-section-title mt-3">
           {title}
         </h2>
       </div>
