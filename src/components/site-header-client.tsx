@@ -79,12 +79,12 @@ export function HeaderMobileControls({ user }: { user: HeaderUser | null }) {
     <>
       <button
         type="button"
-        className="hm-link-focus grid h-10 w-10 place-items-center rounded-[14px] text-[var(--hm-primary)] transition hover:bg-white/[0.04] md:hidden"
+        className="hm-link-focus ml-1 grid h-10 w-10 place-items-center rounded-[12px] border border-white/[0.14] bg-white/[0.05] text-[var(--hm-text)] transition hover:border-[rgba(247,230,193,.35)] hover:text-[var(--hm-primary)] md:hidden"
         aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
       >
-        {open ? <X size={26} aria-hidden="true" /> : <Menu size={28} aria-hidden="true" />}
+        {open ? <X size={21} aria-hidden="true" /> : <Menu size={21} aria-hidden="true" />}
       </button>
       <MobileMenu open={open} user={user} onClose={() => setOpen(false)} />
       <MobileBottomNav hidden={open} />

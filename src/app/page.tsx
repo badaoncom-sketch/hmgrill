@@ -1,7 +1,9 @@
 import Image from "next/image";
+import Link from "next/link";
 import {
   ArrowRight,
   Camera,
+  ChevronRight,
   Clock,
   Flame,
   Gift,
@@ -320,61 +322,71 @@ export default async function HomePage() {
             href="/events"
             linkLabel="전체 보기"
           />
-          <div className="mt-10 grid gap-5 lg:grid-cols-3">
+          <div className="mt-8 grid grid-cols-1 gap-3 sm:mt-10 sm:gap-5 lg:grid-cols-3">
             {promotionCards.map((item) => (
-              <article
-                key={item.id}
-                className="hm-card-hover group overflow-hidden rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)]"
-              >
-                <div className="hm-image-zoom relative aspect-[16/9] overflow-hidden">
-                  <Image
-                    src={item.imageUrl}
-                    alt={item.title}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, 100vw"
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,.48))]" />
-                </div>
-                <div className="p-7">
-                  <h3 className="hm-card-title text-[var(--hm-primary)]">{item.title}</h3>
-                  <p className="hm-caption mt-3 min-h-14 text-[var(--hm-subtext)]">{item.body}</p>
-                  <ButtonLink href={item.href} variant="ghost" className="mt-5 h-auto min-h-0 px-0 py-0 text-[15px] font-bold text-[var(--hm-primary)]">
-                    자세히 보기
-                    <ArrowRight size={14} aria-hidden="true" />
-                  </ButtonLink>
-                </div>
-              </article>
+              <Link key={item.id} href={item.href} className="hm-link-focus group block">
+                <article className="hm-card-hover flex h-full items-center gap-4 overflow-hidden rounded-[16px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-3 sm:block sm:rounded-[20px] sm:p-0">
+                  <div className="hm-image-zoom relative aspect-square w-[86px] shrink-0 overflow-hidden rounded-[12px] sm:aspect-[16/9] sm:w-auto sm:rounded-none">
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.title}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 100vw, 86px"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 hidden bg-[linear-gradient(180deg,transparent,rgba(0,0,0,.48))] sm:block" />
+                  </div>
+                  <div className="min-w-0 flex-1 sm:p-7">
+                    <h3 className="truncate text-[15px] font-bold text-[var(--hm-primary)] sm:whitespace-normal sm:text-[var(--hm-type-card-title)] sm:leading-[1.38]">
+                      {item.title}
+                    </h3>
+                    <p className="hm-caption mt-1 truncate text-[var(--hm-subtext)] sm:mt-3 sm:min-h-14 sm:whitespace-normal">
+                      {item.body}
+                    </p>
+                    <span className="mt-5 hidden items-center gap-2 text-[15px] font-bold text-[var(--hm-primary)] sm:inline-flex">
+                      자세히 보기
+                      <ArrowRight size={14} aria-hidden="true" />
+                    </span>
+                  </div>
+                  <ChevronRight size={18} className="shrink-0 text-white/30 sm:hidden" aria-hidden="true" />
+                </article>
+              </Link>
             ))}
             {activeCoupon ? (
-              <article className="hm-card-hover group overflow-hidden rounded-[20px] border border-[rgba(247,230,193,.22)] bg-[var(--hm-surface)]">
-                <div className="relative aspect-[16/9] overflow-hidden">
-                  <Image
-                    src="/images/brand/brand-fire-wall.png"
-                    alt={activeCoupon.name}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, 100vw"
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.72))]" />
-                  <div className="absolute left-6 top-6 grid h-14 w-14 place-items-center rounded-[18px] bg-[var(--hm-primary)] text-[var(--hm-background)]">
-                    <Gift size={26} aria-hidden="true" />
+              <Link href="/coupons" className="hm-link-focus group block">
+                <article className="hm-card-hover flex h-full items-center gap-4 overflow-hidden rounded-[16px] border border-[rgba(247,230,193,.22)] bg-[var(--hm-surface)] p-3 sm:block sm:rounded-[20px] sm:p-0">
+                  <div className="relative aspect-square w-[86px] shrink-0 overflow-hidden rounded-[12px] sm:aspect-[16/9] sm:w-auto sm:rounded-none">
+                    <Image
+                      src="/images/brand/brand-fire-wall.png"
+                      alt={activeCoupon.name}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 100vw, 86px"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.72))]" />
+                    <div className="absolute left-1/2 top-1/2 grid h-9 w-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-[12px] bg-[var(--hm-primary)] text-[var(--hm-background)] sm:left-6 sm:top-6 sm:h-14 sm:w-14 sm:translate-x-0 sm:translate-y-0 sm:rounded-[18px]">
+                      <Gift size={18} className="sm:hidden" aria-hidden="true" />
+                      <Gift size={26} className="hidden sm:block" aria-hidden="true" />
+                    </div>
                   </div>
-                </div>
-                <div className="p-7">
-                  <h3 className="hm-card-title text-[var(--hm-primary)]">{activeCoupon.name}</h3>
-                  <p className="mt-3 text-[30px] font-bold leading-tight text-white">
-                    {formatCurrency(activeCoupon.amount)}
-                  </p>
-                  <p className="hm-caption mt-4 text-[var(--hm-subtext)]">
-                    다운로드 후 {activeCoupon.validityDays}일 사용 가능
-                  </p>
-                  <ButtonLink href="/coupons" variant="ghost" className="mt-5 h-auto min-h-0 px-0 py-0 text-[15px] font-bold text-[var(--hm-primary)]">
-                    쿠폰 보기
-                    <ArrowRight size={14} aria-hidden="true" />
-                  </ButtonLink>
-                </div>
-              </article>
+                  <div className="min-w-0 flex-1 sm:p-7">
+                    <h3 className="truncate text-[15px] font-bold text-[var(--hm-primary)] sm:whitespace-normal sm:text-[var(--hm-type-card-title)] sm:leading-[1.38]">
+                      {activeCoupon.name}
+                    </h3>
+                    <p className="mt-1 text-[18px] font-bold leading-tight text-white sm:mt-3 sm:text-[30px]">
+                      {formatCurrency(activeCoupon.amount)}
+                    </p>
+                    <p className="hm-caption mt-1 truncate text-[var(--hm-subtext)] sm:mt-4 sm:whitespace-normal">
+                      다운로드 후 {activeCoupon.validityDays}일 사용 가능
+                    </p>
+                    <span className="mt-5 hidden items-center gap-2 text-[15px] font-bold text-[var(--hm-primary)] sm:inline-flex">
+                      쿠폰 보기
+                      <ArrowRight size={14} aria-hidden="true" />
+                    </span>
+                  </div>
+                  <ChevronRight size={18} className="shrink-0 text-white/30 sm:hidden" aria-hidden="true" />
+                </article>
+              </Link>
             ) : null}
           </div>
         </Container>

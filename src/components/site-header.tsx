@@ -49,7 +49,7 @@ export function SiteHeader({
         <div className="flex items-center justify-end gap-0.5 text-sm font-semibold md:gap-1.5">
           <a
             href={siteContact.phoneHref}
-            className="hm-link-focus grid h-9 w-9 place-items-center rounded-[14px] text-[var(--hm-primary)] transition hover:bg-white/[0.04] md:h-10 md:w-10"
+            className="hm-link-focus hidden h-10 w-10 place-items-center rounded-[14px] text-[var(--hm-primary)] transition hover:bg-white/[0.04] md:grid"
             aria-label="전화하기"
           >
             <Phone size={19} aria-hidden="true" />

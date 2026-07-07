@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CalendarDays } from "lucide-react";
+import { ArrowRight, CalendarDays, ChevronRight } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/layout";
 import { contentPostSelect, mapContentPost } from "@/lib/content/db";
@@ -53,7 +53,7 @@ export default async function EventsPage() {
                 />
                 <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,.35))]" />
               </div>
-              <div className="flex flex-col justify-center gap-4 p-8 lg:p-11">
+              <div className="flex flex-col justify-center gap-3 p-5 sm:gap-4 sm:p-8 lg:p-11">
                 <p className="flex items-center gap-2 text-sm font-semibold text-[var(--hm-accent-gold)]">
                   <CalendarDays size={16} aria-hidden="true" />
                   {formatDate(featured.publishedAt ?? featured.createdAt)}
@@ -76,33 +76,35 @@ export default async function EventsPage() {
         ) : null}
 
         {rest.length > 0 ? (
-          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-8 grid grid-cols-1 gap-3 sm:mt-10 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
             {rest.map((event, index) => (
               <Link
                 key={event.id}
                 href={`/events/${event.id}`}
                 className="hm-link-focus group block h-full"
               >
-                <article className="hm-card-hover flex h-full flex-col overflow-hidden rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)]">
-                  <div className="hm-image-zoom relative aspect-[4/2.6] overflow-hidden">
+                <article className="hm-card-hover flex h-full items-center gap-4 overflow-hidden rounded-[16px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-3 sm:flex-col sm:items-stretch sm:gap-0 sm:rounded-[20px] sm:p-0">
+                  <div className="hm-image-zoom relative aspect-square w-[86px] shrink-0 overflow-hidden rounded-[12px] sm:aspect-[4/2.6] sm:w-auto sm:rounded-none">
                     <Image
                       src={eventImages[(index + 1) % eventImages.length]}
                       alt={event.title}
                       fill
-                      sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+                      sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 86px"
                       className="object-cover"
                     />
                   </div>
-                  <div className="flex flex-1 flex-col gap-3 p-6">
-                    <p className="flex items-center gap-2 text-sm text-[var(--hm-accent-gold)]">
-                      <CalendarDays size={16} aria-hidden="true" />
+                  <div className="min-w-0 flex-1 sm:flex sm:flex-1 sm:flex-col sm:gap-3 sm:p-6">
+                    <p className="flex items-center gap-1.5 text-[11px] text-[var(--hm-accent-gold)] sm:gap-2 sm:text-sm">
+                      <CalendarDays size={14} aria-hidden="true" />
                       {formatDate(event.publishedAt ?? event.createdAt)}
                     </p>
-                    <h2 className="hm-card-title">{event.title}</h2>
-                    <p className="hm-caption line-clamp-3 text-[var(--hm-subtext)]">
+                    <h2 className="mt-1 truncate text-[15px] font-bold leading-snug text-[var(--hm-text)] sm:mt-0 sm:whitespace-normal sm:text-[var(--hm-type-card-title)] sm:leading-[1.38]">
+                      {event.title}
+                    </h2>
+                    <p className="hm-caption hidden text-[var(--hm-subtext)] sm:line-clamp-3">
                       {event.body}
                     </p>
-                    <span className="mt-auto inline-flex items-center gap-2 pt-1 text-sm font-bold text-[var(--hm-primary)]">
+                    <span className="mt-auto hidden items-center gap-2 pt-1 text-sm font-bold text-[var(--hm-primary)] sm:inline-flex">
                       자세히 보기
                       <ArrowRight
                         size={14}
@@ -111,6 +113,7 @@ export default async function EventsPage() {
                       />
                     </span>
                   </div>
+                  <ChevronRight size={18} className="shrink-0 text-white/30 sm:hidden" aria-hidden="true" />
                 </article>
               </Link>
             ))}
