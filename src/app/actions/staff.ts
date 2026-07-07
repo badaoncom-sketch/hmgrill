@@ -75,18 +75,31 @@ function getUseFlow(row: unknown) {
 
 async function fetchCouponByToken(tokenOrNumber: string) {
   const admin = createAdminClient();
+  const select = memberCouponSelect.replace(
+    "coupon_issues(name,amount,condition_text,qr_notice)",
+    "coupon_issues(name,amount,condition_text,qr_notice,use_flow)",
+  );
+  // 스캐너가 공백/제어문자를 섞어 보내는 경우를 대비해 정리한다.
+  const input = tokenOrNumber.replace(/\s+/g, "");
   // QR은 토큰을, 수동 입력은 쿠폰 하단의 8자리 쿠폰번호를 쓸 수 있게 둘 다 지원한다.
-  const isCouponNumber = /^[0-9]{8}$/.test(tokenOrNumber);
-  const { data, error } = await admin
+  const isCouponNumber = /^[0-9]{8}$/.test(input);
+
+  let { data, error } = await admin
     .from("member_coupons")
-    .select(
-      memberCouponSelect.replace(
-        "coupon_issues(name,amount,condition_text,qr_notice)",
-        "coupon_issues(name,amount,condition_text,qr_notice,use_flow)",
-      ),
-    )
-    .eq(isCouponNumber ? "coupon_number" : "token", tokenOrNumber)
+    .select(select)
+    .eq(isCouponNumber ? "coupon_number" : "token", input)
     .maybeSingle();
+
+  // 일부 QR 리더기는 대문자 변환/Caps Lock 상태로 입력한다.
+  // 토큰은 24바이트 난수라 대소문자 무시 매칭으로도 충돌 위험이 사실상 없다.
+  if (!error && !data && !isCouponNumber) {
+    const escaped = input.replace(/[\\%_]/g, (ch) => `\\${ch}`);
+    ({ data, error } = await admin
+      .from("member_coupons")
+      .select(select)
+      .ilike("token", escaped)
+      .maybeSingle());
+  }
 
   if (error) {
     return { coupon: undefined, useFlow: "staff_confirm" as CouponUseFlow, error };
