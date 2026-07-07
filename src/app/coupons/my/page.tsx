@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { ChevronDown } from "lucide-react";
 import { QrCoupon } from "@/components/qr-coupon";
+import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/layout";
 import { getEffectiveMemberCouponStatus } from "@/lib/coupon-policy";
 import { mapMemberCoupon, memberCouponSelect } from "@/lib/coupons/db";
 import { createClient } from "@/lib/supabase/server";
+import { formatCurrency, formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "내 쿠폰",
@@ -90,10 +93,76 @@ export default async function MyCouponsPage() {
                 {String(pastCoupons.length).padStart(2, "0")}
               </p>
             </div>
-            <div className="mt-8 grid gap-5">
-              {pastCoupons.map((coupon) => (
-                <QrCoupon key={coupon.id} coupon={coupon} />
-              ))}
+            <div className="mt-6 overflow-hidden rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)]">
+              <div className="divide-y divide-[var(--hm-divider)]">
+                {pastCoupons.map((coupon) => {
+                  const status = getEffectiveMemberCouponStatus(coupon);
+                  return (
+                    <details key={coupon.id} className="group">
+                      <summary className="hm-link-focus flex cursor-pointer list-none items-center gap-3 p-4 transition hover:bg-white/[0.03] sm:px-6 [&::-webkit-details-marker]:hidden">
+                        <Badge tone={status === "used" ? "neutral" : "red"}>
+                          {status === "used" ? "사용 완료" : "기간 만료"}
+                        </Badge>
+                        <span className="min-w-0 flex-1 truncate text-[15px] font-bold text-white/75">
+                          {coupon.couponName}
+                        </span>
+                        <span className="shrink-0 text-sm font-bold text-[var(--hm-accent-gold)]/85">
+                          {formatCurrency(coupon.amount)}
+                        </span>
+                        <ChevronDown
+                          size={16}
+                          className="shrink-0 text-white/35 transition group-open:rotate-180"
+                          aria-hidden="true"
+                        />
+                      </summary>
+                      <dl className="grid gap-x-8 gap-y-3 border-t border-[var(--hm-divider)] bg-black/20 p-4 text-sm sm:grid-cols-2 sm:px-6">
+                        <div>
+                          <dt className="text-xs font-bold text-white/40">쿠폰번호</dt>
+                          <dd className="mt-1 font-mono text-[13px] tracking-[0.12em] text-[var(--hm-primary)]">
+                            {coupon.couponNumber}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-xs font-bold text-white/40">사용기간</dt>
+                          <dd className="mt-1 text-[var(--hm-subtext)]">
+                            {formatDate(coupon.validFrom)} - {formatDate(coupon.validUntil)}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-xs font-bold text-white/40">다운로드일</dt>
+                          <dd className="mt-1 text-[var(--hm-subtext)]">
+                            {formatDate(coupon.downloadedAt)}
+                          </dd>
+                        </div>
+                        {coupon.usedAt ? (
+                          <div>
+                            <dt className="text-xs font-bold text-white/40">사용일시</dt>
+                            <dd className="mt-1 text-[var(--hm-subtext)]">
+                              {new Date(coupon.usedAt).toLocaleString("ko-KR")}
+                            </dd>
+                          </div>
+                        ) : null}
+                        {coupon.usedByStaffName ? (
+                          <div>
+                            <dt className="text-xs font-bold text-white/40">처리 직원</dt>
+                            <dd className="mt-1 text-[var(--hm-subtext)]">
+                              {coupon.usedByStaffName}
+                            </dd>
+                          </div>
+                        ) : null}
+                        {coupon.conditionText ? (
+                          <div className="sm:col-span-2">
+                            <dt className="text-xs font-bold text-white/40">사용조건</dt>
+                            <dd className="mt-1 whitespace-pre-line text-[13px] leading-6 text-[var(--hm-subtext)]">
+                              {coupon.conditionText}
+                            </dd>
+                          </div>
+                        ) : null}
+                      </dl>
+                    </details>
+                  );
+                })}
+              </div>
             </div>
           </section>
         ) : null}
