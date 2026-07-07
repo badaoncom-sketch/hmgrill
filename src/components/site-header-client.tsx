@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Headset,
   Home,
+  LogIn,
   MapPin,
   Megaphone,
   Menu,
@@ -34,12 +35,11 @@ const drawerIcons: Record<string, LucideIcon> = {
   "/support": Headset,
 };
 
-const bottomNavItems = [
+const bottomNavBaseItems = [
   { href: "/", label: "홈", icon: Home },
   { href: "/menu", label: "메뉴", icon: Utensils },
   { href: "/store", label: "매장", icon: MapPin },
   { href: "/coupons", label: "쿠폰", icon: Ticket },
-  { href: "/mypage", label: "마이", icon: UserRound },
 ] as const;
 
 const subscribeNoop = () => () => {};
@@ -252,8 +252,14 @@ function MobileMenu({
             <br />
             QR 쿠폰 받기!
           </span>
-          <span className="relative z-10 mr-1 grid h-[58px] w-[58px] shrink-0 place-items-center rounded-full bg-[#f6d339] text-[14px] font-black text-[#352300] shadow-[0_10px_24px_rgba(0,0,0,.28)] after:absolute after:bottom-1 after:left-2 after:h-3 after:w-3 after:rotate-45 after:bg-[#f6d339]">
-            TALK
+          <span className="relative z-10 mr-1 grid h-[54px] w-[54px] shrink-0 place-items-center rounded-[16px] bg-[#FEE500] shadow-[0_10px_24px_rgba(0,0,0,.28)]">
+            {/* 카카오톡 말풍선 로고 */}
+            <svg viewBox="0 0 24 24" className="h-8 w-8" aria-hidden="true">
+              <path
+                fill="#191919"
+                d="M12 3C6.48 3 2 6.54 2 10.9c0 2.8 1.86 5.26 4.66 6.66-.2.74-.73 2.68-.84 3.1-.13.52.19.51.4.37.17-.11 2.65-1.8 3.72-2.53.66.1 1.35.15 2.06.15 5.52 0 10-3.54 10-7.9S17.52 3 12 3z"
+              />
+            </svg>
           </span>
         </Link>
 
@@ -292,8 +298,15 @@ function MobileMenu({
 // 주의: 이 컴포넌트는 반드시 header 바깥(레이아웃 레벨)에서 렌더링해야 한다.
 // header의 backdrop-blur가 containing block이 되어 fixed bottom-0이
 // 뷰포트가 아닌 헤더 기준으로 붙어버리기 때문이다.
-export function MobileBottomNav() {
+export function MobileBottomNav({ user }: { user: HeaderUser | null }) {
   const pathname = usePathname();
+  // 로그인 상태에 따라 마지막 탭을 분별한다: 비로그인은 로그인 유도, 로그인은 마이페이지.
+  const bottomNavItems = [
+    ...bottomNavBaseItems,
+    user
+      ? ({ href: "/mypage", label: "마이", icon: UserRound } as const)
+      : ({ href: "/login", label: "로그인", icon: LogIn } as const),
+  ];
 
   return (
     <nav

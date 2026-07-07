@@ -58,6 +58,17 @@ textarea {
   font: inherit;
 }
 
+/* 브라우저 자동완성이 다크 입력창을 흰색으로 덮지 않게 한다. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--hm-text);
+  -webkit-box-shadow: 0 0 0 1000px var(--hm-surface) inset;
+  box-shadow: 0 0 0 1000px var(--hm-surface) inset;
+  caret-color: var(--hm-text);
+  transition: background-color 9999s ease-in-out 0s;
+}
+
 ::selection {
   background: var(--hm-primary);
   color: var(--hm-background);

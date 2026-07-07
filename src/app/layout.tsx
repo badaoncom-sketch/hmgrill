@@ -103,7 +103,7 @@ export default async function RootLayout({
         <SiteHeader user={headerUser} notifications={notifications} unreadCount={unreadCount} />
         <div className="hm-surface min-h-screen pt-16 md:pt-20">{children}</div>
         <SiteFooter />
-        <MobileBottomNav />
+        <MobileBottomNav user={headerUser} />
       </body>
     </html>
   );

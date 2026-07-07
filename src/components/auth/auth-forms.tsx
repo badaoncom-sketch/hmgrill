@@ -8,11 +8,12 @@ import {
   resendVerificationAction,
   signupAction,
   updatePasswordAction,
+  type AuthActionState,
 } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/field";
 
-const initialState = {
+const initialState: AuthActionState = {
   ok: false,
   message: "",
 };
@@ -129,11 +130,31 @@ export function LoginForm() {
       </label>
       <SubmitButton pending={isPending} label="로그인" pendingLabel="로그인 중" />
       <ActionMessage ok={state.ok} message={state.message} />
+      {state.needsVerification ? (
+        <div className="rounded-[14px] border border-[rgba(247,230,193,.22)] bg-[rgba(247,230,193,.05)] p-4">
+          <p className="text-sm font-bold text-[var(--hm-primary)]">
+            아직 이메일 인증이 완료되지 않았어요
+          </p>
+          <p className="mt-1.5 text-xs leading-5 text-[var(--hm-subtext)]">
+            메일함(스팸함 포함)에서 인증 메일을 확인해 주세요. 메일이 없다면 아래
+            버튼으로 다시 받을 수 있습니다.
+          </p>
+          <div className="mt-3">
+            <ResendVerificationForm defaultEmail={state.email} hideLabel />
+          </div>
+        </div>
+      ) : null}
     </form>
   );
 }
 
-export function ResendVerificationForm() {
+export function ResendVerificationForm({
+  defaultEmail,
+  hideLabel = false,
+}: {
+  defaultEmail?: string;
+  hideLabel?: boolean;
+}) {
   const [state, formAction, isPending] = useActionState(
     resendVerificationAction,
     initialState,
@@ -141,18 +162,19 @@ export function ResendVerificationForm() {
 
   return (
     <form action={formAction} className="grid gap-3">
-      <Field label="인증 메일 재발송">
+      <Field label={hideLabel ? "" : "가입 이메일"}>
         <Input
           name="email"
           type="email"
           placeholder="member@example.com"
+          defaultValue={defaultEmail}
           required
           disabled={isPending}
         />
       </Field>
       <SubmitButton
         pending={isPending}
-        label="재발송"
+        label="인증 메일 재발송"
         pendingLabel="발송 중"
         variant="outline"
       />

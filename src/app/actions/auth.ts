@@ -6,9 +6,11 @@ import { createAndSendVerificationEmail } from "@/lib/auth/verification";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
-type AuthActionState = {
+export type AuthActionState = {
   ok: boolean;
   message: string;
+  needsVerification?: boolean;
+  email?: string;
 };
 
 function readRequiredString(formData: FormData, key: string) {
@@ -216,6 +218,8 @@ export async function loginAction(
     return {
       ok: false,
       message: "이메일 인증 후 로그인할 수 있습니다.",
+      needsVerification: true,
+      email,
     };
   }
 
