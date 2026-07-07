@@ -3,6 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { mapMemberCoupon, memberCouponSelect } from "@/lib/coupons/db";
+import { normalizeScanInput } from "@/lib/scan-input";
 import type { CouponUseFlow, MemberCoupon } from "@/lib/types";
 
 type StaffCouponRow = {
@@ -79,8 +80,8 @@ async function fetchCouponByToken(tokenOrNumber: string) {
     "coupon_issues(name,amount,condition_text,qr_notice)",
     "coupon_issues(name,amount,condition_text,qr_notice,use_flow)",
   );
-  // 스캐너가 공백/제어문자를 섞어 보내는 경우를 대비해 정리한다.
-  const input = tokenOrNumber.replace(/\s+/g, "");
+  // 스캐너 공백 제거 + 한글 자판 상태로 입력된 토큰을 QWERTY로 역변환한다.
+  const input = normalizeScanInput(tokenOrNumber);
   // QR은 토큰을, 수동 입력은 쿠폰 하단의 8자리 쿠폰번호를 쓸 수 있게 둘 다 지원한다.
   const isCouponNumber = /^[0-9]{8}$/.test(input);
 

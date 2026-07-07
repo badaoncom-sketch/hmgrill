@@ -52,7 +52,10 @@ const initialState: StaffScannerState = {
   message: "",
 };
 
-type DisplayResult = StaffScannerState & { source: "lookup" | "use" };
+type DisplayResult = StaffScannerState & {
+  source: "lookup" | "use";
+  scannedInput?: string;
+};
 
 type ViewKind = "idle" | "usable" | "applied" | "blocked" | "notfound";
 
@@ -245,10 +248,11 @@ export function StaffScanner({
 
   const runLookup = useCallback(
     (formData: FormData) => {
+      const scannedInput = String(formData.get("token") ?? "");
       startLookup(async () => {
         try {
           const result = await lookupCouponAction(initialState, formData);
-          setDisplay({ ...result, source: "lookup" });
+          setDisplay({ ...result, source: "lookup", scannedInput });
           if (result.ok && result.message.includes("자동 사용완료")) {
             router.refresh();
           }
@@ -789,6 +793,13 @@ export function StaffScanner({
               회원의 &lsquo;내 쿠폰&rsquo; 화면에 표시된 QR인지 확인한 뒤 다시 스캔해 주세요.
               계속 실패하면 아래 수동 입력을 이용하세요.
             </p>
+            {display?.scannedInput ? (
+              <p className="max-w-full truncate rounded-full border border-white/10 bg-black/30 px-4 py-1.5 font-mono text-[12px] tracking-[0.04em] text-white/50">
+                입력값: {display.scannedInput.length > 42
+                  ? `${display.scannedInput.slice(0, 42)}…`
+                  : display.scannedInput}
+              </p>
+            ) : null}
             {countdown}
           </div>
         ) : null}
