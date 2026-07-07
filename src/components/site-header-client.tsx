@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import {
   Bell,
   ChevronRight,
@@ -41,8 +42,19 @@ const bottomNavItems = [
   { href: "/mypage", label: "마이", icon: UserRound },
 ] as const;
 
+const subscribeNoop = () => () => {};
+
+function useMounted() {
+  return useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false,
+  );
+}
+
 export function HeaderMobileControls({ user }: { user: HeaderUser | null }) {
   const [open, setOpen] = useState(false);
+  const mounted = useMounted();
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -86,7 +98,14 @@ export function HeaderMobileControls({ user }: { user: HeaderUser | null }) {
       >
         {open ? <X size={21} aria-hidden="true" /> : <Menu size={21} aria-hidden="true" />}
       </button>
-      <MobileMenu open={open} user={user} onClose={() => setOpen(false)} />
+      {/* 드로어는 body로 포털한다 — 헤더의 backdrop-filter가 containing block이
+          되어 fixed 위치가 헤더 기준으로 틀어지는 것을 원천 차단. */}
+      {mounted
+        ? createPortal(
+            <MobileMenu open={open} user={user} onClose={() => setOpen(false)} />,
+            document.body,
+          )
+        : null}
     </>
   );
 }
@@ -103,7 +122,7 @@ function MobileMenu({
   const isAuthenticated = Boolean(user);
   return (
     <div
-      className={`fixed inset-0 z-[60] md:hidden ${open ? "pointer-events-auto" : "pointer-events-none"}`}
+      className={`fixed inset-0 z-[60] overflow-hidden md:hidden ${open ? "pointer-events-auto" : "pointer-events-none"}`}
       aria-hidden={!open}
     >
       <button
