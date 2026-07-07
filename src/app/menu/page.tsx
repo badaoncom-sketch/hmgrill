@@ -10,27 +10,21 @@ export const metadata: Metadata = {
   description: "장작불의 온기와 숙성 고기의 깊이를 담은 화목의 메뉴입니다.",
 };
 
-const preferredCategoryOrder = [
-  "대표메뉴",
-  "세트메뉴",
-  "소고기",
-  "돼지고기",
-  "사이드",
-  "식사",
-  "주류",
-];
+// 카테고리 테이블이 비어 있을 때만 쓰는 예비 순서
+const fallbackCategoryOrder = ["대표메뉴", "세트메뉴", "사이드", "음료", "전체메뉴"];
 
-function groupByCategory(items: MenuItem[]) {
+function groupByCategory(items: MenuItem[], categoryOrder: string[]) {
   const grouped = new Map<string, MenuItem[]>();
   for (const item of items) {
     const list = grouped.get(item.category) ?? [];
     list.push(item);
     grouped.set(item.category, list);
   }
+  const preferred = categoryOrder.length > 0 ? categoryOrder : fallbackCategoryOrder;
   const ordered = [
-    ...preferredCategoryOrder.filter((category) => grouped.has(category)),
+    ...preferred.filter((category) => grouped.has(category)),
     ...Array.from(grouped.keys()).filter(
-      (category) => !preferredCategoryOrder.includes(category),
+      (category) => !preferred.includes(category),
     ),
   ];
   return ordered.map((category) => ({
@@ -41,24 +35,37 @@ function groupByCategory(items: MenuItem[]) {
 
 export default async function MenuPage() {
   const supabase = await createClient();
-  const { data: rows } = await supabase
-    .from("menu_items")
-    .select(menuItemSelect)
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true })
-    .order("created_at", { ascending: false });
+  const [{ data: rows }, { data: categoryRows }, { data: copyRow }] = await Promise.all([
+    supabase
+      .from("menu_items")
+      .select(menuItemSelect)
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("menu_categories")
+      .select("name")
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true }),
+    supabase.from("site_copy").select("title,body").eq("key", "menu").maybeSingle(),
+  ]);
   const menuItems = (rows ?? []).map(mapMenuItem);
-  const menuSections = groupByCategory(menuItems);
+  const categoryOrder = (categoryRows ?? []).map((row) => row.name);
+  const menuSections = groupByCategory(menuItems, categoryOrder);
+  const pageTitle = copyRow?.title ?? "화목의 메뉴";
+  const pageBody =
+    copyRow?.body ??
+    "장작불의 온기, 숙성 고기의 깊이, 구운 채소와 곁들임의 균형을 담았습니다.";
 
   return (
     <main className="hm-page-main">
       <Container>
         <div className="max-w-2xl">
           <p className="hm-eyebrow">Menu</p>
-          <h1 className="hm-section-title mt-5">화목의 메뉴</h1>
-          <p className="hm-body mt-5 text-[var(--hm-subtext)]">
-            장작불의 온기, 숙성 고기의 깊이, 구운 채소와 곁들임의 균형을 담았습니다.
-          </p>
+          <h1 className="hm-section-title mt-5">{pageTitle}</h1>
+          {pageBody ? (
+            <p className="hm-body mt-5 text-[var(--hm-subtext)]">{pageBody}</p>
+          ) : null}
         </div>
 
         {menuSections.length > 0 ? (

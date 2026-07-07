@@ -2,9 +2,13 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import {
+  ArrowDown,
+  ArrowUp,
   BarChart3,
   Bell,
+  Check,
   CheckCircle2,
+  ChevronDown,
   Clock3,
   FileText,
   ImageIcon,
@@ -13,6 +17,7 @@ import {
   Plus,
   Search,
   Ticket,
+  Trash2,
   UserRound,
   UsersRound,
   XCircle,
@@ -20,15 +25,22 @@ import {
 import { updateUserRoleAction } from "@/app/actions/admin-users";
 import {
   createContentPostAction,
+  createMenuCategoryAction,
   createMenuItemAction,
   createSiteBannerAction,
   createSitePopupAction,
+  deleteMenuCategoryAction,
+  deleteMenuItemAction,
+  moveMenuCategoryAction,
+  renameMenuCategoryAction,
   updateContentPostAction,
   updateInquiryStatusAction,
+  updateMenuCopyAction,
   updateMenuItemAction,
   updateSiteBannerAction,
   updateSitePopupAction,
 } from "@/app/actions/content";
+import { IconSubmitButton } from "@/components/icon-submit-button";
 import {
   AdminFrame,
   AdminPanel,
@@ -154,13 +166,11 @@ const inquiryStatusLabels: Record<InquiryStatus, string> = {
   closed: "종료",
 };
 
-const menuCategories: MenuItem["category"][] = [
-  "대표메뉴",
-  "전체메뉴",
-  "세트메뉴",
-  "사이드",
-  "음료",
-];
+type MenuCategoryRow = {
+  id: string;
+  name: string;
+  sort_order: number;
+};
 
 function formatDate(value?: string | null) {
   if (!value) {
@@ -370,17 +380,28 @@ async function UserSection({ section }: { section: "members" | "staff" }) {
 
 async function MenuSection() {
   const meta = sectionMeta.menu;
-  const { data: rows } = await createAdminClient()
-    .from("menu_items")
-    .select(menuItemSelect)
-    .order("sort_order", { ascending: true })
-    .order("created_at", { ascending: false });
+  const admin = createAdminClient();
+  const [{ data: rows }, { data: categoryRows }, { data: copyRow }] = await Promise.all([
+    admin
+      .from("menu_items")
+      .select(menuItemSelect)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: false }),
+    admin
+      .from("menu_categories")
+      .select("id,name,sort_order")
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true }),
+    admin.from("site_copy").select("title,body").eq("key", "menu").maybeSingle(),
+  ]);
   const menuItems = (rows ?? []).map(mapMenuItem);
+  const categories = (categoryRows ?? []) as MenuCategoryRow[];
   const activeCount = menuItems.filter((item) => item.isActive).length;
   const featuredCount = menuItems.filter((item) => item.featured).length;
-  const averagePrice = menuItems.length
-    ? Math.round(menuItems.reduce((sum, item) => sum + item.price, 0) / menuItems.length)
-    : 0;
+  const itemCountByCategory = new Map<string, number>();
+  for (const item of menuItems) {
+    itemCountByCategory.set(item.category, (itemCountByCategory.get(item.category) ?? 0) + 1);
+  }
 
   return (
     <AdminFrame active="menu" title={meta.title} description={meta.description}>
@@ -388,19 +409,81 @@ async function MenuSection() {
         <div className="grid gap-4 md:grid-cols-3">
           <AdminStatCard icon={<MenuSquare size={24} />} label="등록 메뉴" value={<>{menuItems.length}개</>} detail={`공개 ${activeCount}개`} />
           <AdminStatCard icon={<CheckCircle2 size={24} />} label="대표 노출" value={<>{featuredCount}개</>} detail="홈 대표 메뉴 기준" />
-          <AdminStatCard icon={<Ticket size={24} />} label="평균 가격" value={formatCurrency(averagePrice)} detail="등록 메뉴 기준" />
+          <AdminStatCard icon={<Ticket size={24} />} label="카테고리" value={<>{categories.length}개</>} detail="메뉴판 구성 기준" />
         </div>
         <div className="grid gap-5 xl:grid-cols-[420px_minmax(0,1fr)]">
-          <FormPanel title="메뉴 추가">
-            <MenuCreateForm />
-          </FormPanel>
+          <div className="grid content-start gap-5">
+            <FormPanel title="메뉴 페이지 문구">
+              <form action={updateMenuCopyAction} className="grid gap-4">
+                <Field label="페이지 제목">
+                  <Input name="title" defaultValue={copyRow?.title ?? "화목의 메뉴"} required />
+                </Field>
+                <Field label="소개 문구">
+                  <Textarea name="body" defaultValue={copyRow?.body ?? ""} />
+                </Field>
+                <Button type="submit" variant="outline">문구 저장</Button>
+              </form>
+            </FormPanel>
+
+            <FormPanel title="카테고리 관리">
+              <div className="grid gap-1">
+                {categories.map((category, index) => (
+                  <div key={category.id} className="flex items-center gap-1.5 rounded-[12px] px-1 py-1 transition hover:bg-white/[0.02]">
+                    <form action={renameMenuCategoryAction} className="flex min-w-0 flex-1 items-center gap-1.5">
+                      <input name="id" type="hidden" value={category.id} />
+                      <Input name="name" defaultValue={category.name} required className="min-h-9 flex-1 text-sm" />
+                      <IconSubmitButton label="이름 저장"><Check size={15} aria-hidden="true" /></IconSubmitButton>
+                    </form>
+                    <span className="w-8 shrink-0 text-center font-mono text-[11px] text-white/35">
+                      {itemCountByCategory.get(category.name) ?? 0}
+                    </span>
+                    <form action={moveMenuCategoryAction}>
+                      <input name="id" type="hidden" value={category.id} />
+                      <input name="direction" type="hidden" value="up" />
+                      <IconSubmitButton label="위로 이동">
+                        <ArrowUp size={15} aria-hidden="true" className={index === 0 ? "opacity-25" : undefined} />
+                      </IconSubmitButton>
+                    </form>
+                    <form action={moveMenuCategoryAction}>
+                      <input name="id" type="hidden" value={category.id} />
+                      <input name="direction" type="hidden" value="down" />
+                      <IconSubmitButton label="아래로 이동">
+                        <ArrowDown size={15} aria-hidden="true" className={index === categories.length - 1 ? "opacity-25" : undefined} />
+                      </IconSubmitButton>
+                    </form>
+                    <form action={deleteMenuCategoryAction}>
+                      <input name="id" type="hidden" value={category.id} />
+                      <IconSubmitButton label="카테고리 삭제" danger><Trash2 size={15} aria-hidden="true" /></IconSubmitButton>
+                    </form>
+                  </div>
+                ))}
+                {categories.length === 0 ? <EmptyState>등록된 카테고리가 없습니다.</EmptyState> : null}
+              </div>
+              <form action={createMenuCategoryAction} className="mt-3 flex items-center gap-2 border-t border-white/[0.06] pt-4">
+                <Input name="name" placeholder="새 카테고리 이름" required className="min-h-10 flex-1 text-sm" />
+                <Button type="submit" variant="outline" className="shrink-0"><Plus size={15} aria-hidden="true" />추가</Button>
+              </form>
+              <p className="mt-3 text-xs leading-5 text-white/40">
+                순서는 메뉴 페이지의 섹션 순서로 그대로 반영됩니다. 숫자는 해당 카테고리의 메뉴 수이며,
+                메뉴가 있는 카테고리는 삭제할 수 없습니다.
+              </p>
+            </FormPanel>
+
+            <FormPanel title="메뉴 추가">
+              <MenuCreateForm categories={categories} />
+            </FormPanel>
+          </div>
+
           <AdminPanel>
-            <AdminPanelHeader title="메뉴 목록" />
-            <div className="grid gap-4 p-5 lg:grid-cols-2">
+            <AdminPanelHeader
+              title="메뉴 목록"
+              action={<span className="text-xs font-semibold text-white/40">행을 클릭하면 수정·삭제</span>}
+            />
+            <div className="divide-y divide-white/[0.05]">
               {menuItems.map((item) => (
-                <MenuEditCard key={item.id} item={item} />
+                <MenuListRow key={item.id} item={item} categories={categories} />
               ))}
-              {menuItems.length === 0 ? <EmptyState>등록된 메뉴가 없습니다.</EmptyState> : null}
+              {menuItems.length === 0 ? <div className="p-5"><EmptyState>등록된 메뉴가 없습니다.</EmptyState></div> : null}
             </div>
           </AdminPanel>
         </div>
@@ -409,17 +492,31 @@ async function MenuSection() {
   );
 }
 
-function MenuCreateForm() {
+function MenuImageInput({ label = "이미지 업로드" }: { label?: string }) {
   return (
-    <form action={createMenuItemAction} className="grid gap-4">
-      <Field label="카테고리"><CategorySelect /></Field>
+    <Field label={label}>
+      <Input
+        name="imageFile"
+        type="file"
+        accept="image/*"
+        className="cursor-pointer pt-2 text-xs text-white/55 file:mr-3 file:cursor-pointer file:rounded-[10px] file:border-0 file:bg-[var(--hm-primary)] file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-[var(--hm-background)]"
+      />
+    </Field>
+  );
+}
+
+function MenuCreateForm({ categories }: { categories: MenuCategoryRow[] }) {
+  return (
+    <form action={createMenuItemAction} encType="multipart/form-data" className="grid gap-4">
+      <Field label="카테고리"><CategorySelect categories={categories} /></Field>
       <Field label="메뉴명"><Input name="name" required /></Field>
       <Field label="설명"><Textarea name="description" /></Field>
       <div className="grid gap-3 sm:grid-cols-2">
         <Field label="가격"><Input name="price" min={0} required type="number" /></Field>
         <Field label="정렬순서"><Input name="sortOrder" defaultValue={0} type="number" /></Field>
       </div>
-      <Field label="이미지 경로"><Input name="imageUrl" placeholder="/images/menu/example.png" /></Field>
+      <MenuImageInput />
+      <Field label="또는 이미지 경로(선택)"><Input name="imageUrl" placeholder="/images/menu/example.png" /></Field>
       <CheckRow name="featured" label="대표 노출" />
       <CheckRow name="isActive" label="공개" defaultChecked />
       <Button type="submit"><Plus size={17} />메뉴 추가</Button>
@@ -427,53 +524,82 @@ function MenuCreateForm() {
   );
 }
 
-function MenuEditCard({ item }: { item: MenuItem }) {
+function MenuListRow({ item, categories }: { item: MenuItem; categories: MenuCategoryRow[] }) {
   return (
-    <div className="rounded-[18px] border border-[rgba(255,255,255,.08)] bg-black/20 p-4">
-      <div className="grid gap-4 sm:grid-cols-[120px_minmax(0,1fr)]">
-        <div className="relative aspect-square overflow-hidden rounded-[16px] bg-white/[0.04]">
+    <details className="group">
+      <summary className="hm-link-focus flex cursor-pointer list-none items-center gap-3 px-5 py-3.5 transition hover:bg-white/[0.03] [&::-webkit-details-marker]:hidden">
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[12px] bg-white/[0.04]">
           {item.imageUrl ? (
-            <Image src={item.imageUrl} alt="" fill sizes="120px" className="object-cover" />
+            <Image src={item.imageUrl} alt="" fill sizes="56px" className="object-cover" />
           ) : (
-            <div className="grid h-full place-items-center text-white/30"><ImageIcon size={28} /></div>
+            <div className="grid h-full place-items-center text-white/30"><ImageIcon size={20} /></div>
           )}
         </div>
-        <div className="min-w-0">
-          <div className="flex flex-wrap gap-2">
-            <Badge tone={item.isActive ? "green" : "neutral"}>{item.isActive ? "공개" : "비공개"}</Badge>
-            <Badge tone={item.featured ? "amber" : "neutral"}>{item.featured ? "대표" : item.category}</Badge>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="truncate text-[15px] font-extrabold text-white">{item.name}</span>
+            {item.featured ? <Badge tone="amber">대표</Badge> : null}
+            {!item.isActive ? <Badge tone="red">비공개</Badge> : null}
           </div>
-          <h2 className="mt-3 truncate text-lg font-extrabold text-white">{item.name}</h2>
-          <p className="mt-2 line-clamp-2 text-sm leading-6 text-white/52">{item.description}</p>
-          <p className="mt-3 text-base font-extrabold text-[var(--hm-primary)]">{formatCurrency(item.price)}</p>
+          <p className="mt-1 text-xs font-semibold text-white/45">
+            {item.category} · 정렬 {item.sortOrder ?? 0}
+          </p>
         </div>
+        <span className="shrink-0 text-sm font-extrabold text-[var(--hm-primary)]">
+          {formatCurrency(item.price)}
+        </span>
+        <ChevronDown size={16} className="shrink-0 text-white/35 transition group-open:rotate-180" aria-hidden="true" />
+      </summary>
+
+      <div className="border-t border-white/[0.05] bg-black/25 p-5">
+        <form action={updateMenuItemAction} encType="multipart/form-data" className="grid gap-3">
+          <input name="id" type="hidden" value={item.id} />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="카테고리"><CategorySelect categories={categories} defaultValue={item.category} /></Field>
+            <Field label="메뉴명"><Input name="name" defaultValue={item.name} required /></Field>
+          </div>
+          <Field label="설명"><Textarea name="description" defaultValue={item.description} /></Field>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <MenuImageInput label="이미지 교체" />
+            <Field label="이미지 경로"><Input name="imageUrl" defaultValue={item.imageUrl ?? ""} /></Field>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="가격"><Input name="price" defaultValue={item.price} min={0} required type="number" /></Field>
+            <Field label="정렬순서"><Input name="sortOrder" defaultValue={item.sortOrder ?? 0} type="number" /></Field>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <CheckRow name="featured" label="대표 노출" defaultChecked={item.featured} />
+            <CheckRow name="isActive" label="공개" defaultChecked={item.isActive} />
+          </div>
+          <Button type="submit" variant="outline">수정 저장</Button>
+        </form>
+        <form action={deleteMenuItemAction} className="mt-3 flex justify-end border-t border-white/[0.06] pt-3">
+          <input name="id" type="hidden" value={item.id} />
+          <Button type="submit" variant="danger" className="min-h-10 px-4 text-xs">
+            <Trash2 size={14} aria-hidden="true" />
+            메뉴 삭제
+          </Button>
+        </form>
       </div>
-      <form action={updateMenuItemAction} className="mt-4 grid gap-3">
-        <input name="id" type="hidden" value={item.id} />
-        <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="카테고리"><CategorySelect defaultValue={item.category} /></Field>
-          <Field label="메뉴명"><Input name="name" defaultValue={item.name} required /></Field>
-        </div>
-        <Field label="설명"><Textarea name="description" defaultValue={item.description} /></Field>
-        <Field label="이미지 경로"><Input name="imageUrl" defaultValue={item.imageUrl ?? ""} /></Field>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="가격"><Input name="price" defaultValue={item.price} min={0} required type="number" /></Field>
-          <Field label="정렬순서"><Input name="sortOrder" defaultValue={item.sortOrder ?? 0} type="number" /></Field>
-        </div>
-        <div className="grid gap-2 sm:grid-cols-2">
-          <CheckRow name="featured" label="대표 노출" defaultChecked={item.featured} />
-          <CheckRow name="isActive" label="공개" defaultChecked={item.isActive} />
-        </div>
-        <Button type="submit" variant="outline">수정 저장</Button>
-      </form>
-    </div>
+    </details>
   );
 }
 
-function CategorySelect({ defaultValue = "대표메뉴" }: { defaultValue?: MenuItem["category"] }) {
+function CategorySelect({
+  categories,
+  defaultValue,
+}: {
+  categories: MenuCategoryRow[];
+  defaultValue?: string;
+}) {
   return (
-    <Select name="category" defaultValue={defaultValue}>
-      {menuCategories.map((category) => <option key={category} value={category}>{category}</option>)}
+    <Select name="category" defaultValue={defaultValue ?? categories[0]?.name}>
+      {categories.map((category) => (
+        <option key={category.id} value={category.name}>{category.name}</option>
+      ))}
+      {defaultValue && !categories.some((category) => category.name === defaultValue) ? (
+        <option value={defaultValue}>{defaultValue} (삭제된 카테고리)</option>
+      ) : null}
     </Select>
   );
 }

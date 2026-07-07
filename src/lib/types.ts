@@ -71,7 +71,8 @@ export type CouponEvent = {
 
 export type MenuItem = {
   id: string;
-  category: "대표메뉴" | "전체메뉴" | "세트메뉴" | "사이드" | "음료";
+  // 카테고리는 menu_categories 테이블에서 관리자가 자유롭게 관리한다.
+  category: string;
   name: string;
   description: string;
   price: number;

@@ -13,7 +13,21 @@ const contentStatuses = new Set<ContentStatus>([
   "archived",
 ]);
 const inquiryStatuses = new Set<InquiryStatus>(["open", "answered", "closed"]);
-const menuCategories = new Set(["대표메뉴", "전체메뉴", "세트메뉴", "사이드", "음료"]);
+
+async function assertMenuCategory(category: string) {
+  const { data, error } = await createAdminClient()
+    .from("menu_categories")
+    .select("id")
+    .eq("name", category)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+  if (!data) {
+    throw new Error("존재하지 않는 카테고리입니다. 카테고리를 먼저 등록해 주세요.");
+  }
+}
 
 function readString(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -33,18 +47,48 @@ function nullable(value: string) {
   return value ? value : null;
 }
 
-function readLocalImagePath(formData: FormData, key: string) {
+function readImagePath(formData: FormData, key: string) {
   const value = readString(formData, key);
 
   if (!value) {
     return null;
   }
 
-  if (!value.startsWith("/images/")) {
-    throw new Error("이미지 경로는 /images/ 로 시작해야 합니다.");
+  if (!value.startsWith("/images/") && !value.startsWith("https://")) {
+    throw new Error("이미지 경로는 /images/ 또는 https:// 로 시작해야 합니다.");
   }
 
   return value;
+}
+
+const MAX_MENU_IMAGE_BYTES = 8 * 1024 * 1024;
+
+// 업로드 파일이 있으면 스토리지에 올리고 공개 URL을 돌려준다. 없으면 null.
+async function uploadMenuImage(formData: FormData, key: string) {
+  const file = formData.get(key);
+
+  if (!(file instanceof File) || file.size === 0) {
+    return null;
+  }
+  if (!file.type.startsWith("image/")) {
+    throw new Error("이미지 파일만 업로드할 수 있습니다.");
+  }
+  if (file.size > MAX_MENU_IMAGE_BYTES) {
+    throw new Error("이미지는 8MB 이하만 업로드할 수 있습니다.");
+  }
+
+  const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
+  const path = `${crypto.randomUUID()}.${extension}`;
+  const admin = createAdminClient();
+  const { error } = await admin.storage
+    .from("menu-images")
+    .upload(path, file, { contentType: file.type });
+
+  if (error) {
+    throw new Error(`이미지 업로드에 실패했습니다: ${error.message}`);
+  }
+
+  return admin.storage.from("menu-images").getPublicUrl(path).data.publicUrl;
 }
 
 async function requireContentAdmin() {
@@ -63,11 +107,13 @@ export async function createMenuItemAction(formData: FormData) {
   const name = readString(formData, "name");
   const description = readString(formData, "description");
   const price = readInteger(formData, "price");
-  const imageUrl = readLocalImagePath(formData, "imageUrl");
+  const uploadedUrl = await uploadMenuImage(formData, "imageFile");
+  const imageUrl = uploadedUrl ?? readImagePath(formData, "imageUrl");
 
-  if (!menuCategories.has(category) || !name || price < 0) {
+  if (!name || price < 0) {
     throw new Error("메뉴 입력값을 확인해 주세요.");
   }
+  await assertMenuCategory(category);
 
   const { error } = await createAdminClient().from("menu_items").insert({
     category,
@@ -120,11 +166,13 @@ export async function updateMenuItemAction(formData: FormData) {
   const name = readString(formData, "name");
   const description = readString(formData, "description");
   const price = readInteger(formData, "price");
-  const imageUrl = readLocalImagePath(formData, "imageUrl");
+  const uploadedUrl = await uploadMenuImage(formData, "imageFile");
+  const imageUrl = uploadedUrl ?? readImagePath(formData, "imageUrl");
 
-  if (!id || !menuCategories.has(category) || !name || price < 0) {
+  if (!id || !name || price < 0) {
     throw new Error("메뉴 수정값을 확인해 주세요.");
   }
+  await assertMenuCategory(category);
 
   const { error } = await createAdminClient()
     .from("menu_items")
@@ -148,6 +196,225 @@ export async function updateMenuItemAction(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/menu");
   revalidatePath("/admin/menu");
+}
+
+export async function deleteMenuItemAction(formData: FormData) {
+  await requireContentAdmin();
+  const id = readString(formData, "id");
+
+  if (!id) {
+    throw new Error("삭제할 메뉴를 찾을 수 없습니다.");
+  }
+
+  const { error } = await createAdminClient()
+    .from("menu_items")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+
+  revalidatePath("/");
+  revalidatePath("/menu");
+  revalidatePath("/admin/menu");
+}
+
+function revalidateMenuPaths() {
+  revalidatePath("/");
+  revalidatePath("/menu");
+  revalidatePath("/admin/menu");
+}
+
+export async function createMenuCategoryAction(formData: FormData) {
+  await requireContentAdmin();
+  const name = readString(formData, "name");
+
+  if (!name) {
+    throw new Error("카테고리 이름을 입력해 주세요.");
+  }
+
+  const admin = createAdminClient();
+  const { data: last } = await admin
+    .from("menu_categories")
+    .select("sort_order")
+    .order("sort_order", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const { error } = await admin.from("menu_categories").insert({
+    name,
+    sort_order: (last?.sort_order ?? -1) + 1,
+  });
+
+  if (error) {
+    throw new Error(
+      error.code === "23505" ? "이미 존재하는 카테고리입니다." : error.message,
+    );
+  }
+
+  revalidateMenuPaths();
+}
+
+export async function renameMenuCategoryAction(formData: FormData) {
+  await requireContentAdmin();
+  const id = readString(formData, "id");
+  const name = readString(formData, "name");
+
+  if (!id || !name) {
+    throw new Error("카테고리 이름을 입력해 주세요.");
+  }
+
+  const admin = createAdminClient();
+  const { data: current, error: currentError } = await admin
+    .from("menu_categories")
+    .select("name")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (currentError || !current) {
+    throw currentError ?? new Error("카테고리를 찾을 수 없습니다.");
+  }
+  if (current.name === name) {
+    return;
+  }
+
+  const { error: renameError } = await admin
+    .from("menu_categories")
+    .update({ name })
+    .eq("id", id);
+
+  if (renameError) {
+    throw new Error(
+      renameError.code === "23505"
+        ? "이미 존재하는 카테고리 이름입니다."
+        : renameError.message,
+    );
+  }
+
+  // 메뉴는 카테고리를 이름으로 참조하므로 함께 갱신한다.
+  const { error: syncError } = await admin
+    .from("menu_items")
+    .update({ category: name, updated_at: new Date().toISOString() })
+    .eq("category", current.name);
+
+  if (syncError) {
+    throw syncError;
+  }
+
+  revalidateMenuPaths();
+}
+
+export async function moveMenuCategoryAction(formData: FormData) {
+  await requireContentAdmin();
+  const id = readString(formData, "id");
+  const direction = readString(formData, "direction");
+
+  if (!id || (direction !== "up" && direction !== "down")) {
+    throw new Error("이동 방향이 올바르지 않습니다.");
+  }
+
+  const admin = createAdminClient();
+  const { data: rows, error } = await admin
+    .from("menu_categories")
+    .select("id,sort_order")
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
+
+  if (error || !rows) {
+    throw error ?? new Error("카테고리를 불러오지 못했습니다.");
+  }
+
+  const index = rows.findIndex((row) => row.id === id);
+  const targetIndex = direction === "up" ? index - 1 : index + 1;
+
+  if (index < 0 || targetIndex < 0 || targetIndex >= rows.length) {
+    return;
+  }
+
+  const current = rows[index];
+  const neighbor = rows[targetIndex];
+  // 정렬값을 인덱스 기준으로 재부여하며 두 항목을 교환한다.
+  const updates = rows.map((row, rowIndex) => {
+    const order =
+      row.id === current.id ? targetIndex : row.id === neighbor.id ? index : rowIndex;
+    return { id: row.id, order };
+  });
+
+  for (const update of updates) {
+    const { error: updateError } = await admin
+      .from("menu_categories")
+      .update({ sort_order: update.order })
+      .eq("id", update.id);
+
+    if (updateError) {
+      throw updateError;
+    }
+  }
+
+  revalidateMenuPaths();
+}
+
+export async function deleteMenuCategoryAction(formData: FormData) {
+  await requireContentAdmin();
+  const id = readString(formData, "id");
+
+  if (!id) {
+    throw new Error("삭제할 카테고리를 찾을 수 없습니다.");
+  }
+
+  const admin = createAdminClient();
+  const { data: category, error: categoryError } = await admin
+    .from("menu_categories")
+    .select("name")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (categoryError || !category) {
+    throw categoryError ?? new Error("카테고리를 찾을 수 없습니다.");
+  }
+
+  const { count } = await admin
+    .from("menu_items")
+    .select("id", { count: "exact", head: true })
+    .eq("category", category.name);
+
+  if ((count ?? 0) > 0) {
+    throw new Error(
+      `'${category.name}' 카테고리를 사용하는 메뉴가 ${count}개 있습니다. 메뉴의 카테고리를 먼저 변경해 주세요.`,
+    );
+  }
+
+  const { error } = await admin.from("menu_categories").delete().eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+
+  revalidateMenuPaths();
+}
+
+export async function updateMenuCopyAction(formData: FormData) {
+  await requireContentAdmin();
+  const title = readString(formData, "title");
+  const body = readString(formData, "body");
+
+  if (!title) {
+    throw new Error("메뉴 페이지 제목을 입력해 주세요.");
+  }
+
+  const { error } = await createAdminClient().from("site_copy").upsert({
+    key: "menu",
+    title,
+    body: nullable(body),
+    updated_at: new Date().toISOString(),
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  revalidateMenuPaths();
 }
 
 export async function createContentPostAction(formData: FormData) {
