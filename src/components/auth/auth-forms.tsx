@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { type ComponentPropsWithoutRef, useActionState, useState } from "react";
 import {
   loginAction,
@@ -217,16 +217,10 @@ function SubmitButton({
   pendingLabel: string;
   variant?: "primary" | "outline";
 }) {
+  // 스피너는 공용 Button이 제출 중에 자동으로 하나만 붙인다.
   return (
     <Button type="submit" className="w-full" variant={variant} disabled={pending}>
-      {pending ? (
-        <>
-          <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-          <span>{pendingLabel}</span>
-        </>
-      ) : (
-        label
-      )}
+      {pending ? pendingLabel : label}
     </Button>
   );
 }

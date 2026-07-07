@@ -722,7 +722,7 @@ export function StaffScanner({
                 disabled={isUsePending}
                 className="min-h-14 px-10 text-[16px] font-bold"
               >
-                <CheckCircle2 size={18} aria-hidden="true" />
+                {isUsePending ? null : <CheckCircle2 size={18} aria-hidden="true" />}
                 {isUsePending ? "처리 중..." : "사용 완료 처리"}
               </Button>
             </form>
