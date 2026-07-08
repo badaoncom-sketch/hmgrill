@@ -68,8 +68,8 @@ export default async function MyPage() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="hm-eyebrow">My Page</p>
-            <h1 className="hm-section-title mt-5">마이페이지</h1>
-            <p className="hm-body mt-5 text-[var(--hm-subtext)]">
+            <h1 className="hm-section-title mt-3 md:mt-5">마이페이지</h1>
+            <p className="hm-body mt-3 text-[var(--hm-subtext)] md:mt-5">
               회원 인증 상태와 화목 방문 혜택을 확인합니다.
             </p>
           </div>
@@ -96,8 +96,8 @@ export default async function MyPage() {
           </div>
         </div>
 
-        <section className="mt-12 grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
-          <article className="relative overflow-hidden rounded-[24px] border border-[rgba(247,230,193,.16)] bg-[linear-gradient(135deg,#1a1510,#0d0c0a_52%,#161009)] p-8 shadow-[var(--hm-shadow-strong)] lg:p-10">
+        <section className="mt-7 grid gap-4 md:mt-12 md:gap-5 lg:grid-cols-[1.1fr_.9fr]">
+          <article className="relative overflow-hidden rounded-[20px] border border-[rgba(247,230,193,.16)] bg-[linear-gradient(135deg,#1a1510,#0d0c0a_52%,#161009)] p-5 shadow-[var(--hm-shadow-strong)] md:rounded-[24px] md:p-8 lg:p-10">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_80%_at_85%_0%,rgba(184,130,30,.14),transparent_70%)]"
@@ -117,26 +117,26 @@ export default async function MyPage() {
 
             <div className="relative">
               <p className="hm-eyebrow">Hwamok Member</p>
-              <p className="hm-serif mt-5 text-[clamp(26px,2.4vw,32px)] font-bold leading-[1.3] text-[var(--hm-primary)]">
+              <p className="hm-serif mt-3 text-[22px] font-bold leading-[1.3] text-[var(--hm-primary)] md:mt-5 md:text-[clamp(26px,2.4vw,32px)]">
                 {profile.name || "화목 회원"} 님
               </p>
-              <Badge tone="green" className="mt-4">
+              <Badge tone="green" className="mt-3 md:mt-4">
                 이메일 인증 완료
               </Badge>
 
-              <div className="mt-10">
+              <div className="mt-6 md:mt-10">
                 <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/36">
                   Member UID
                 </p>
-                <p className="mt-2 font-mono text-[24px] font-semibold tracking-[0.18em] text-white">
+                <p className="mt-1.5 font-mono text-[19px] font-semibold tracking-[0.18em] text-white md:mt-2 md:text-[24px]">
                   {profile.member_uid}
                 </p>
               </div>
-              <p className="mt-3 text-sm font-medium text-white/45">{profile.email}</p>
+              <p className="mt-2 text-[13px] font-medium text-white/45 md:mt-3 md:text-sm">{profile.email}</p>
             </div>
           </article>
 
-          <article className="flex flex-col justify-between rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-7 lg:p-8">
+          <article className="flex flex-col justify-between rounded-[18px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-5 md:rounded-[20px] md:p-7 lg:p-8">
             <div>
               <div className="flex items-start justify-between gap-4">
                 <p className="hm-eyebrow">Coupon</p>
@@ -144,15 +144,15 @@ export default async function MyPage() {
                   <Ticket size={20} aria-hidden="true" />
                 </span>
               </div>
-              <p className="mt-4 text-sm font-semibold text-[var(--hm-subtext)]">
+              <p className="mt-3 text-sm font-semibold text-[var(--hm-subtext)] md:mt-4">
                 사용 가능한 쿠폰
               </p>
-              <p className="mt-3 text-[46px] font-bold leading-none text-[var(--hm-primary)]">
+              <p className="mt-2 text-[34px] font-bold leading-none text-[var(--hm-primary)] md:mt-3 md:text-[46px]">
                 {availableCount ?? 0}
-                <span className="ml-1.5 text-[18px] font-semibold text-white/50">장</span>
+                <span className="ml-1.5 text-[15px] font-semibold text-white/50 md:text-[18px]">장</span>
               </p>
             </div>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-5 grid grid-cols-2 gap-2.5 md:mt-8 md:flex md:flex-wrap md:gap-3">
               <ButtonLink href="/coupons/my">내 쿠폰 보기</ButtonLink>
               <ButtonLink href="/coupons/history" variant="outline">
                 사용내역
@@ -161,11 +161,11 @@ export default async function MyPage() {
           </article>
         </section>
 
-        <section className="mt-14 grid gap-10 border-t border-[var(--hm-warm-border)] pt-12 lg:grid-cols-[.9fr_1.1fr] lg:gap-16">
+        <section className="mt-8 grid gap-6 border-t border-[var(--hm-warm-border)] pt-8 md:mt-14 md:gap-10 md:pt-12 lg:grid-cols-[.9fr_1.1fr] lg:gap-16">
           <div>
             <p className="hm-eyebrow">Profile</p>
-            <h2 className="hm-subsection-title mt-4">개인정보 확인</h2>
-            <p className="hm-body mt-4 text-[var(--hm-subtext)]">
+            <h2 className="hm-subsection-title mt-3 md:mt-4">개인정보 확인</h2>
+            <p className="hm-body mt-3 text-[var(--hm-subtext)] md:mt-4">
               쿠폰 발급 및 사용 확인을 위해 최초 1회 입력한 정보입니다.
             </p>
             <div className="mt-5">
