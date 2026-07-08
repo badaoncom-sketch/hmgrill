@@ -74,9 +74,24 @@ export function CouponDownloadForm({
               className="mt-1 h-4 w-4 accent-[var(--hm-primary)]"
             />
             <span>
-              개인정보처리 안내에 동의합니다. 입력한 이름, 연락처, 주소는 회원 식별,
-              쿠폰 발급 및 사용 확인, 고객 응대 목적으로 이용되며 법령 또는 운영상
-              필요한 기간 동안 보관됩니다.
+              <span className="font-bold text-[var(--hm-text)]">(필수)</span> 개인정보처리
+              안내에 동의합니다. 입력한 이름, 연락처, 주소는 회원 식별, 쿠폰 발급 및
+              사용 확인, 고객 응대 목적으로 이용되며 법령 또는 운영상 필요한 기간 동안
+              보관됩니다.
+            </span>
+          </label>
+          <label className="flex gap-3 rounded-[14px] border border-[var(--hm-border)] p-3 text-xs leading-5 text-[var(--hm-subtext)]">
+            <input
+              name="marketingAccepted"
+              type="checkbox"
+              value="yes"
+              className="mt-1 h-4 w-4 accent-[var(--hm-primary)]"
+            />
+            <span>
+              <span className="font-bold text-[var(--hm-text)]">(선택)</span> 이벤트·혜택
+              소식 수신에 동의합니다. 행사나 이벤트가 있을 때 입력한 정보로 이메일,
+              문자(SMS), DM을 받아볼 수 있으며, 동의하지 않아도 쿠폰 이용에는 제한이
+              없습니다. 동의는 마이페이지에서 언제든지 철회할 수 있습니다.
             </span>
           </label>
         </div>

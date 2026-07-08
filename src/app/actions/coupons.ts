@@ -148,6 +148,8 @@ export async function downloadCouponAction(
     const phone = readString(formData, "phone");
     const address = readString(formData, "address");
     const privacyAccepted = formData.get("privacyAccepted") === "yes";
+    // 마케팅 수신 동의는 선택 사항이다.
+    const marketingAccepted = formData.get("marketingAccepted") === "yes";
 
     if (!name || !phone || !address || !privacyAccepted) {
       return {
@@ -172,6 +174,7 @@ export async function downloadCouponAction(
         address,
         privacy_accepted_at: now,
         profile_completed_at: now,
+        marketing_accepted_at: marketingAccepted ? now : null,
         updated_at: now,
       })
       .eq("id", auth.user.id);

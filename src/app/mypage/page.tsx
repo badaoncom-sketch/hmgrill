@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { Bell, Ticket } from "lucide-react";
+import { updateMarketingConsentAction } from "@/app/actions/profile";
 import { Badge } from "@/components/ui/badge";
-import { ButtonLink } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/layout";
 import { createClient } from "@/lib/supabase/server";
 
@@ -25,7 +26,7 @@ export default async function MyPage() {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "member_uid,name,phone,address,email,email_verified,role,privacy_accepted_at,profile_completed_at",
+      "member_uid,name,phone,address,email,email_verified,role,privacy_accepted_at,profile_completed_at,marketing_accepted_at",
     )
     .eq("id", user.id)
     .maybeSingle();
@@ -59,6 +60,12 @@ export default async function MyPage() {
       value: profile.privacy_accepted_at
         ? new Date(profile.privacy_accepted_at).toLocaleString("ko-KR")
         : "아직 동의하지 않았습니다",
+    },
+    {
+      label: "이벤트·혜택 수신 (선택)",
+      value: profile.marketing_accepted_at
+        ? `동의 (${new Date(profile.marketing_accepted_at).toLocaleDateString("ko-KR")})`
+        : "미동의",
     },
   ];
 
@@ -182,19 +189,35 @@ export default async function MyPage() {
             ) : null}
           </div>
 
-          <dl className="self-start border-t border-[var(--hm-border)]">
-            {profileRows.map((row) => (
-              <div
-                key={row.label}
-                className="flex items-baseline justify-between gap-6 border-b border-[var(--hm-border)] py-4"
-              >
-                <dt className="shrink-0 text-sm font-bold text-[var(--hm-text)]">
-                  {row.label}
-                </dt>
-                <dd className="text-right text-sm text-[var(--hm-subtext)]">{row.value}</dd>
-              </div>
-            ))}
-          </dl>
+          <div className="self-start">
+            <dl className="border-t border-[var(--hm-border)]">
+              {profileRows.map((row) => (
+                <div
+                  key={row.label}
+                  className="flex items-baseline justify-between gap-6 border-b border-[var(--hm-border)] py-4"
+                >
+                  <dt className="shrink-0 text-sm font-bold text-[var(--hm-text)]">
+                    {row.label}
+                  </dt>
+                  <dd className="text-right text-sm text-[var(--hm-subtext)]">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <form action={updateMarketingConsentAction} className="mt-4 flex items-center justify-between gap-4 rounded-[14px] border border-[var(--hm-border)] bg-black/20 p-4">
+              <input
+                name="consent"
+                type="hidden"
+                value={profile.marketing_accepted_at ? "0" : "1"}
+              />
+              <p className="text-xs leading-5 text-[var(--hm-subtext)]">
+                이벤트·혜택 소식을 이메일, 문자(SMS), DM으로{" "}
+                {profile.marketing_accepted_at ? "받고 있습니다." : "받아볼 수 있습니다."}
+              </p>
+              <Button type="submit" variant="outline" className="min-h-9 shrink-0 px-3.5 text-xs">
+                {profile.marketing_accepted_at ? "수신 동의 철회" : "수신 동의하기"}
+              </Button>
+            </form>
+          </div>
         </section>
       </Container>
     </main>
