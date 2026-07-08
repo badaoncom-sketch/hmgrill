@@ -182,6 +182,17 @@ export async function downloadCouponAction(
     if (profileUpdateError) {
       return { ok: false, message: profileUpdateError.message };
     }
+  } else if (formData.get("marketingAccepted") === "yes") {
+    // 이미 수령 정보를 입력한 회원이 다운로드 시 선택 동의한 경우.
+    // 기존 동의일이 있으면 덮어쓰지 않는다. (철회는 마이페이지에서)
+    await admin
+      .from("profiles")
+      .update({
+        marketing_accepted_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", auth.user.id)
+      .is("marketing_accepted_at", null);
   }
 
   const token = `cpn_${randomBytes(24).toString("base64url")}`;

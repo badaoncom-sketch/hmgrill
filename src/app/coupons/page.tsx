@@ -63,7 +63,7 @@ export default async function CouponsPage() {
   const { data: profile } = user
     ? await supabase
         .from("profiles")
-        .select("name,phone,address,privacy_accepted_at")
+        .select("name,phone,address,privacy_accepted_at,marketing_accepted_at")
         .eq("id", user.id)
         .maybeSingle()
     : { data: null };
@@ -129,6 +129,7 @@ export default async function CouponsPage() {
                 issue={issue}
                 memberCoupons={memberCoupons}
                 profileRequired={profileRequired}
+                marketingConsented={Boolean(profile?.marketing_accepted_at)}
                 profile={profile}
               />
             ))}
