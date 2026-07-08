@@ -1,6 +1,11 @@
 "use client";
 
-import { useRef, useState, type ComponentPropsWithoutRef } from "react";
+import {
+  useRef,
+  useState,
+  type ComponentPropsWithoutRef,
+  type Ref,
+} from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -39,8 +44,12 @@ function hasText(value: unknown) {
 export function Input({
   className,
   clearable,
+  ref,
   ...props
-}: ComponentPropsWithoutRef<"input"> & { clearable?: boolean }) {
+}: ComponentPropsWithoutRef<"input"> & {
+  clearable?: boolean;
+  ref?: Ref<HTMLInputElement>;
+}) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [innerHasValue, setInnerHasValue] = useState(
     () => hasText(props.value) || hasText(props.defaultValue),
@@ -52,7 +61,7 @@ export function Input({
     !props.readOnly;
 
   if (!showClear) {
-    return <input className={cn(inputBaseClass, className)} {...props} />;
+    return <input ref={ref} className={cn(inputBaseClass, className)} {...props} />;
   }
 
   const hasValue = props.value !== undefined ? hasText(props.value) : innerHasValue;
@@ -75,7 +84,11 @@ export function Input({
     <span className="relative block min-w-0 flex-1">
       <input
         {...props}
-        ref={inputRef}
+        ref={(node) => {
+          inputRef.current = node;
+          if (typeof ref === "function") ref(node);
+          else if (ref) ref.current = node;
+        }}
         className={cn(inputBaseClass, "w-full pr-10", className)}
         onInput={(event) => {
           setInnerHasValue(event.currentTarget.value.length > 0);

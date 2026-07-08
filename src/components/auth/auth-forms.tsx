@@ -1,7 +1,12 @@
 "use client";
 
-import { Eye, EyeOff } from "lucide-react";
-import { type ComponentPropsWithoutRef, useActionState, useState } from "react";
+import { Eye, EyeOff, X } from "lucide-react";
+import {
+  type ComponentPropsWithoutRef,
+  useActionState,
+  useRef,
+  useState,
+} from "react";
 import {
   loginAction,
   requestPasswordResetAction,
@@ -185,15 +190,43 @@ export function ResendVerificationForm({
 
 function PasswordInput({ className, ...props }: ComponentPropsWithoutRef<"input">) {
   const [visible, setVisible] = useState(false);
+  const [hasValue, setHasValue] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const showClear = hasValue && !props.disabled;
+
+  function clearInput() {
+    const input = inputRef.current;
+    if (!input) return;
+    input.value = "";
+    setHasValue(false);
+    input.focus();
+  }
 
   return (
     <span className="relative block">
       <Input
         {...props}
+        ref={inputRef}
         type={visible ? "text" : "password"}
         clearable={false}
-        className={["w-full pr-12", className].filter(Boolean).join(" ")}
+        className={["w-full", showClear ? "pr-20" : "pr-12", className]
+          .filter(Boolean)
+          .join(" ")}
+        onInput={(event) => {
+          setHasValue(event.currentTarget.value.length > 0);
+          props.onInput?.(event);
+        }}
       />
+      {showClear ? (
+        <button
+          type="button"
+          onClick={clearInput}
+          aria-label="입력 내용 지우기"
+          className="hm-link-focus absolute right-12 top-1/2 inline-flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-[var(--hm-subtext)] transition hover:bg-white/[0.07] hover:text-[var(--hm-primary)]"
+        >
+          <X size={14} aria-hidden="true" />
+        </button>
+      ) : null}
       <button
         type="button"
         onClick={() => setVisible((current) => !current)}
