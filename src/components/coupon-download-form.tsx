@@ -15,13 +15,11 @@ export function CouponDownloadForm({
   issueId,
   disabled,
   profileRequired = false,
-  marketingConsented = false,
   profile,
 }: {
   issueId: string;
   disabled?: boolean;
   profileRequired?: boolean;
-  marketingConsented?: boolean;
   profile?: {
     name?: string | null;
     phone?: string | null;
@@ -98,22 +96,6 @@ export function CouponDownloadForm({
             </span>
           </label>
         </div>
-      ) : null}
-      {!profileRequired && !marketingConsented ? (
-        <label className="mb-1 flex gap-3 rounded-[14px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-3 text-xs leading-5 text-[var(--hm-subtext)]">
-          <input
-            name="marketingAccepted"
-            type="checkbox"
-            value="yes"
-            defaultChecked
-            className="mt-1 h-4 w-4 accent-[var(--hm-primary)]"
-          />
-          <span>
-            <span className="font-bold text-[var(--hm-text)]">(선택)</span> 이벤트·혜택
-            소식을 이메일, 문자(SMS), DM으로 받는 것에 동의합니다. 동의는 마이페이지에서
-            언제든지 철회할 수 있습니다.
-          </span>
-        </label>
       ) : null}
       <Button type="submit" disabled={disabled || isPending}>
         <Download size={16} aria-hidden="true" />

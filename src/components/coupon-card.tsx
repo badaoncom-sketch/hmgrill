@@ -9,13 +9,11 @@ export function CouponCard({
   issue,
   memberCoupons = [],
   profileRequired = false,
-  marketingConsented = false,
   profile,
 }: {
   issue: CouponIssue;
   memberCoupons?: Parameters<typeof canDownloadCoupon>[1];
   profileRequired?: boolean;
-  marketingConsented?: boolean;
   profile?: {
     name?: string | null;
     phone?: string | null;
@@ -89,7 +87,6 @@ export function CouponCard({
               issueId={issue.id}
               disabled={!decision.allowed}
               profileRequired={profileRequired}
-              marketingConsented={marketingConsented}
               profile={profile}
             />
             <p className="mt-2 text-xs leading-5 text-[var(--hm-subtext)]">{decision.reason}</p>
