@@ -1,80 +1,116 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { Search } from "lucide-react";
-import { SectionHeading } from "@/components/section-heading";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { ChevronRight, RotateCcw, Search } from "lucide-react";
 import { Container } from "@/components/ui/layout";
-import {
-  Table,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
-} from "@/components/ui/table";
 import { contentPostSelect, mapContentPost } from "@/lib/content/db";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
 
-export default async function NoticesPage() {
+export const metadata: Metadata = {
+  title: "공지사항",
+  description: "영업 안내, 이용 공지, 방문 전 확인할 정보를 정리합니다.",
+};
+
+export default async function NoticesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q } = await searchParams;
+  const query = (q ?? "").trim();
+
   const supabase = await createClient();
-  const { data: rows } = await supabase
+  let request = supabase
     .from("content_posts")
     .select(contentPostSelect)
-    .eq("type", "notice")
+    .eq("type", "notice");
+  if (query) {
+    const escaped = query.replace(/[\\%_]/g, (ch) => `\\${ch}`);
+    request = request.ilike("title", `%${escaped}%`);
+  }
+  const { data: rows } = await request
     .order("sort_order", { ascending: true })
     .order("published_at", { ascending: false });
   const notices = (rows ?? []).map(mapContentPost);
 
   return (
     <main className="hm-page-main">
-      <Container className="grid gap-8">
-        <SectionHeading
-          eyebrow="NOTICE"
-          title="공지사항"
-          description="영업 안내, 이용 공지, 방문 전 확인할 정보를 정리합니다."
-        />
-        <Card>
-          <CardContent className="grid gap-5">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex gap-2">
-                <Badge tone="amber">전체</Badge>
-                <Badge>영업 안내</Badge>
-                <Badge>이용 안내</Badge>
-              </div>
-              <div className="flex min-h-11 items-center gap-2 rounded-[12px] border border-[var(--hm-border)] bg-[var(--hm-surface)] px-4 text-sm text-[var(--hm-subtext)]">
-                <Search size={16} aria-hidden="true" />
-                검색어를 입력하세요
-              </div>
+      <Container>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <p className="hm-eyebrow">Notice</p>
+            <h1 className="hm-section-title mt-5">공지사항</h1>
+            <p className="hm-body mt-5 text-[var(--hm-subtext)]">
+              영업 안내, 이용 공지, 방문 전 확인할 정보를 정리합니다.
+            </p>
+          </div>
+
+          <form method="get" className="w-full shrink-0 lg:w-[300px]">
+            <label className="flex min-h-11 items-center gap-2 rounded-[12px] border border-[var(--hm-border)] bg-[var(--hm-surface)] px-4 transition focus-within:border-[var(--hm-primary)] focus-within:ring-2 focus-within:ring-[rgba(247,230,193,.18)]">
+              <Search size={16} className="shrink-0 text-[var(--hm-subtext)]" aria-hidden="true" />
+              <input
+                name="q"
+                defaultValue={query}
+                placeholder="제목 검색"
+                className="min-w-0 flex-1 bg-transparent text-sm text-[var(--hm-text)] outline-none placeholder:text-[var(--hm-subtext)]"
+              />
+            </label>
+          </form>
+        </div>
+
+        {query ? (
+          <div className="mt-8 flex flex-wrap items-center gap-3 text-sm text-[var(--hm-subtext)]">
+            <span>
+              &lsquo;<span className="font-bold text-[var(--hm-primary)]">{query}</span>&rsquo; 검색
+              결과 {notices.length}건
+            </span>
+            <Link
+              href="/notices"
+              className="hm-link-focus inline-flex items-center gap-1.5 rounded-full border border-[var(--hm-border)] px-3 py-1 text-xs font-bold transition hover:text-[var(--hm-primary)]"
+            >
+              <RotateCcw size={12} aria-hidden="true" />
+              전체 보기
+            </Link>
+          </div>
+        ) : null}
+
+        {notices.length > 0 ? (
+          <div className="mt-8 overflow-hidden rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)] lg:mt-10">
+            <div className="divide-y divide-[var(--hm-divider)]">
+              {notices.map((notice, index) => (
+                <Link
+                  key={notice.id}
+                  href={`/notices/${notice.id}`}
+                  className="hm-link-focus group flex items-center gap-4 px-5 py-4 transition hover:bg-white/[0.03] sm:px-6"
+                >
+                  <span className="hidden w-9 shrink-0 text-center font-mono text-xs text-white/35 sm:block">
+                    {notices.length - index}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[15px] font-bold text-white/85 transition group-hover:text-[var(--hm-primary)]">
+                      {notice.title}
+                    </span>
+                    <span className="mt-1 block text-xs font-semibold text-white/40 sm:hidden">
+                      {formatDate(notice.publishedAt ?? notice.createdAt)}
+                    </span>
+                  </span>
+                  <span className="hidden shrink-0 text-sm text-[var(--hm-subtext)] sm:block">
+                    {formatDate(notice.publishedAt ?? notice.createdAt)}
+                  </span>
+                  <ChevronRight size={16} className="shrink-0 text-white/30" aria-hidden="true" />
+                </Link>
+              ))}
             </div>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableHeaderCell className="w-24">번호</TableHeaderCell>
-                  <TableHeaderCell>제목</TableHeaderCell>
-                  <TableHeaderCell className="w-44">등록일</TableHeaderCell>
-                </TableRow>
-              </TableHead>
-              <tbody>
-                {notices.map((notice, index) => (
-                  <TableRow key={notice.id}>
-                    <TableCell>{notices.length - index}</TableCell>
-                    <TableCell>
-                      <Link href={`/notices/${notice.id}`} className="hm-link-focus font-semibold text-[var(--hm-text)] hover:text-[var(--hm-primary)]">
-                        {notice.title}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{formatDate(notice.publishedAt ?? notice.createdAt)}</TableCell>
-                  </TableRow>
-                ))}
-              </tbody>
-            </Table>
-            {notices.length === 0 ? (
-              <p className="text-sm font-semibold text-[var(--hm-subtext)]">
-                등록된 공지사항이 없습니다.
-              </p>
-            ) : null}
-          </CardContent>
-        </Card>
+          </div>
+        ) : (
+          <div className="mt-8 rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)] px-8 py-16 text-center lg:mt-10">
+            <p className="text-sm font-semibold text-[var(--hm-subtext)]">
+              {query
+                ? "검색 결과가 없습니다. 다른 검색어로 시도해 보세요."
+                : "등록된 공지사항이 없습니다."}
+            </p>
+          </div>
+        )}
       </Container>
     </main>
   );
