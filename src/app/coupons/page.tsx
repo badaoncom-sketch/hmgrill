@@ -22,7 +22,7 @@ const usageSteps = [
   {
     number: "01",
     title: "쿠폰 다운로드",
-    body: "이메일 인증을 마친 회원이라면 발행 중인 쿠폰을 바로 받을 수 있습니다.",
+    body: "최초 1회만 수령 정보(이름·연락처·주소)를 입력하면, 다음부터는 클릭 한 번으로 바로 받을 수 있습니다.",
   },
   {
     number: "02",
@@ -86,8 +86,8 @@ export default async function CouponsPage() {
             <p className="hm-eyebrow">Coupon</p>
             <h1 className="hm-section-title mt-5">방문 혜택</h1>
             <p className="hm-body mt-5 text-[var(--hm-subtext)]">
-              화목을 다시 찾는 회원을 위한 혜택입니다. 이메일 인증을 완료하면
-              사용 가능한 쿠폰을 받을 수 있습니다.
+              화목을 다시 찾는 회원을 위한 혜택입니다. 최초 1회 수령 정보만
+              입력해 두면 새 쿠폰이 나올 때마다 바로 받을 수 있습니다.
             </p>
           </div>
           {user ? (

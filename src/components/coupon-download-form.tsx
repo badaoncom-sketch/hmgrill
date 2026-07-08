@@ -83,7 +83,11 @@ export function CouponDownloadForm({
       ) : null}
       <Button type="submit" disabled={disabled || isPending}>
         <Download size={16} aria-hidden="true" />
-        {isPending ? "다운로드 중" : "쿠폰 다운로드"}
+        {isPending
+          ? "다운로드 중"
+          : profileRequired
+            ? "정보 입력하고 쿠폰 받기"
+            : "쿠폰 다운로드"}
       </Button>
       {state.message ? (
         <p className={state.ok ? "text-xs text-emerald-700" : "text-xs text-red-700"}>
