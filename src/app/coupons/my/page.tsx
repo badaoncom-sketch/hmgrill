@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ChevronDown } from "lucide-react";
+import { MyCouponGallery } from "@/components/my-coupon-gallery";
 import { QrCoupon } from "@/components/qr-coupon";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/layout";
-import { getEffectiveMemberCouponStatus } from "@/lib/coupon-policy";
+import {
+  getEffectiveMemberCouponStatus,
+  getRemainingDaysText,
+} from "@/lib/coupon-policy";
 import { mapMemberCoupon, memberCouponSelect } from "@/lib/coupons/db";
 import { createClient } from "@/lib/supabase/server";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -70,17 +74,24 @@ export default async function MyCouponsPage() {
         </div>
 
         {availableCoupons.length > 0 ? (
-          <section className="mt-12">
-            <div className="flex items-baseline justify-between gap-4 border-b border-[var(--hm-warm-border)] pb-5">
+          <section className="mt-8 md:mt-12">
+            <div className="flex items-baseline justify-between gap-4 border-b border-[var(--hm-warm-border)] pb-4 md:pb-5">
               <h2 className="hm-subsection-title">사용 가능한 쿠폰</h2>
               <p className="font-mono text-[13px] tracking-[0.12em] text-[var(--hm-accent-gold)]">
                 {String(availableCoupons.length).padStart(2, "0")}
               </p>
             </div>
-            <div className="mt-8 grid gap-5">
-              {availableCoupons.map((coupon) => (
-                <QrCoupon key={coupon.id} coupon={coupon} />
-              ))}
+            <div className="mt-5 md:mt-8">
+              <MyCouponGallery
+                items={availableCoupons.map((coupon) => ({
+                  id: coupon.id,
+                  name: coupon.couponName,
+                  amountText: formatCurrency(coupon.amount),
+                  remainingText: `${getRemainingDaysText(coupon.validUntil)} · ${formatDate(coupon.validUntil)}까지`,
+                  couponNumber: coupon.couponNumber,
+                  detail: <QrCoupon coupon={coupon} />,
+                }))}
+              />
             </div>
           </section>
         ) : null}

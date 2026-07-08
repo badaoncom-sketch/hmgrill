@@ -1,16 +1,11 @@
 "use client";
 
-import {
-  useEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Search, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
+import { useMounted } from "@/lib/use-mounted";
 import { cn } from "@/lib/utils";
 
 type DaumPostcodeData = {
@@ -93,16 +88,6 @@ function formatSelectedAddress(data: DaumPostcodeData) {
   return `(${data.zonecode}) ${address}`;
 }
 
-const subscribeNoop = () => () => {};
-
-function useMounted() {
-  return useSyncExternalStore(
-    subscribeNoop,
-    () => true,
-    () => false,
-  );
-}
-
 export function AddressSearchInput({
   defaultValue = "",
   className,
@@ -114,6 +99,7 @@ export function AddressSearchInput({
   const [baseAddress, setBaseAddress] = useState(defaultValue);
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [manualMode, setManualMode] = useState(false);
   const widgetBoxRef = useRef<HTMLDivElement>(null);
   const detailInputRef = useRef<HTMLInputElement>(null);
 
@@ -163,27 +149,33 @@ export function AddressSearchInput({
   return (
     <div className={cn("grid gap-2", className)}>
       <span className="text-sm font-medium text-[var(--hm-text)]">주소</span>
-      <div className="flex gap-2">
+      <span className="relative block">
         <Input
           name="address"
           value={baseAddress}
           onChange={(event) => setBaseAddress(event.target.value)}
+          readOnly={!manualMode}
           onClick={() => {
-            if (!baseAddress) openSearch();
+            if (!manualMode) openSearch();
           }}
-          placeholder="주소 검색을 눌러 선택해 주세요"
+          onKeyDown={(event) => {
+            if (!manualMode && (event.key === "Enter" || event.key === " ")) {
+              event.preventDefault();
+              openSearch();
+            }
+          }}
+          placeholder="눌러서 주소 검색"
           required
+          className={manualMode ? "w-full" : "w-full cursor-pointer pr-10"}
         />
-        <Button
-          type="button"
-          variant="outline"
-          onClick={openSearch}
-          className="shrink-0"
-        >
-          <Search size={15} aria-hidden="true" />
-          주소 검색
-        </Button>
-      </div>
+        {!manualMode ? (
+          <Search
+            size={15}
+            aria-hidden="true"
+            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[var(--hm-subtext)]"
+          />
+        ) : null}
+      </span>
       <Input
         name="addressDetail"
         ref={detailInputRef}
@@ -225,9 +217,19 @@ export function AddressSearchInput({
                           주소 검색을 불러오지 못했습니다
                         </p>
                         <p className="mt-2 text-xs leading-5 text-[var(--hm-subtext)]">
-                          네트워크 상태를 확인한 뒤 다시 시도하거나, 창을 닫고
-                          주소를 직접 입력해 주세요.
+                          네트워크 상태를 확인한 뒤 다시 시도하거나, 주소를 직접
+                          입력해 주세요.
                         </p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setManualMode(true);
+                            setOpen(false);
+                          }}
+                          className="hm-link-focus mt-4 rounded-[10px] border border-[rgba(247,230,193,.3)] px-4 py-2 text-xs font-bold text-[var(--hm-primary)] transition hover:bg-[var(--hm-primary)] hover:text-[#0d0d0d]"
+                        >
+                          직접 입력하기
+                        </button>
                       </div>
                     </div>
                   ) : (

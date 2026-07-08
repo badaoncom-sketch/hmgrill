@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ArrowRight, Ticket } from "lucide-react";
 import { CouponCard } from "@/components/coupon-card";
+import { CouponShowcase, type ShowcaseCoupon } from "@/components/coupon-showcase";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/layout";
+import { getRemainingQuantity } from "@/lib/coupon-policy";
 import {
   couponIssueSelect,
   mapCouponIssue,
@@ -78,6 +81,42 @@ export default async function CouponsPage() {
         !profile?.privacy_accepted_at),
   );
 
+  // 아직 받지 않은 쿠폰을 위, 이미 받은 쿠폰을 아래에 배치한다.
+  const receivedIssueIds = new Set(memberCoupons.map((coupon) => coupon.issueId));
+  const newIssues = couponIssues.filter((issue) => !receivedIssueIds.has(issue.id));
+  const receivedIssues = couponIssues.filter((issue) => receivedIssueIds.has(issue.id));
+
+  const renderCard = (
+    issue: (typeof couponIssues)[number],
+    conditionsOpen = false,
+  ) => (
+    <CouponCard
+      issue={issue}
+      memberCoupons={memberCoupons}
+      isGuest={!user}
+      profileRequired={profileRequired}
+      marketingConsented={Boolean(profile?.marketing_accepted_at)}
+      profile={profile}
+      conditionsOpen={conditionsOpen}
+    />
+  );
+
+  const toShowcaseItem = (
+    issue: (typeof couponIssues)[number],
+    received: boolean,
+  ): ShowcaseCoupon => {
+    const remaining = getRemainingQuantity(issue);
+    return {
+      id: issue.id,
+      name: issue.name,
+      amountText: formatCurrency(issue.amount),
+      caption: `다운로드 후 ${issue.validityDays}일 · 남은 ${remaining}장`,
+      lowStock: remaining <= Math.max(5, Math.ceil(issue.quantity * 0.1)),
+      received,
+      detail: renderCard(issue, true),
+    };
+  };
+
   return (
     <main className="hm-page-main">
       <Container>
@@ -122,23 +161,54 @@ export default async function CouponsPage() {
         ) : null}
 
         {couponIssues.length > 0 ? (
-          <div
-            className={`mt-7 grid gap-4 md:mt-10 md:gap-5 ${
-              couponIssues.length > 1 ? "xl:grid-cols-2" : "xl:max-w-3xl"
-            }`}
-          >
-            {couponIssues.map((issue) => (
-              <CouponCard
-                key={issue.id}
-                issue={issue}
-                memberCoupons={memberCoupons}
-                isGuest={!user}
-                profileRequired={profileRequired}
-                marketingConsented={Boolean(profile?.marketing_accepted_at)}
-                profile={profile}
+          <>
+            {/* 모바일·태블릿: 한눈에 보는 썸네일 그리드 + 시트 상세 */}
+            <div className="mt-7 lg:hidden">
+              <CouponShowcase
+                newItems={newIssues.map((issue) => toShowcaseItem(issue, false))}
+                receivedItems={receivedIssues.map((issue) => toShowcaseItem(issue, true))}
               />
-            ))}
-          </div>
+            </div>
+
+            {/* 데스크톱: 티켓 카드 — 미발급 상단, 발급받은 쿠폰 하단 */}
+            <div className="mt-10 hidden lg:block">
+              {newIssues.length > 0 ? (
+                <div
+                  className={`grid gap-5 ${
+                    newIssues.length > 1 ? "xl:grid-cols-2" : "xl:max-w-3xl"
+                  }`}
+                >
+                  {newIssues.map((issue) => (
+                    <div key={issue.id}>{renderCard(issue)}</div>
+                  ))}
+                </div>
+              ) : null}
+              {receivedIssues.length > 0 ? (
+                <section className={newIssues.length > 0 ? "mt-12" : ""}>
+                  <div className="flex items-baseline justify-between gap-4 border-b border-[var(--hm-warm-border)] pb-4">
+                    <h2 className="text-[17px] font-bold text-white/70">
+                      이미 받은 쿠폰
+                    </h2>
+                    <Link
+                      href="/coupons/my"
+                      className="hm-link-focus text-sm font-bold text-[var(--hm-accent-gold)] transition hover:text-[var(--hm-primary)]"
+                    >
+                      내 쿠폰에서 QR 보기
+                    </Link>
+                  </div>
+                  <div
+                    className={`mt-6 grid gap-5 ${
+                      receivedIssues.length > 1 ? "xl:grid-cols-2" : "xl:max-w-3xl"
+                    }`}
+                  >
+                    {receivedIssues.map((issue) => (
+                      <div key={issue.id}>{renderCard(issue)}</div>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+            </div>
+          </>
         ) : (
           <div className="mt-10 rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)] px-8 py-16 text-center">
             <span className="mx-auto grid h-14 w-14 place-items-center rounded-full border border-[rgba(247,230,193,.2)] text-[var(--hm-accent-gold)]">

@@ -51,11 +51,14 @@ function DropdownSubmitButton({
 function HeaderDropdown({
   label,
   trigger,
+  triggerHref,
   children,
   panelClassName = "",
 }: {
   label: string;
   trigger: ReactNode;
+  // 지정하면 트리거가 링크가 된다: 호버는 미리보기 패널, 클릭은 해당 페이지로 이동.
+  triggerHref?: string;
   children: ReactNode;
   panelClassName?: string;
 }) {
@@ -91,7 +94,9 @@ function HeaderDropdown({
     };
   }, []);
 
-  const openNow = () => {
+  const openOnHover = () => {
+    // 터치 기기에서는 탭이 mouseenter를 함께 발생시키므로, 호버 지원 기기에서만 미리보기를 연다.
+    if (!window.matchMedia("(hover: hover)").matches) return;
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setOpen(true);
   };
@@ -104,18 +109,28 @@ function HeaderDropdown({
     <div
       ref={rootRef}
       className="relative"
-      onMouseEnter={openNow}
+      onMouseEnter={openOnHover}
       onMouseLeave={closeSoon}
     >
-      <button
-        type="button"
-        aria-label={label}
-        aria-expanded={open}
-        onClick={() => setOpen((value) => !value)}
-        className="hm-link-focus grid h-10 w-10 place-items-center rounded-[14px] text-[var(--hm-primary)] transition hover:bg-white/[0.05]"
-      >
-        {trigger}
-      </button>
+      {triggerHref ? (
+        <Link
+          href={triggerHref}
+          aria-label={label}
+          className="hm-link-focus grid h-10 w-10 place-items-center rounded-[14px] text-[var(--hm-primary)] transition hover:bg-white/[0.05]"
+        >
+          {trigger}
+        </Link>
+      ) : (
+        <button
+          type="button"
+          aria-label={label}
+          aria-expanded={open}
+          onClick={() => setOpen((value) => !value)}
+          className="hm-link-focus grid h-10 w-10 place-items-center rounded-[14px] text-[var(--hm-primary)] transition hover:bg-white/[0.05]"
+        >
+          {trigger}
+        </button>
+      )}
       {open ? (
         <div
           className={`absolute right-0 top-[calc(100%+10px)] z-50 overflow-hidden rounded-[20px] border border-[rgba(247,230,193,.14)] bg-[#161310] shadow-[0_28px_80px_rgba(0,0,0,.55)] ${panelClassName}`}
@@ -137,6 +152,7 @@ export function NotificationBell({
   return (
     <HeaderDropdown
       label="알림"
+      triggerHref="/notifications"
       panelClassName="w-[330px] max-w-[calc(100vw-32px)]"
       trigger={
         <span className="relative">

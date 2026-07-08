@@ -12,6 +12,7 @@ export function CouponCard({
   isGuest = false,
   profileRequired = false,
   marketingConsented = false,
+  conditionsOpen = false,
   profile,
 }: {
   issue: CouponIssue;
@@ -19,6 +20,8 @@ export function CouponCard({
   isGuest?: boolean;
   profileRequired?: boolean;
   marketingConsented?: boolean;
+  // 상세 시트처럼 사용조건을 반드시 펼쳐 보여야 하는 자리에서 사용한다.
+  conditionsOpen?: boolean;
   profile?: {
     name?: string | null;
     phone?: string | null;
@@ -73,7 +76,10 @@ export function CouponCard({
           </div>
           {issue.conditionText ? (
             <>
-              <details className="group mt-3 rounded-[14px] border border-[var(--hm-border)] bg-black/20 md:hidden">
+              <details
+                open={conditionsOpen}
+                className="group mt-3 rounded-[14px] border border-[var(--hm-border)] bg-black/20 md:hidden"
+              >
                 <summary className="hm-link-focus flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-[13px] font-bold text-[var(--hm-subtext)] [&::-webkit-details-marker]:hidden">
                   사용조건 보기
                   <ChevronDown size={14} className="transition group-open:rotate-180" aria-hidden="true" />

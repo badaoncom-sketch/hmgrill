@@ -364,6 +364,17 @@ button {
   animation: hm-bot-float 4.5s ease-in-out infinite;
 }
 
+@keyframes hm-sheet-up {
+  from {
+    transform: translateY(28px);
+    opacity: 0.55;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @keyframes hm-fade-up {
   from {
     opacity: 0;
