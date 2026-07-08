@@ -203,24 +203,35 @@ export default async function MyPage() {
                 </div>
               ))}
             </dl>
-            <form
-              action={updateMarketingConsentAction}
-              className="mt-4 flex items-center justify-between gap-4 rounded-[14px] border border-[var(--hm-border)] bg-black/20 p-4"
-            >
-              <input
-                name="consent"
-                type="hidden"
-                value={profile.marketing_accepted_at ? "0" : "1"}
-              />
-              <p className="text-xs leading-5 text-[var(--hm-subtext)]">
-                {profile.marketing_accepted_at
-                  ? "이벤트·혜택 소식을 이메일, 문자(SMS), DM으로 받고 있습니다."
-                  : "(선택) 이벤트·혜택 소식을 이메일, 문자(SMS), DM으로 받아볼 수 있습니다."}
-              </p>
-              <Button type="submit" variant="outline" className="min-h-9 shrink-0 px-3.5 text-xs">
-                {profile.marketing_accepted_at ? "수신 동의 철회" : "수신 동의하기"}
-              </Button>
-            </form>
+            {profile.marketing_accepted_at ? (
+              <form
+                action={updateMarketingConsentAction}
+                className="mt-3 flex items-center justify-end gap-2 text-[11px] text-white/28"
+              >
+                <input name="consent" type="hidden" value="0" />
+                <span>이벤트·혜택 소식 수신 중</span>
+                <span aria-hidden="true">·</span>
+                <button
+                  type="submit"
+                  className="hm-link-focus rounded-sm underline underline-offset-2 transition hover:text-white/55"
+                >
+                  수신 철회
+                </button>
+              </form>
+            ) : (
+              <form
+                action={updateMarketingConsentAction}
+                className="mt-4 flex items-center justify-between gap-4 rounded-[14px] border border-[var(--hm-border)] bg-black/20 p-4"
+              >
+                <input name="consent" type="hidden" value="1" />
+                <p className="text-xs leading-5 text-[var(--hm-subtext)]">
+                  (선택) 이벤트·혜택 소식을 이메일, 문자(SMS), DM으로 받아볼 수 있습니다.
+                </p>
+                <Button type="submit" variant="outline" className="min-h-9 shrink-0 px-3.5 text-xs">
+                  수신 동의하기
+                </Button>
+              </form>
+            )}
           </div>
         </section>
       </Container>
