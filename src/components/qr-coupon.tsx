@@ -94,7 +94,8 @@ export async function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
           </div>
         </div>
 
-        <div className="relative grid content-center gap-5 border-t border-dashed border-white/[0.14] p-7 md:border-l md:border-t-0">
+        {/* 모바일에서는 QR을 먼저 보여주고, 데스크톱에서는 오른쪽 스텁으로 배치한다. */}
+        <div className="relative order-first grid content-center gap-5 border-b border-dashed border-white/[0.14] p-7 md:order-none md:border-b-0 md:border-l">
           <span
             aria-hidden="true"
             className="absolute -left-3 -top-3 hidden h-6 w-6 rounded-full bg-[var(--hm-background)] md:block"
