@@ -20,7 +20,11 @@ export function Field({
 }) {
   return (
     <label
-      className={cn("grid gap-2 text-sm font-medium text-[var(--hm-text)]", className)}
+      className={cn(
+        // grid-cols-1(minmax(0,1fr))로 file input 등 고유 너비가 큰 컨트롤의 컬럼 밀림을 막는다.
+        "grid grid-cols-1 gap-2 text-sm font-medium text-[var(--hm-text)]",
+        className,
+      )}
     >
       {label}
       {children}

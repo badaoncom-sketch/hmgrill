@@ -448,12 +448,13 @@ function SettingImageField({
         <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-[10px] border border-white/[0.08] bg-white/[0.04]">
           <Image src={current} alt="" fill sizes="96px" className="object-contain" />
         </div>
-        <div className="grid min-w-0 flex-1 gap-2">
+        {/* file input의 고유 최소 너비가 컬럼을 밀어내지 않도록 minmax(0,1fr) 컬럼을 강제한다. */}
+        <div className="grid min-w-0 flex-1 grid-cols-1 gap-2">
           <Input
             name={`image:${name}`}
             type="file"
             accept="image/*"
-            className="cursor-pointer pt-2 text-xs text-white/55 file:mr-3 file:cursor-pointer file:rounded-[10px] file:border-0 file:bg-[var(--hm-primary)] file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-[var(--hm-background)]"
+            className="w-full min-w-0 cursor-pointer pt-2 text-xs text-white/55 file:mr-3 file:cursor-pointer file:rounded-[10px] file:border-0 file:bg-[var(--hm-primary)] file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-[var(--hm-background)]"
           />
           <Input name={`text:${name}`} defaultValue={current} className="min-h-9 text-xs" />
         </div>

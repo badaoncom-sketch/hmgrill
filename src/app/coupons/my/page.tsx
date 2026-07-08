@@ -58,8 +58,8 @@ export default async function MyCouponsPage() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="hm-eyebrow">My Coupon</p>
-            <h1 className="hm-section-title mt-5">내 쿠폰</h1>
-            <p className="hm-body mt-5 text-[var(--hm-subtext)]">
+            <h1 className="hm-section-title mt-3 md:mt-5">내 쿠폰</h1>
+            <p className="hm-body mt-3 text-[var(--hm-subtext)] md:mt-5">
               방문 시 사용할 수 있는 회원 혜택과 QR 쿠폰 상태를 확인합니다.
             </p>
           </div>

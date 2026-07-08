@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { Geist_Mono, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import type { HeaderUser } from "@/components/header-user-controls";
@@ -41,6 +41,10 @@ export const metadata: Metadata = {
     template: "%s | 화목",
   },
   description: "장작불의 온기로 고기를 연구하는 화목 장작구이",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0d0d0d",
 };
 
 export default async function RootLayout({

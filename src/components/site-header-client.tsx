@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { createPortal } from "react-dom";
+import { createPortal, useFormStatus } from "react-dom";
 import {
   Bell,
   ChevronRight,
   Headset,
   Home,
   LogIn,
+  LogOut,
   MapPin,
   Megaphone,
   Menu,
@@ -22,7 +23,9 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { logoutAction } from "@/app/actions/auth";
 import type { HeaderUser } from "@/components/header-user-controls";
+import { Spinner } from "@/components/ui/spinner";
 import { drawerNavItems, policyLinks, siteContact } from "@/lib/navigation";
 
 const drawerIcons: Record<string, LucideIcon> = {
@@ -300,11 +303,36 @@ function MobileMenu({
           </p>
         </div>
 
+        {user ? (
+          // 로그아웃하면 서버 액션이 메인(/)으로 보낸다.
+          <form action={logoutAction} onSubmit={onClose} className="mt-8">
+            <DrawerLogoutButton />
+          </form>
+        ) : null}
+
         <p className="mt-auto pt-10 text-center text-xs font-semibold text-white/34">
           Copyright HWAMOK. All rights reserved.
         </p>
       </aside>
     </div>
+  );
+}
+
+function DrawerLogoutButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="hm-link-focus flex min-h-12 w-full items-center justify-center gap-2 rounded-[14px] border border-white/[0.12] text-sm font-bold text-white/55 transition hover:border-[rgba(198,59,45,.4)] hover:text-[#f0a39b] disabled:opacity-60"
+    >
+      {pending ? (
+        <Spinner className="h-4 w-4" />
+      ) : (
+        <LogOut size={16} aria-hidden="true" />
+      )}
+      로그아웃
+    </button>
   );
 }
 
