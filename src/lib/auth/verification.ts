@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { Resend } from "resend";
-import { VerificationEmail } from "@/emails/verification-email";
+import { renderVerificationEmail } from "@/emails/verification-email";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const verificationTokenTtlHours = 24;
@@ -59,14 +59,13 @@ export async function createAndSendVerificationEmail({
     token,
   )}`;
   const resend = new Resend(resendApiKey);
+  const { html, text } = renderVerificationEmail({ name, verificationUrl });
   const result = await resend.emails.send({
     from: emailFrom,
     to: email,
     subject: "화목 이메일 인증을 완료해 주세요",
-    react: VerificationEmail({
-      name,
-      verificationUrl,
-    }),
+    html,
+    text,
   });
 
   if (result.error) {

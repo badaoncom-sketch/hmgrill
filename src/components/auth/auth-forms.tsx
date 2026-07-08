@@ -191,6 +191,7 @@ function PasswordInput({ className, ...props }: ComponentPropsWithoutRef<"input"
       <Input
         {...props}
         type={visible ? "text" : "password"}
+        clearable={false}
         className={["w-full pr-12", className].filter(Boolean).join(" ")}
       />
       <button

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 
@@ -24,12 +24,14 @@ export function LiveSearchInput({
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const urlValue = searchParams.get(paramKey) ?? "";
+  const [hasValue, setHasValue] = useState(() => urlValue.length > 0);
 
   // 뒤로가기·초기화 링크 등으로 URL이 바뀌면 입력값을 맞춘다 (타이핑 중에는 건드리지 않음).
   useEffect(() => {
     const input = inputRef.current;
     if (input && document.activeElement !== input && input.value !== urlValue) {
       input.value = urlValue;
+      setHasValue(urlValue.length > 0);
     }
   }, [urlValue]);
 
@@ -74,10 +76,29 @@ export function LiveSearchInput({
         ref={inputRef}
         type="search"
         defaultValue={urlValue}
-        onChange={(event) => handleChange(event.target.value)}
+        onChange={(event) => {
+          setHasValue(event.target.value.length > 0);
+          handleChange(event.target.value);
+        }}
         placeholder={placeholder}
         className="min-w-0 flex-1 bg-transparent text-sm text-[var(--hm-text)] outline-none placeholder:text-[var(--hm-subtext)] [&::-webkit-search-cancel-button]:hidden"
       />
+      {hasValue ? (
+        <button
+          type="button"
+          aria-label="검색어 지우기"
+          onClick={() => {
+            const input = inputRef.current;
+            if (input) input.value = "";
+            setHasValue(false);
+            handleChange("");
+            input?.focus();
+          }}
+          className="hm-link-focus inline-flex size-7 shrink-0 items-center justify-center rounded-full text-[var(--hm-subtext)] transition hover:bg-white/[0.07] hover:text-[var(--hm-primary)]"
+        >
+          <X size={14} aria-hidden="true" />
+        </button>
+      ) : null}
     </label>
   );
 }
