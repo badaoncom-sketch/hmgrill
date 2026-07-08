@@ -4,7 +4,6 @@ import {
   Fragment,
   useCallback,
   useEffect,
-  useRef,
   useState,
   useTransition,
 } from "react";
@@ -12,7 +11,7 @@ import { useRouter } from "next/navigation";
 import {
   Check,
   CheckCircle2,
-  ChevronRight,
+  ChevronDown,
   Maximize,
   Minimize,
   RotateCcw,
@@ -223,8 +222,6 @@ export function StaffScanner({
   const [clock, setClock] = useState("");
   const [resetRemaining, setResetRemaining] = useState<number | null>(null);
   const [greetIndex, setGreetIndex] = useState(0);
-  // 처리 내역 상세보기처럼 스캔이 아닌 조회는 비프음을 내지 않는다.
-  const silentResultRef = useRef(false);
 
   const coupon = display?.coupon;
   const pending = isLookupPending || isUsePending;
@@ -293,10 +290,6 @@ export function StaffScanner({
   // 결과 비프음
   useEffect(() => {
     if (!display) return;
-    if (silentResultRef.current) {
-      silentResultRef.current = false;
-      return;
-    }
     const positive =
       display.ok &&
       (display.canUse === true ||
@@ -336,14 +329,6 @@ export function StaffScanner({
       runLookup(formData);
     },
     [runLookup],
-  );
-
-  const openHistoryDetail = useCallback(
-    (couponNumber: string) => {
-      silentResultRef.current = true;
-      submitScan(couponNumber);
-    },
-    [submitScan],
   );
 
   const resetToIdle = useCallback(() => {
@@ -850,57 +835,68 @@ export function StaffScanner({
             <h2 className="text-sm font-bold uppercase tracking-[0.14em] text-[var(--hm-accent-gold)]">
               최근 처리 내역
             </h2>
-            <p className="text-[11px] font-semibold text-white/35">클릭하면 상세 확인</p>
+            <p className="text-[11px] font-semibold text-white/35">탭하면 펼쳐집니다</p>
           </div>
           <div className="mt-3 divide-y divide-[var(--hm-divider)]">
-            {recentEvents.map((event) => {
-              const content = (
-                <>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Badge tone={event.eventType === "coupon_used" ? "green" : "neutral"}>
-                        {event.eventType === "coupon_used" ? "사용완료" : "기간만료"}
-                      </Badge>
-                      {event.couponName ? (
-                        <span className="truncate text-[13px] font-bold text-white/80">
-                          {event.couponName}
-                        </span>
-                      ) : null}
+            {recentEvents.map((event) => (
+              <details key={event.id} className="group">
+                <summary className="hm-link-focus flex cursor-pointer list-none items-center gap-2.5 rounded-[12px] px-1 py-3 transition hover:bg-white/[0.04] [&::-webkit-details-marker]:hidden">
+                  <Badge tone={event.eventType === "coupon_used" ? "green" : "neutral"}>
+                    {event.eventType === "coupon_used" ? "사용완료" : "기간만료"}
+                  </Badge>
+                  <span className="min-w-0 flex-1 truncate text-[13px] font-bold text-white/80">
+                    {event.couponName ?? "쿠폰"}
+                  </span>
+                  <span className="shrink-0 text-[11px] font-semibold text-white/40">
+                    {new Date(event.createdAt).toLocaleTimeString("ko-KR", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                  <ChevronDown
+                    size={14}
+                    className="shrink-0 text-white/30 transition group-open:rotate-180"
+                    aria-hidden="true"
+                  />
+                </summary>
+                <dl className="mb-3 grid gap-x-6 gap-y-2 rounded-[12px] bg-black/25 p-3.5 text-[12px] sm:grid-cols-2">
+                  {event.amount != null ? (
+                    <div className="flex items-baseline justify-between gap-3 sm:block">
+                      <dt className="font-bold text-white/40">할인 금액</dt>
+                      <dd className="font-bold text-[var(--hm-primary)] sm:mt-0.5">
+                        {formatCurrency(event.amount)}
+                      </dd>
                     </div>
-                    <p className="mt-1.5 text-xs font-semibold text-[var(--hm-subtext)]">
+                  ) : null}
+                  <div className="flex items-baseline justify-between gap-3 sm:block">
+                    <dt className="font-bold text-white/40">회원</dt>
+                    <dd className="font-semibold text-white/75 sm:mt-0.5">
                       {event.memberNameMasked} · {event.memberPhoneMasked}
-                      {event.staffName ? ` · 처리 ${event.staffName}` : ""}
-                    </p>
-                    <p className="mt-1 flex flex-wrap gap-x-3 text-[11px] font-semibold text-white/40">
-                      {event.couponNumber ? (
-                        <span className="font-mono tracking-[0.1em] text-[var(--hm-primary)]/80">
-                          No. {event.couponNumber}
-                        </span>
-                      ) : null}
-                      <span>{new Date(event.createdAt).toLocaleString("ko-KR")}</span>
-                    </p>
+                    </dd>
                   </div>
                   {event.couponNumber ? (
-                    <ChevronRight size={15} className="mt-1 shrink-0 text-white/30" aria-hidden="true" />
+                    <div className="flex items-baseline justify-between gap-3 sm:block">
+                      <dt className="font-bold text-white/40">쿠폰번호</dt>
+                      <dd className="font-mono tracking-[0.1em] text-[var(--hm-primary)]/85 sm:mt-0.5">
+                        {event.couponNumber}
+                      </dd>
+                    </div>
                   ) : null}
-                </>
-              );
-
-              return event.couponNumber ? (
-                <button
-                  key={event.id}
-                  type="button"
-                  onClick={() => openHistoryDetail(event.couponNumber as string)}
-                  className="hm-link-focus flex w-full items-start gap-3 rounded-[12px] px-1 py-3 text-left transition hover:bg-white/[0.04]"
-                >
-                  {content}
-                </button>
-              ) : (
-                <div key={event.id} className="flex items-start gap-3 px-1 py-3">
-                  {content}
-                </div>
-              );
-            })}
+                  <div className="flex items-baseline justify-between gap-3 sm:block">
+                    <dt className="font-bold text-white/40">처리 일시</dt>
+                    <dd className="font-semibold text-white/75 sm:mt-0.5">
+                      {new Date(event.createdAt).toLocaleString("ko-KR")}
+                    </dd>
+                  </div>
+                  {event.staffName ? (
+                    <div className="flex items-baseline justify-between gap-3 sm:block">
+                      <dt className="font-bold text-white/40">처리 직원</dt>
+                      <dd className="font-semibold text-white/75 sm:mt-0.5">{event.staffName}</dd>
+                    </div>
+                  ) : null}
+                </dl>
+              </details>
+            ))}
             {recentEvents.length === 0 ? (
               <p className="py-3 text-sm font-semibold text-[var(--hm-subtext)]">
                 최근 처리한 쿠폰이 없습니다.
