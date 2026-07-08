@@ -1,4 +1,4 @@
-import { CalendarDays, Ticket } from "lucide-react";
+import { CalendarDays, ChevronDown, Ticket } from "lucide-react";
 import { CouponDownloadForm } from "@/components/coupon-download-form";
 import { Badge } from "@/components/ui/badge";
 import { canDownloadCoupon, getRemainingQuantity } from "@/lib/coupon-policy";
@@ -34,28 +34,55 @@ export function CouponCard({
       }`}
     >
       <div className="grid md:grid-cols-[minmax(0,1fr)_235px]">
-        <div className="p-6 sm:p-7">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge tone={issuing ? "green" : "neutral"}>
-              {issuing ? "발행중" : "발행종료"}
-            </Badge>
-            {issuing && remaining <= Math.max(5, Math.ceil(issue.quantity * 0.1)) ? (
-              <Badge tone="red">마감 임박</Badge>
-            ) : null}
+        <div className="p-4 sm:p-7">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge tone={issuing ? "green" : "neutral"}>
+                {issuing ? "발행중" : "발행종료"}
+              </Badge>
+              {issuing && remaining <= Math.max(5, Math.ceil(issue.quantity * 0.1)) ? (
+                <Badge tone="red">마감 임박</Badge>
+              ) : null}
+            </div>
+            <p className="shrink-0 text-[20px] font-bold leading-none text-[var(--hm-primary)] md:hidden">
+              {formatCurrency(issue.amount)}
+            </p>
           </div>
-          <h2 className="mt-4 text-[21px] font-bold leading-snug text-[var(--hm-text)]">
+          <h2 className="mt-3 text-[17px] font-bold leading-snug text-[var(--hm-text)] sm:mt-4 sm:text-[21px]">
             {issue.name}
           </h2>
-          <p className="mt-3 flex items-center gap-2 text-sm font-semibold text-[var(--hm-subtext)]">
+          <p className="mt-2 flex items-center gap-2 text-[13px] font-semibold text-[var(--hm-subtext)] sm:mt-3 sm:text-sm">
             <CalendarDays size={15} className="text-[var(--hm-accent-gold)]" aria-hidden="true" />
             다운로드 후 {issue.validityDays}일 사용 가능
           </p>
-          {issue.conditionText ? (
-            <p className="mt-4 whitespace-pre-line rounded-[14px] border border-[var(--hm-border)] bg-black/20 p-4 text-[13px] leading-6 text-[var(--hm-subtext)]">
-              {issue.conditionText}
+          <div className="mt-3 md:hidden">
+            <div className="h-1 overflow-hidden rounded-full bg-white/10">
+              <div
+                className={`h-full rounded-full ${issuing ? "bg-[var(--hm-primary)]/80" : "bg-white/20"}`}
+                style={{ width: `${remainingPct}%` }}
+              />
+            </div>
+            <p className="mt-1.5 text-[11px] font-semibold text-white/45">
+              남은 수량 {remaining}장 / 총 {issue.quantity}장
             </p>
+          </div>
+          {issue.conditionText ? (
+            <>
+              <details className="group mt-3 rounded-[14px] border border-[var(--hm-border)] bg-black/20 md:hidden">
+                <summary className="hm-link-focus flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-[13px] font-bold text-[var(--hm-subtext)] [&::-webkit-details-marker]:hidden">
+                  사용조건 보기
+                  <ChevronDown size={14} className="transition group-open:rotate-180" aria-hidden="true" />
+                </summary>
+                <p className="whitespace-pre-line border-t border-[var(--hm-border)] px-4 py-3 text-[13px] leading-6 text-[var(--hm-subtext)]">
+                  {issue.conditionText}
+                </p>
+              </details>
+              <p className="mt-4 hidden whitespace-pre-line rounded-[14px] border border-[var(--hm-border)] bg-black/20 p-4 text-[13px] leading-6 text-[var(--hm-subtext)] md:block">
+                {issue.conditionText}
+              </p>
+            </>
           ) : null}
-          <div className="mt-5">
+          <div className="mt-4 sm:mt-5">
             <CouponDownloadForm
               issueId={issue.id}
               disabled={!decision.allowed}
@@ -66,7 +93,7 @@ export function CouponCard({
           </div>
         </div>
 
-        <div className="relative grid content-center gap-5 border-t border-dashed border-white/[0.14] p-6 text-center md:border-l md:border-t-0">
+        <div className="relative hidden content-center gap-5 border-t border-dashed border-white/[0.14] p-6 text-center md:grid md:border-l md:border-t-0">
           <span
             aria-hidden="true"
             className="absolute -left-3 -top-3 hidden h-6 w-6 rounded-full bg-[var(--hm-background)] md:block"

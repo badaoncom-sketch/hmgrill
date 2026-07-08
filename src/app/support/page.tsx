@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import {
   CheckCircle2,
   ChevronDown,
+  ChevronRight,
   Clock3,
   HelpCircle,
   Mail,
@@ -68,8 +69,8 @@ export default async function SupportPage({
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="hm-eyebrow">Support</p>
-            <h1 className="hm-section-title mt-5">고객센터</h1>
-            <p className="hm-body mt-5 text-[var(--hm-subtext)]">
+            <h1 className="hm-section-title mt-3 md:mt-5">고객센터</h1>
+            <p className="hm-body mt-3 text-[var(--hm-subtext)] md:mt-5">
               방문 전 궁금한 내용은 빠르게 확인하고, 필요한 문의는 남겨 주세요.
             </p>
           </div>
@@ -79,31 +80,30 @@ export default async function SupportPage({
           </ButtonLink>
         </div>
 
-        <div className="mt-12 grid gap-4 md:grid-cols-3">
+        <div className="mt-7 grid gap-3 md:mt-12 md:grid-cols-3 md:gap-4">
           {quickActions.map((item) => {
             const Icon = item.icon;
             return (
               <Link
                 key={item.title}
                 href={item.href}
-                className="hm-link-focus hm-card-hover group rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-6"
+                className="hm-link-focus hm-card-hover group flex items-center gap-3.5 rounded-[16px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-4 md:rounded-[20px] md:p-5"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-base font-bold text-[var(--hm-text)]">{item.title}</p>
-                    <p className="mt-2 text-sm leading-6 text-[var(--hm-subtext)]">{item.body}</p>
-                  </div>
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-[14px] border border-[rgba(247,230,193,.18)] text-[var(--hm-primary)] transition group-hover:bg-[rgba(247,230,193,.08)]">
-                    <Icon size={20} aria-hidden="true" />
-                  </span>
-                </div>
-                <p className="mt-6 text-sm font-bold text-[var(--hm-primary)]">{item.label}</p>
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[12px] border border-[rgba(247,230,193,.18)] text-[var(--hm-primary)] transition group-hover:bg-[rgba(247,230,193,.08)] md:h-11 md:w-11 md:rounded-[14px]">
+                  <Icon size={18} aria-hidden="true" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[15px] font-bold text-[var(--hm-text)]">{item.title}</span>
+                  <span className="mt-0.5 hidden text-sm leading-6 text-[var(--hm-subtext)] md:block">{item.body}</span>
+                  <span className="mt-0.5 block text-xs font-bold text-[var(--hm-primary)] md:mt-1.5 md:text-sm">{item.label}</span>
+                </span>
+                <ChevronRight size={16} className="shrink-0 text-white/30 md:hidden" aria-hidden="true" />
               </Link>
             );
           })}
         </div>
 
-        <section className="mt-12 grid gap-5 lg:grid-cols-[minmax(0,.92fr)_minmax(420px,1.08fr)] lg:items-start">
+        <section className="mt-8 grid gap-4 md:mt-12 md:gap-5 lg:grid-cols-[minmax(0,.92fr)_minmax(420px,1.08fr)] lg:items-start">
           <div className="grid gap-5">
             <Card>
               <CardContent>

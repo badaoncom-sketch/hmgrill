@@ -84,8 +84,8 @@ export default async function CouponsPage() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="hm-eyebrow">Coupon</p>
-            <h1 className="hm-section-title mt-5">방문 혜택</h1>
-            <p className="hm-body mt-5 text-[var(--hm-subtext)]">
+            <h1 className="hm-section-title mt-3 md:mt-5">방문 혜택</h1>
+            <p className="hm-body mt-3 text-[var(--hm-subtext)] md:mt-5">
               화목을 다시 찾는 회원을 위한 혜택입니다. 최초 1회 수령 정보만
               입력해 두면 새 쿠폰이 나올 때마다 바로 받을 수 있습니다.
             </p>
@@ -103,7 +103,7 @@ export default async function CouponsPage() {
         </div>
 
         {!user ? (
-          <div className="mt-10 flex flex-col gap-4 rounded-[20px] border border-[rgba(247,230,193,.2)] bg-[radial-gradient(60%_120%_at_50%_0%,rgba(184,130,30,.09),transparent_70%),var(--hm-surface)] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
+          <div className="mt-7 flex flex-col gap-4 rounded-[20px] border border-[rgba(247,230,193,.2)] bg-[radial-gradient(60%_120%_at_50%_0%,rgba(184,130,30,.09),transparent_70%),var(--hm-surface)] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-7 md:mt-10">
             <div>
               <p className="text-[16px] font-bold text-[var(--hm-primary)]">
                 로그인하면 쿠폰을 바로 받을 수 있어요
@@ -122,7 +122,7 @@ export default async function CouponsPage() {
         ) : null}
 
         {couponIssues.length > 0 ? (
-          <div className="mt-10 grid gap-5 xl:grid-cols-2">
+          <div className="mt-7 grid gap-4 md:mt-10 md:gap-5 xl:grid-cols-2">
             {couponIssues.map((issue) => (
               <CouponCard
                 key={issue.id}
@@ -180,22 +180,24 @@ export default async function CouponsPage() {
           </section>
         ) : null}
 
-        <section className="mt-16 border-t border-[var(--hm-warm-border)] pt-12 lg:mt-20">
+        <section className="mt-12 border-t border-[var(--hm-warm-border)] pt-8 md:mt-16 md:pt-12 lg:mt-20">
           <p className="hm-eyebrow">How to use</p>
-          <h2 className="hm-subsection-title mt-4">쿠폰 이용 방법</h2>
-          <div className="mt-10 grid gap-x-10 gap-y-10 md:grid-cols-3">
+          <h2 className="hm-subsection-title mt-3 md:mt-4">쿠폰 이용 방법</h2>
+          <div className="mt-6 grid gap-y-5 md:mt-10 md:grid-cols-3 md:gap-x-10 md:gap-y-10">
             {usageSteps.map((step) => (
               <article
                 key={step.number}
-                className="border-t border-[var(--hm-border)] pt-6 transition-colors duration-300 hover:border-[rgba(247,230,193,.34)]"
+                className="flex gap-4 border-t border-[var(--hm-border)] pt-5 transition-colors duration-300 hover:border-[rgba(247,230,193,.34)] md:block md:pt-6"
               >
-                <p className="font-mono text-[13px] tracking-[0.16em] text-[var(--hm-accent-gold)]">
+                <p className="w-7 shrink-0 pt-1 font-mono text-[13px] tracking-[0.16em] text-[var(--hm-accent-gold)] md:w-auto md:pt-0">
                   {step.number}
                 </p>
-                <h3 className="hm-serif mt-4 text-[21px] font-semibold leading-[1.3] text-[var(--hm-primary)]">
-                  {step.title}
-                </h3>
-                <p className="hm-caption mt-3 text-[var(--hm-subtext)]">{step.body}</p>
+                <div className="min-w-0">
+                  <h3 className="hm-serif text-[17px] font-semibold leading-[1.3] text-[var(--hm-primary)] md:mt-4 md:text-[21px]">
+                    {step.title}
+                  </h3>
+                  <p className="hm-caption mt-1.5 text-[var(--hm-subtext)] md:mt-3">{step.body}</p>
+                </div>
               </article>
             ))}
           </div>

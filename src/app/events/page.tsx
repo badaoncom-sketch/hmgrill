@@ -30,8 +30,8 @@ export default async function EventsPage() {
       <Container>
         <div className="max-w-2xl">
           <p className="hm-eyebrow">Event</p>
-          <h1 className="hm-section-title mt-5">이벤트</h1>
-          <p className="hm-body mt-5 text-[var(--hm-subtext)]">
+          <h1 className="hm-section-title mt-3 md:mt-5">이벤트</h1>
+          <p className="hm-body mt-3 text-[var(--hm-subtext)] md:mt-5">
             화목의 계절 메뉴, 매장 소식, 회원 혜택을 차분하게 전합니다.
           </p>
         </div>
@@ -39,7 +39,7 @@ export default async function EventsPage() {
         {featured ? (
           <Link
             href={`/events/${featured.id}`}
-            className="hm-link-focus group mt-12 block"
+            className="hm-link-focus group mt-7 block md:mt-12"
           >
             <article className="hm-card-hover grid overflow-hidden rounded-[24px] border border-[var(--hm-border)] bg-[var(--hm-surface)] lg:grid-cols-[1.15fr_.85fr]">
               <div className="hm-image-zoom relative aspect-[16/9] overflow-hidden lg:aspect-auto lg:min-h-[380px]">
@@ -128,13 +128,13 @@ export default async function EventsPage() {
           </div>
         ) : null}
 
-        <section className="mt-16 overflow-hidden rounded-[24px] border border-[var(--hm-warm-border)] bg-[radial-gradient(60%_120%_at_50%_0%,rgba(184,130,30,.1),transparent_70%),var(--hm-surface)] px-8 py-14 text-center lg:mt-20">
+        <section className="mt-10 overflow-hidden rounded-[20px] border border-[var(--hm-warm-border)] bg-[radial-gradient(60%_120%_at_50%_0%,rgba(184,130,30,.1),transparent_70%),var(--hm-surface)] px-5 py-8 text-center md:mt-16 md:rounded-[24px] md:px-8 md:py-14 lg:mt-20">
           <p className="hm-eyebrow">Benefit</p>
-          <h2 className="hm-subsection-title mt-4">방문 전, 쿠폰을 먼저 챙기세요</h2>
-          <p className="hm-body mx-auto mt-4 max-w-md text-[var(--hm-subtext)]">
+          <h2 className="mt-3 text-[20px] font-bold leading-[1.35] text-[var(--hm-primary)] hm-serif md:mt-4 md:text-[var(--hm-type-subsection)]">방문 전, 쿠폰을 먼저 챙기세요</h2>
+          <p className="hm-body mx-auto mt-2.5 max-w-md text-[var(--hm-subtext)] md:mt-4">
             발행 중인 방문 혜택을 확인하고 다운로드해 두면 매장에서 바로 사용할 수 있습니다.
           </p>
-          <ButtonLink href="/coupons" className="mt-8">
+          <ButtonLink href="/coupons" className="mt-5 md:mt-8">
             쿠폰 확인하기
             <ArrowRight size={16} aria-hidden="true" />
           </ButtonLink>
