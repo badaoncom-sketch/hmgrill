@@ -76,8 +76,8 @@ export default async function CouponHistoryPage() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="hm-eyebrow">History</p>
-            <h1 className="hm-section-title mt-5">쿠폰 사용내역</h1>
-            <p className="hm-body mt-5 text-[var(--hm-subtext)]">
+            <h1 className="hm-section-title mt-3 md:mt-5">쿠폰 사용내역</h1>
+            <p className="hm-body mt-3 text-[var(--hm-subtext)] md:mt-5">
               받은 혜택의 사용 가능 여부, 사용일시, 만료 상태를 확인합니다.
             </p>
           </div>
@@ -91,54 +91,49 @@ export default async function CouponHistoryPage() {
           </div>
         </div>
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-3">
+        <div className="mt-7 grid grid-cols-3 gap-2.5 md:mt-12 md:gap-4">
           {summary.map((item) => (
             <div
               key={item.label}
-              className="rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-6"
+              className="rounded-[14px] border border-[var(--hm-border)] bg-[var(--hm-surface)] p-3.5 md:rounded-[20px] md:p-6"
             >
-              <p className="text-sm font-semibold text-[var(--hm-subtext)]">{item.label}</p>
-              <p className="mt-3 text-[34px] font-bold leading-none text-[var(--hm-primary)]">
+              <p className="text-xs font-semibold text-[var(--hm-subtext)] md:text-sm">{item.label}</p>
+              <p className="mt-2 text-[22px] font-bold leading-none text-[var(--hm-primary)] md:mt-3 md:text-[34px]">
                 {item.count}
-                <span className="ml-1 text-[15px] font-semibold text-white/45">장</span>
+                <span className="ml-1 text-[12px] font-semibold text-white/45 md:text-[15px]">장</span>
               </p>
             </div>
           ))}
         </div>
 
         {memberCoupons.length > 0 ? (
-          <div className="mt-10 overflow-hidden rounded-[24px] border border-[var(--hm-border)] bg-[var(--hm-surface)]">
+          <div className="mt-7 overflow-hidden rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)] md:mt-10 md:rounded-[24px]">
             <div className="divide-y divide-[var(--hm-divider)]">
               {memberCoupons.map((coupon) => (
-                <div
-                  key={coupon.id}
-                  className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between lg:px-8"
-                >
-                  <div>
-                    <div className="flex flex-wrap items-center gap-3">
+                <div key={coupon.id} className="p-4 md:p-6 lg:px-8">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-2.5">
                       <Badge tone={statusTones[coupon.effectiveStatus]}>
                         {statusLabels[coupon.effectiveStatus]}
                       </Badge>
-                      <p className="font-mono text-xs tracking-[0.14em] text-[var(--hm-primary)]">
-                        No. {coupon.couponNumber}
-                      </p>
+                      <h2 className="truncate text-[15px] font-bold text-[var(--hm-text)] md:text-lg">
+                        {coupon.couponName}
+                      </h2>
                     </div>
-                    <h2 className="mt-3 text-lg font-bold text-[var(--hm-text)]">
-                      {coupon.couponName}
-                    </h2>
-                    <p className="mt-1 text-sm text-[var(--hm-subtext)]">
-                      다운로드일 {formatDate(coupon.downloadedAt)}
-                    </p>
-                  </div>
-                  <div className="text-left md:text-right">
-                    <p className="text-[20px] font-bold leading-none text-[var(--hm-accent-gold)]">
+                    <p className="shrink-0 text-[16px] font-bold leading-none text-[var(--hm-accent-gold)] md:text-[20px]">
                       {formatCurrency(coupon.amount)}
                     </p>
-                    <p className="mt-2 text-sm text-[var(--hm-subtext)]">
+                  </div>
+                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold text-[var(--hm-subtext)] md:mt-2.5 md:text-sm">
+                    <span className="font-mono tracking-[0.12em] text-[var(--hm-primary)]/80">
+                      No. {coupon.couponNumber}
+                    </span>
+                    <span>다운로드 {formatDate(coupon.downloadedAt)}</span>
+                    <span>
                       {coupon.usedAt
-                        ? `사용일시 ${new Date(coupon.usedAt).toLocaleString("ko-KR")}`
+                        ? `사용 ${new Date(coupon.usedAt).toLocaleString("ko-KR")}`
                         : `유효기간 ${formatDate(coupon.validUntil)}`}
-                    </p>
+                    </span>
                   </div>
                 </div>
               ))}
