@@ -53,19 +53,20 @@ export const policyLinks: readonly NavItem[] = [
 ];
 
 export const siteContact = {
-  phoneDisplay: "02-1234-5678",
-  phoneHref: "tel:0212345678",
-  email: "hwamok@hwamok.com",
-  address: "서울특별시 강남구 테헤란로 123, 4층",
+  phoneDisplay: "051-1234-5678",
+  phoneHref: "tel:05112345678",
+  email: "help@hmgrill.com",
+  address: "부산광역시 동래구 온천천로 447-2",
+  postalCode: "47900",
   hoursWeekday: "평일 10:00 - 22:00",
   hoursWeekend: "주말·공휴일 11:00 - 22:00",
 } as const;
 
 export const businessInfo: readonly { label: string; value: string }[] = [
-  { label: "상호명", value: "화목" },
-  { label: "대표", value: "홍길동" },
+  { label: "상호명", value: "회목 주식회사" },
+  { label: "대표", value: "여창동" },
   { label: "사업자등록번호", value: "123-45-67890" },
-  { label: "주소", value: siteContact.address },
+  { label: "주소", value: `${siteContact.address} (우편번호 ${siteContact.postalCode})` },
   { label: "전화", value: siteContact.phoneDisplay },
   { label: "이메일", value: siteContact.email },
 ];

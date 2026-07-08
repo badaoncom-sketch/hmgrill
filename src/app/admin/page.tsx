@@ -33,6 +33,7 @@ import {
   menuItemSelect,
 } from "@/lib/content/db";
 import { requireAdminAccess } from "@/lib/auth/access";
+import { siteContact } from "@/lib/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatCurrency } from "@/lib/utils";
 
@@ -320,7 +321,7 @@ export default async function AdminPage() {
                 <div className="mt-5 flex items-center justify-between gap-4">
                   <div>
                     <h2 className="text-xl font-extrabold text-white">화목 본점</h2>
-                    <p className="mt-2 text-sm font-semibold text-white/48">서울 강남구 테헤란로 123</p>
+                    <p className="mt-2 text-sm font-semibold text-white/48">{siteContact.address}</p>
                   </div>
                   <Badge tone="green">영업중</Badge>
                 </div>
@@ -331,7 +332,7 @@ export default async function AdminPage() {
                   </div>
                   <div className="flex justify-between gap-4">
                     <dt>전화번호</dt>
-                    <dd className="text-white/78">02-1234-5678</dd>
+                    <dd className="text-white/78">{siteContact.phoneDisplay}</dd>
                   </div>
                 </dl>
                 <AdminActionLink href="/admin/menu" className="mt-5 w-full">
