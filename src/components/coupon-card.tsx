@@ -70,7 +70,7 @@ export function CouponCard({
           </div>
           {issue.conditionText ? (
             <>
-              <details className="group mt-3 rounded-[14px] border border-[var(--hm-border)] bg-black/20 md:hidden">
+              <details open className="group mt-3 rounded-[14px] border border-[var(--hm-border)] bg-black/20 md:hidden">
                 <summary className="hm-link-focus flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-[13px] font-bold text-[var(--hm-subtext)] [&::-webkit-details-marker]:hidden">
                   사용조건 보기
                   <ChevronDown size={14} className="transition group-open:rotate-180" aria-hidden="true" />

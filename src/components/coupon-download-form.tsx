@@ -87,6 +87,7 @@ export function CouponDownloadForm({
               name="marketingAccepted"
               type="checkbox"
               value="yes"
+              defaultChecked
               className="mt-1 h-4 w-4 accent-[var(--hm-primary)]"
             />
             <span>
@@ -104,6 +105,7 @@ export function CouponDownloadForm({
             name="marketingAccepted"
             type="checkbox"
             value="yes"
+            defaultChecked
             className="mt-1 h-4 w-4 accent-[var(--hm-primary)]"
           />
           <span>
