@@ -3,6 +3,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { Bell, Ticket } from "lucide-react";
 import { updateMarketingConsentAction } from "@/app/actions/profile";
+import { ContactInfoEditor } from "@/components/contact-info-editor";
 import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/layout";
@@ -203,6 +204,12 @@ export default async function MyPage() {
                 </div>
               ))}
             </dl>
+            {profile.profile_completed_at ? (
+              <ContactInfoEditor
+                phone={profile.phone ?? ""}
+                address={profile.address ?? ""}
+              />
+            ) : null}
             {profile.marketing_accepted_at ? (
               <form
                 action={updateMarketingConsentAction}
