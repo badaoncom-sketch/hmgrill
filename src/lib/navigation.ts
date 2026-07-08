@@ -48,8 +48,8 @@ export const footerNavGroups: readonly {
 ];
 
 export const policyLinks: readonly NavItem[] = [
-  { href: "/support", label: "이용약관" },
-  { href: "/support", label: "개인정보처리방침" },
+  { href: "/terms", label: "이용약관" },
+  { href: "/privacy", label: "개인정보처리방침" },
 ];
 
 export const siteContact = {
