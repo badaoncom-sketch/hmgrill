@@ -12,12 +12,16 @@ import { cn } from "@/lib/utils";
 export function Field({
   label,
   children,
+  className,
 }: {
   label: string;
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <label className="grid gap-2 text-sm font-medium text-[var(--hm-text)]">
+    <label
+      className={cn("grid gap-2 text-sm font-medium text-[var(--hm-text)]", className)}
+    >
       {label}
       {children}
     </label>

@@ -122,7 +122,11 @@ export default async function CouponsPage() {
         ) : null}
 
         {couponIssues.length > 0 ? (
-          <div className="mt-7 grid gap-4 md:mt-10 md:gap-5 xl:grid-cols-2">
+          <div
+            className={`mt-7 grid gap-4 md:mt-10 md:gap-5 ${
+              couponIssues.length > 1 ? "xl:grid-cols-2" : "xl:max-w-3xl"
+            }`}
+          >
             {couponIssues.map((issue) => (
               <CouponCard
                 key={issue.id}

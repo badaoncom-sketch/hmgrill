@@ -84,16 +84,6 @@ export function CouponCard({
               </p>
             </>
           ) : null}
-          <div className="mt-4 sm:mt-5">
-            <CouponDownloadForm
-              issueId={issue.id}
-              disabled={!decision.allowed}
-              profileRequired={profileRequired}
-              marketingConsented={marketingConsented}
-              profile={profile}
-            />
-            <p className="mt-2 text-xs leading-5 text-[var(--hm-subtext)]">{decision.reason}</p>
-          </div>
         </div>
 
         <div className="relative hidden content-center gap-5 border-t border-dashed border-white/[0.14] p-6 text-center md:grid md:border-l md:border-t-0">
@@ -130,6 +120,26 @@ export function CouponCard({
             </p>
           </div>
         </div>
+      </div>
+
+      {/* 절취선 아래 — 수령 정보 입력·다운로드 영역 */}
+      <div className="relative border-t border-dashed border-white/[0.14] p-4 sm:px-7 sm:py-6">
+        <span
+          aria-hidden="true"
+          className="absolute -left-3 -top-3 h-6 w-6 rounded-full bg-[var(--hm-background)]"
+        />
+        <span
+          aria-hidden="true"
+          className="absolute -right-3 -top-3 h-6 w-6 rounded-full bg-[var(--hm-background)]"
+        />
+        <CouponDownloadForm
+          issueId={issue.id}
+          disabled={!decision.allowed}
+          profileRequired={profileRequired}
+          marketingConsented={marketingConsented}
+          profile={profile}
+        />
+        <p className="mt-2 text-xs leading-5 text-[var(--hm-subtext)]">{decision.reason}</p>
       </div>
     </article>
   );
