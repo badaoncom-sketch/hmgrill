@@ -8,7 +8,6 @@ import {
   Check,
   CheckCheck,
   Trash2,
-  type LucideIcon,
 } from "lucide-react";
 import {
   deleteNotificationAction,
@@ -17,8 +16,8 @@ import {
   openNotificationAction,
   toggleNotificationArchiveAction,
 } from "@/app/actions/notifications";
-import { IconSubmitButton } from "@/components/icon-submit-button";
 import { notificationMeta } from "@/components/notification-meta";
+import { MenuSubmitButton, RowActionsMenu } from "@/components/row-actions-menu";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/layout";
 import {
@@ -40,32 +39,6 @@ const emptyMessages = {
 } as const;
 
 type NotificationTab = keyof typeof emptyMessages;
-
-function RowAction({
-  action,
-  id,
-  icon: Icon,
-  label,
-  danger = false,
-  extra,
-}: {
-  action: (formData: FormData) => Promise<void>;
-  id: string;
-  icon: LucideIcon;
-  label: string;
-  danger?: boolean;
-  extra?: React.ReactNode;
-}) {
-  return (
-    <form action={action}>
-      <input type="hidden" name="id" value={id} />
-      {extra}
-      <IconSubmitButton label={label} danger={danger}>
-        <Icon size={16} aria-hidden="true" />
-      </IconSubmitButton>
-    </form>
-  );
-}
 
 export default async function NotificationsPage({
   searchParams,
@@ -139,8 +112,8 @@ export default async function NotificationsPage({
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="hm-eyebrow">Notification</p>
-            <h1 className="hm-section-title mt-5">알림센터</h1>
-            <p className="hm-body mt-5 text-[var(--hm-subtext)]">
+            <h1 className="hm-section-title mt-3 md:mt-5">알림센터</h1>
+            <p className="hm-body mt-3 text-[var(--hm-subtext)] md:mt-5">
               쿠폰 발급·사용 처리, 만료 임박 안내, 새 공지와 이벤트 소식을 한곳에서 관리합니다.
             </p>
           </div>
@@ -154,7 +127,7 @@ export default async function NotificationsPage({
           ) : null}
         </div>
 
-        <div className="mt-10 flex gap-2 overflow-x-auto pb-1">
+        <div className="mt-7 flex gap-2 overflow-x-auto pb-1 md:mt-10">
           {tabs.map((item) => {
             const active = item.key === activeTab;
             return (
@@ -181,7 +154,7 @@ export default async function NotificationsPage({
         </div>
 
         {notifications.length > 0 ? (
-          <div className="mt-6 overflow-hidden rounded-[24px] border border-[var(--hm-border)] bg-[var(--hm-surface)]">
+          <div className="mt-6 rounded-[24px] border border-[var(--hm-border)] bg-[var(--hm-surface)]">
             <div className="divide-y divide-[var(--hm-divider)]">
               {notifications.map((item) => {
                 const meta = notificationMeta[item.type];
@@ -238,31 +211,37 @@ export default async function NotificationsPage({
                       </button>
                     </form>
 
-                    <div className="flex shrink-0 items-center gap-0.5 pt-1.5">
-                      {unread ? (
-                        <RowAction
-                          action={markNotificationReadAction}
-                          id={item.id}
-                          icon={Check}
-                          label="읽음 처리"
-                        />
-                      ) : null}
-                      <RowAction
-                        action={toggleNotificationArchiveAction}
-                        id={item.id}
-                        icon={archived ? ArchiveRestore : Archive}
-                        label={archived ? "보관 해제" : "보관"}
-                        extra={
+                    <div className="shrink-0 pt-1">
+                      <RowActionsMenu>
+                        {unread ? (
+                          <form action={markNotificationReadAction}>
+                            <input type="hidden" name="id" value={item.id} />
+                            <MenuSubmitButton>
+                              <Check size={15} aria-hidden="true" />
+                              읽음 처리
+                            </MenuSubmitButton>
+                          </form>
+                        ) : null}
+                        <form action={toggleNotificationArchiveAction}>
+                          <input type="hidden" name="id" value={item.id} />
                           <input type="hidden" name="archived" value={archived ? "0" : "1"} />
-                        }
-                      />
-                      <RowAction
-                        action={deleteNotificationAction}
-                        id={item.id}
-                        icon={Trash2}
-                        label="삭제"
-                        danger
-                      />
+                          <MenuSubmitButton>
+                            {archived ? (
+                              <ArchiveRestore size={15} aria-hidden="true" />
+                            ) : (
+                              <Archive size={15} aria-hidden="true" />
+                            )}
+                            {archived ? "보관 해제" : "보관"}
+                          </MenuSubmitButton>
+                        </form>
+                        <form action={deleteNotificationAction}>
+                          <input type="hidden" name="id" value={item.id} />
+                          <MenuSubmitButton danger>
+                            <Trash2 size={15} aria-hidden="true" />
+                            삭제
+                          </MenuSubmitButton>
+                        </form>
+                      </RowActionsMenu>
                     </div>
                   </div>
                 );
