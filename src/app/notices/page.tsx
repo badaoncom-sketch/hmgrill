@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ChevronRight, RotateCcw, Search } from "lucide-react";
+import { Suspense } from "react";
+import { ChevronRight, RotateCcw } from "lucide-react";
+import { LiveSearchInput } from "@/components/live-search-input";
 import { Container } from "@/components/ui/layout";
 import { contentPostSelect, mapContentPost } from "@/lib/content/db";
 import { createClient } from "@/lib/supabase/server";
@@ -45,17 +47,9 @@ export default async function NoticesPage({
             </p>
           </div>
 
-          <form method="get" className="w-full shrink-0 lg:w-[300px]">
-            <label className="flex min-h-11 items-center gap-2 rounded-[12px] border border-[var(--hm-border)] bg-[var(--hm-surface)] px-4 transition focus-within:border-[var(--hm-primary)] focus-within:ring-2 focus-within:ring-[rgba(247,230,193,.18)]">
-              <Search size={16} className="shrink-0 text-[var(--hm-subtext)]" aria-hidden="true" />
-              <input
-                name="q"
-                defaultValue={query}
-                placeholder="제목 검색"
-                className="min-w-0 flex-1 bg-transparent text-sm text-[var(--hm-text)] outline-none placeholder:text-[var(--hm-subtext)]"
-              />
-            </label>
-          </form>
+          <Suspense fallback={null}>
+            <LiveSearchInput placeholder="제목 검색" className="w-full shrink-0 lg:w-[300px]" />
+          </Suspense>
         </div>
 
         {query ? (

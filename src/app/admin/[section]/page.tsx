@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import {
   ArrowDown,
   ArrowUp,
@@ -15,7 +15,6 @@ import {
   MenuSquare,
   MessageSquareText,
   Plus,
-  Search,
   Ticket,
   Trash2,
   UserRound,
@@ -42,6 +41,7 @@ import {
   updateSiteSettingsAction,
 } from "@/app/actions/content";
 import { IconSubmitButton } from "@/components/icon-submit-button";
+import { LiveSearchInput } from "@/components/live-search-input";
 import {
   fetchSiteSettings,
   type SiteSettingKey,
@@ -217,16 +217,20 @@ function EmptyState({ children }: { children: ReactNode }) {
   );
 }
 
-function SearchShell({ children }: { children?: ReactNode }) {
+function SearchShell({ placeholder }: { placeholder: string }) {
   return (
-    <div className="grid gap-3 border-b border-[rgba(255,255,255,.06)] p-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-      <div className="flex min-h-11 items-center gap-3 rounded-[14px] border border-[rgba(255,255,255,.09)] bg-black/20 px-4 text-sm font-semibold text-white/42">
-        <Search size={16} aria-hidden="true" />
-        현재 화면 데이터 기준으로 관리합니다. 브라우저 검색으로 빠르게 찾을 수 있습니다.
-      </div>
-      {children}
+    <div className="border-b border-[rgba(255,255,255,.06)] p-5">
+      <Suspense fallback={null}>
+        <LiveSearchInput placeholder={placeholder} className="max-w-md bg-black/20" />
+      </Suspense>
     </div>
   );
+}
+
+function matchesQuery(query: string, ...fields: (string | null | undefined)[]) {
+  if (!query) return true;
+  const needle = query.toLowerCase();
+  return fields.some((field) => field?.toLowerCase().includes(needle));
 }
 
 function FormPanel({ title, children }: { title: string; children: ReactNode }) {
@@ -240,10 +244,14 @@ function FormPanel({ title, children }: { title: string; children: ReactNode }) 
 
 export default async function AdminSectionPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ section: string }>;
+  searchParams: Promise<{ q?: string }>;
 }) {
   const { section: rawSection } = await params;
+  const { q } = await searchParams;
+  const query = (q ?? "").trim();
   const section = rawSection as SectionKey;
   const meta = sectionMeta[section];
 
@@ -262,31 +270,37 @@ export default async function AdminSectionPage({
   }
 
   if (section === "members" || section === "staff") {
-    return <UserSection section={section} />;
+    return <UserSection section={section} query={query} />;
   }
 
   if (section === "menu") {
-    return <MenuSection />;
+    return <MenuSection query={query} />;
   }
 
   if (section === "events" || section === "notices") {
-    return <ContentSection section={section} />;
+    return <ContentSection section={section} query={query} />;
   }
 
   if (section === "inquiries") {
-    return <InquirySection />;
+    return <InquirySection query={query} />;
   }
 
   if (section === "banners" || section === "popups") {
-    return <ExposureSection section={section} />;
+    return <ExposureSection section={section} query={query} />;
   }
 
   return <ReportsSection />;
 }
 
-async function UserSection({ section }: { section: "members" | "staff" }) {
+async function UserSection({
+  section,
+  query,
+}: {
+  section: "members" | "staff";
+  query: string;
+}) {
   const meta = sectionMeta[section];
-  const query = createAdminClient()
+  const profilesQuery = createAdminClient()
     .from("profiles")
     .select(
       "id,member_uid,name,email,phone,address,role,email_verified,privacy_accepted_at,profile_completed_at,created_at",
@@ -294,9 +308,11 @@ async function UserSection({ section }: { section: "members" | "staff" }) {
     .order("created_at", { ascending: false });
   const { data: rows } =
     section === "members"
-      ? await query.eq("role", "member")
-      : await query.in("role", ["staff", "admin"]);
-  const profiles = (rows ?? []) as ProfileRow[];
+      ? await profilesQuery.eq("role", "member")
+      : await profilesQuery.in("role", ["staff", "admin"]);
+  const profiles = ((rows ?? []) as ProfileRow[]).filter((profile) =>
+    matchesQuery(query, profile.name, profile.email, profile.member_uid, profile.phone),
+  );
   const verifiedCount = profiles.filter((profile) => profile.email_verified).length;
   const completedCount = profiles.filter(
     (profile) => profile.profile_completed_at && profile.privacy_accepted_at,
@@ -329,7 +345,7 @@ async function UserSection({ section }: { section: "members" | "staff" }) {
 
         <AdminPanel>
           <AdminPanelHeader title="계정 목록" />
-          <SearchShell />
+          <SearchShell placeholder="이름·이메일·UID·연락처 실시간 검색" />
           <div className="grid gap-3 p-5">
             {profiles.map((profile) => (
               <div
@@ -555,7 +571,7 @@ async function HomeSection() {
   );
 }
 
-async function MenuSection() {
+async function MenuSection({ query }: { query: string }) {
   const meta = sectionMeta.menu;
   const admin = createAdminClient();
   const [{ data: rows }, { data: categoryRows }, { data: copyRow }] = await Promise.all([
@@ -571,7 +587,9 @@ async function MenuSection() {
       .order("created_at", { ascending: true }),
     admin.from("site_copy").select("title,body").eq("key", "menu").maybeSingle(),
   ]);
-  const menuItems = (rows ?? []).map(mapMenuItem);
+  const menuItems = (rows ?? [])
+    .map(mapMenuItem)
+    .filter((item) => matchesQuery(query, item.name, item.category, item.description));
   const categories = (categoryRows ?? []) as MenuCategoryRow[];
   const activeCount = menuItems.filter((item) => item.isActive).length;
   const featuredCount = menuItems.filter((item) => item.featured).length;
@@ -654,6 +672,7 @@ async function MenuSection() {
             title="메뉴 목록"
             action={<span className="text-xs font-semibold text-white/40">행을 클릭하면 수정·삭제</span>}
           />
+          <SearchShell placeholder="메뉴명·카테고리·설명 실시간 검색" />
           <details className="group border-b border-white/[0.05]">
             <summary className="hm-link-focus flex cursor-pointer list-none items-center gap-3 px-5 py-4 text-sm font-bold text-[var(--hm-primary)] transition hover:bg-white/[0.03] [&::-webkit-details-marker]:hidden">
               <span className="grid h-9 w-9 place-items-center rounded-[12px] border border-[rgba(247,230,193,.25)]">
@@ -796,7 +815,13 @@ function CategorySelect({
   );
 }
 
-async function ContentSection({ section }: { section: "events" | "notices" }) {
+async function ContentSection({
+  section,
+  query,
+}: {
+  section: "events" | "notices";
+  query: string;
+}) {
   const type: ContentPostType = section === "events" ? "event" : "notice";
   const meta = sectionMeta[section];
   const { data: rows } = await createAdminClient()
@@ -805,7 +830,9 @@ async function ContentSection({ section }: { section: "events" | "notices" }) {
     .eq("type", type)
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
-  const posts = (rows ?? []).map(mapContentPost);
+  const posts = (rows ?? [])
+    .map(mapContentPost)
+    .filter((post) => matchesQuery(query, post.title, post.body));
   const publishedCount = posts.filter((post) => post.status === "published").length;
   const draftCount = posts.filter((post) => post.status === "draft").length;
 
@@ -821,6 +848,7 @@ async function ContentSection({ section }: { section: "events" | "notices" }) {
           <FormPanel title={`${meta.title} 추가`}><ContentCreateForm type={type} /></FormPanel>
           <AdminPanel>
             <AdminPanelHeader title="콘텐츠 목록" />
+            <SearchShell placeholder="제목·본문 실시간 검색" />
             <div className="grid gap-4 p-5">
               {posts.map((post) => <ContentEditCard key={post.id} post={post} type={type} />)}
               {posts.length === 0 ? <EmptyState>등록된 콘텐츠가 없습니다.</EmptyState> : null}
@@ -881,13 +909,15 @@ function StatusSelect({ defaultValue = "published" }: { defaultValue?: ContentSt
   );
 }
 
-async function InquirySection() {
+async function InquirySection({ query }: { query: string }) {
   const meta = sectionMeta.inquiries;
   const { data: rows } = await createAdminClient()
     .from("inquiries")
     .select(inquirySelect)
     .order("created_at", { ascending: false });
-  const inquiries = (rows ?? []).map(mapInquiry);
+  const inquiries = (rows ?? [])
+    .map(mapInquiry)
+    .filter((inquiry) => matchesQuery(query, inquiry.name, inquiry.email, inquiry.message));
   const openCount = inquiries.filter((item) => item.status === "open").length;
   const answeredCount = inquiries.filter((item) => item.status === "answered").length;
 
@@ -938,14 +968,22 @@ function InquiryCard({ inquiry }: { inquiry: Inquiry }) {
   );
 }
 
-async function ExposureSection({ section }: { section: "banners" | "popups" }) {
+async function ExposureSection({
+  section,
+  query,
+}: {
+  section: "banners" | "popups";
+  query: string;
+}) {
   const meta = sectionMeta[section];
   const isBanner = section === "banners";
   const admin = createAdminClient();
   const { data: rows } = isBanner
     ? await admin.from("site_banners").select(siteBannerSelect).order("sort_order", { ascending: true })
     : await admin.from("site_popups").select(sitePopupSelect).order("sort_order", { ascending: true });
-  const items = isBanner ? (rows ?? []).map(mapSiteBanner) : (rows ?? []).map(mapSitePopup);
+  const items = (isBanner ? (rows ?? []).map(mapSiteBanner) : (rows ?? []).map(mapSitePopup)).filter(
+    (item) => matchesQuery(query, item.title, item.body),
+  );
   const activeCount = items.filter((item) => item.isActive).length;
 
   return (
@@ -962,6 +1000,7 @@ async function ExposureSection({ section }: { section: "banners" | "popups" }) {
           </FormPanel>
           <AdminPanel>
             <AdminPanelHeader title={isBanner ? "배너 목록" : "팝업 목록"} />
+            <SearchShell placeholder="제목·내용 실시간 검색" />
             <div className="grid gap-4 p-5">
               {items.map((item) => <ExposureEditCard key={item.id} item={item} isBanner={isBanner} />)}
               {items.length === 0 ? <EmptyState>등록된 항목이 없습니다.</EmptyState> : null}
