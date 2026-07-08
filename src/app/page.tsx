@@ -220,10 +220,10 @@ export default async function HomePage() {
                   className="hm-card-hover rounded-[16px] border border-[var(--hm-border)] bg-[rgba(18,18,18,.78)] p-3 text-center shadow-[0_24px_70px_rgba(0,0,0,.3)] sm:rounded-[20px] sm:p-6"
                 >
                   <Icon className="mx-auto h-7 w-7 text-[var(--hm-accent-gold)] sm:h-[42px] sm:w-[42px]" aria-hidden="true" />
-                  <h2 className="mt-3 whitespace-nowrap text-[11px] font-bold leading-tight text-[var(--hm-text)] sm:mt-6 sm:whitespace-normal sm:text-[var(--hm-type-card-title)] sm:leading-[1.38]">
+                  <h2 className="mt-3 whitespace-nowrap text-[11px] font-bold leading-tight text-[var(--hm-text)] sm:mt-6 sm:whitespace-normal sm:text-[23px] sm:leading-[1.35]">
                     {item.title}
                   </h2>
-                  <p className="hm-caption mt-3 hidden text-white/60 sm:block">{item.description}</p>
+                  <p className="hm-caption mt-3 hidden text-white/60 sm:block sm:text-[15px]">{item.description}</p>
                 </div>
               );
             })}

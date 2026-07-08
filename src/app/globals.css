@@ -21,7 +21,7 @@
   --hm-radius-button: 14px;
   --hm-radius-input: 12px;
   --hm-radius-image: 24px;
-  --hm-type-hero: clamp(54px, 4.7vw, 78px);
+  --hm-type-hero: clamp(44px, 3.8vw, 62px);
   --hm-type-section: clamp(34px, 3.1vw, 48px);
   --hm-type-subsection: clamp(28px, 2.2vw, 36px);
   --hm-type-card-title: 21px;
