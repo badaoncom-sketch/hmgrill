@@ -146,7 +146,12 @@ export async function downloadCouponAction(
   if (!hasCouponProfile(auth.profile as VerifiedProfile)) {
     const name = readString(formData, "name");
     const phone = readString(formData, "phone");
-    const address = readString(formData, "address");
+    const baseAddress = readString(formData, "address");
+    const addressDetail = readString(formData, "addressDetail");
+    // 주소 검색으로 고른 기본 주소 뒤에 상세주소를 붙여 한 필드로 저장한다.
+    const address = addressDetail
+      ? `${baseAddress}, ${addressDetail}`
+      : baseAddress;
     const privacyAccepted = formData.get("privacyAccepted") === "yes";
     // 마케팅 수신 동의는 선택 사항이다.
     const marketingAccepted = formData.get("marketingAccepted") === "yes";

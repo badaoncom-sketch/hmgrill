@@ -3,8 +3,9 @@
 import { Download } from "lucide-react";
 import { useActionState, useState } from "react";
 import { downloadCouponAction } from "@/app/actions/coupons";
+import { AddressSearchInput } from "@/components/address-search-input";
 import { Button } from "@/components/ui/button";
-import { Field, Input, Textarea } from "@/components/ui/field";
+import { Field, Input } from "@/components/ui/field";
 
 const initialState = {
   ok: false,
@@ -67,15 +68,10 @@ export function CouponDownloadForm({
               required
             />
           </Field>
-          <Field label="주소" className="sm:col-span-2">
-            <Textarea
-              name="address"
-              defaultValue={profile?.address ?? ""}
-              placeholder="쿠폰 이용 확인에 필요한 주소를 입력해 주세요."
-              required
-              className="min-h-20"
-            />
-          </Field>
+          <AddressSearchInput
+            defaultValue={profile?.address ?? ""}
+            className="sm:col-span-2"
+          />
           <div className="grid gap-2 sm:col-span-2">
             <label className="flex gap-3 rounded-[14px] border border-[rgba(247,230,193,.28)] bg-[rgba(247,230,193,.05)] p-3 text-sm font-bold text-[var(--hm-text)]">
               <input
