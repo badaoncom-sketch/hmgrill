@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { CouponRedownloadPolicy, CouponUseFlow } from "@/lib/types";
+import { formatPhoneNumber } from "@/lib/utils";
 
 type CouponActionState = {
   ok: boolean;
@@ -145,7 +146,8 @@ export async function downloadCouponAction(
 
   if (!hasCouponProfile(auth.profile as VerifiedProfile)) {
     const name = readString(formData, "name");
-    const phone = readString(formData, "phone");
+    // 어떤 형태로 입력해도 010-0000-0000 형식으로 저장한다.
+    const phone = formatPhoneNumber(readString(formData, "phone"));
     const baseAddress = readString(formData, "address");
     const addressDetail = readString(formData, "addressDetail");
     // 주소 검색으로 고른 기본 주소 뒤에 상세주소를 붙여 한 필드로 저장한다.

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { formatPhoneNumber } from "@/lib/utils";
 
 export type ContactActionState = {
   ok: boolean;
@@ -37,7 +38,8 @@ export async function updateContactInfoAction(
     };
   }
 
-  const phone = String(formData.get("phone") ?? "").trim();
+  // 어떤 형태로 입력해도 010-0000-0000 형식으로 저장한다.
+  const phone = formatPhoneNumber(String(formData.get("phone") ?? ""));
   const baseAddress = String(formData.get("address") ?? "").trim();
   const addressDetail = String(formData.get("addressDetail") ?? "").trim();
   const address = addressDetail ? `${baseAddress}, ${addressDetail}` : baseAddress;

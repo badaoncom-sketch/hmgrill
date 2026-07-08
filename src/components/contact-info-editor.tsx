@@ -7,8 +7,9 @@ import {
   type ContactActionState,
 } from "@/app/actions/profile";
 import { AddressSearchInput } from "@/components/address-search-input";
+import { PhoneInput } from "@/components/phone-input";
 import { Button } from "@/components/ui/button";
-import { Field, Input } from "@/components/ui/field";
+import { Field } from "@/components/ui/field";
 
 const initialState: ContactActionState = {
   ok: false,
@@ -61,14 +62,7 @@ export function ContactInfoEditor({
         연락처·주소 수정
       </p>
       <Field label="연락처">
-        <Input
-          name="phone"
-          defaultValue={phone}
-          inputMode="tel"
-          placeholder="010-0000-0000"
-          required
-          disabled={isPending}
-        />
+        <PhoneInput name="phone" defaultValue={phone} required disabled={isPending} />
       </Field>
       <AddressSearchInput defaultValue={address} />
       <div className="flex items-center justify-end gap-2">

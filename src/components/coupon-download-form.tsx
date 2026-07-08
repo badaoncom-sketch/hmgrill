@@ -4,6 +4,7 @@ import { Download } from "lucide-react";
 import { useActionState, useState } from "react";
 import { downloadCouponAction } from "@/app/actions/coupons";
 import { AddressSearchInput } from "@/components/address-search-input";
+import { PhoneInput } from "@/components/phone-input";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/field";
 
@@ -60,13 +61,7 @@ export function CouponDownloadForm({
             <Input name="name" defaultValue={profile?.name ?? ""} placeholder="홍길동" required />
           </Field>
           <Field label="연락처">
-            <Input
-              name="phone"
-              defaultValue={profile?.phone ?? ""}
-              inputMode="tel"
-              placeholder="010-0000-0000"
-              required
-            />
+            <PhoneInput name="phone" defaultValue={profile?.phone ?? ""} required />
           </Field>
           <AddressSearchInput
             defaultValue={profile?.address ?? ""}
