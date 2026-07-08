@@ -132,6 +132,7 @@ export default async function CouponsPage() {
                 key={issue.id}
                 issue={issue}
                 memberCoupons={memberCoupons}
+                isGuest={!user}
                 profileRequired={profileRequired}
                 marketingConsented={Boolean(profile?.marketing_accepted_at)}
                 profile={profile}

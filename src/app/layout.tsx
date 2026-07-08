@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Geist_Mono, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import type { HeaderUser } from "@/components/header-user-controls";
 import { NavigationProgress } from "@/components/navigation-progress";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { MobileBottomNav } from "@/components/site-header-client";
@@ -104,6 +105,7 @@ export default async function RootLayout({
         <Suspense fallback={null}>
           <NavigationProgress />
         </Suspense>
+        <PullToRefresh />
         <SiteHeader
           user={headerUser}
           notifications={notifications}

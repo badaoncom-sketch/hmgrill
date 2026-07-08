@@ -334,6 +334,13 @@ export function MobileBottomNav({ user }: { user: HeaderUser | null }) {
             <Link
               key={item.href}
               href={item.href}
+              onClick={(event) => {
+                // 앱 관례: 현재 화면의 탭을 다시 누르면 맨 위로 스크롤한다.
+                if (pathname === item.href) {
+                  event.preventDefault();
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }}
               className={`hm-link-focus flex min-h-[54px] flex-1 flex-col items-center justify-center gap-1 rounded-[16px] transition ${
                 active ? "text-[var(--hm-primary)]" : "hover:text-[var(--hm-primary)]"
               }`}

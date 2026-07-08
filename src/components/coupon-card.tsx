@@ -1,6 +1,7 @@
-import { CalendarDays, ChevronDown, Ticket } from "lucide-react";
+import { CalendarDays, ChevronDown, LogIn, Ticket } from "lucide-react";
 import { CouponDownloadForm } from "@/components/coupon-download-form";
 import { Badge } from "@/components/ui/badge";
+import { ButtonLink } from "@/components/ui/button";
 import { canDownloadCoupon, getRemainingQuantity } from "@/lib/coupon-policy";
 import type { CouponIssue } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
@@ -8,12 +9,14 @@ import { formatCurrency } from "@/lib/utils";
 export function CouponCard({
   issue,
   memberCoupons = [],
+  isGuest = false,
   profileRequired = false,
   marketingConsented = false,
   profile,
 }: {
   issue: CouponIssue;
   memberCoupons?: Parameters<typeof canDownloadCoupon>[1];
+  isGuest?: boolean;
   profileRequired?: boolean;
   marketingConsented?: boolean;
   profile?: {
@@ -50,27 +53,27 @@ export function CouponCard({
               {formatCurrency(issue.amount)}
             </p>
           </div>
-          <h2 className="mt-3 text-[17px] font-bold leading-snug text-[var(--hm-text)] sm:mt-4 sm:text-[21px]">
+          <h2 className="mt-2.5 text-[17px] font-bold leading-snug text-[var(--hm-text)] sm:mt-4 sm:text-[21px]">
             {issue.name}
           </h2>
-          <p className="mt-2 flex items-center gap-2 text-[13px] font-semibold text-[var(--hm-subtext)] sm:mt-3 sm:text-sm">
-            <CalendarDays size={15} className="text-[var(--hm-accent-gold)]" aria-hidden="true" />
-            다운로드 후 {issue.validityDays}일 사용 가능
-          </p>
-          <div className="mt-3 md:hidden">
-            <div className="h-1 overflow-hidden rounded-full bg-white/10">
-              <div
-                className={`h-full rounded-full ${issuing ? "bg-[var(--hm-primary)]/80" : "bg-white/20"}`}
-                style={{ width: `${remainingPct}%` }}
-              />
-            </div>
-            <p className="mt-1.5 text-[11px] font-semibold text-white/45">
-              남은 수량 {remaining}장 / 총 {issue.quantity}장
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:mt-3">
+            <p className="flex items-center gap-2 text-[13px] font-semibold text-[var(--hm-subtext)] sm:text-sm">
+              <CalendarDays size={15} className="text-[var(--hm-accent-gold)]" aria-hidden="true" />
+              다운로드 후 {issue.validityDays}일 사용 가능
             </p>
+            <p className="text-[11px] font-semibold text-white/45 md:hidden">
+              남은 수량 {remaining}/{issue.quantity}장
+            </p>
+          </div>
+          <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/10 md:hidden">
+            <div
+              className={`h-full rounded-full ${issuing ? "bg-[var(--hm-primary)]/80" : "bg-white/20"}`}
+              style={{ width: `${remainingPct}%` }}
+            />
           </div>
           {issue.conditionText ? (
             <>
-              <details open className="group mt-3 rounded-[14px] border border-[var(--hm-border)] bg-black/20 md:hidden">
+              <details className="group mt-3 rounded-[14px] border border-[var(--hm-border)] bg-black/20 md:hidden">
                 <summary className="hm-link-focus flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-[13px] font-bold text-[var(--hm-subtext)] [&::-webkit-details-marker]:hidden">
                   사용조건 보기
                   <ChevronDown size={14} className="transition group-open:rotate-180" aria-hidden="true" />
@@ -123,7 +126,7 @@ export function CouponCard({
       </div>
 
       {/* 절취선 아래 — 수령 정보 입력·다운로드 영역 */}
-      <div className="relative border-t border-dashed border-white/[0.14] p-4 sm:px-7 sm:py-6">
+      <div className="relative border-t border-dashed border-white/[0.14] px-4 py-3.5 sm:px-7 sm:py-6">
         <span
           aria-hidden="true"
           className="absolute -left-3 -top-3 h-6 w-6 rounded-full bg-[var(--hm-background)]"
@@ -132,14 +135,27 @@ export function CouponCard({
           aria-hidden="true"
           className="absolute -right-3 -top-3 h-6 w-6 rounded-full bg-[var(--hm-background)]"
         />
-        <CouponDownloadForm
-          issueId={issue.id}
-          disabled={!decision.allowed}
-          profileRequired={profileRequired}
-          marketingConsented={marketingConsented}
-          profile={profile}
-        />
-        <p className="mt-2 text-xs leading-5 text-[var(--hm-subtext)]">{decision.reason}</p>
+        {isGuest ? (
+          <ButtonLink href="/login" className="w-full">
+            <LogIn size={16} aria-hidden="true" />
+            로그인하고 쿠폰 받기
+          </ButtonLink>
+        ) : (
+          <>
+            <CouponDownloadForm
+              issueId={issue.id}
+              disabled={!decision.allowed}
+              profileRequired={profileRequired}
+              marketingConsented={marketingConsented}
+              profile={profile}
+            />
+            {!decision.allowed ? (
+              <p className="mt-2 text-xs leading-5 text-[var(--hm-subtext)]">
+                {decision.reason}
+              </p>
+            ) : null}
+          </>
+        )}
       </div>
     </article>
   );

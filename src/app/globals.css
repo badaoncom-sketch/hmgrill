@@ -41,6 +41,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* 브라우저 기본 당김 새로고침을 꺼서 커스텀 pull-to-refresh와 중복되지 않게 한다. */
+html,
+body {
+  overscroll-behavior-y: contain;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
