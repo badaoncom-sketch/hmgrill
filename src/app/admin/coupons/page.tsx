@@ -4,7 +4,6 @@ import {
   CalendarDays,
   ClipboardList,
   Download,
-  MoreHorizontal,
   Plus,
   Search,
   Send,
@@ -13,10 +12,6 @@ import {
   TimerReset,
 } from "lucide-react";
 import { revokeGrantedCouponAction } from "@/app/actions/coupon-grants";
-import {
-  resumeCouponIssueAction,
-  stopCouponIssueAction,
-} from "@/app/actions/coupons";
 import { CouponGrantPanel } from "@/components/admin/coupon-grant-panel";
 import { CouponIssueForm } from "@/components/admin/coupon-issue-form";
 import {
@@ -57,6 +52,7 @@ export default async function AdminCouponsPage({
   const params = (await searchParams) ?? {};
   const query = readSearchValue(params.q).trim();
   const statusFilter = readSearchValue(params.status);
+  const typeFilter = readSearchValue(params.type);
   const { canAccess } = await requireAdminAccess();
   const admin = createAdminClient();
   const [{ data: rows }, { data: matchedCouponRows }, { data: eventRows }, { data: grantRows }, { data: guestRows }] = canAccess
@@ -105,14 +101,22 @@ export default async function AdminCouponsPage({
       statusFilter === "all" ||
       (statusFilter === "issuing" && issue.status === "issuing") ||
       (statusFilter === "ended" && issue.status === "ended");
+    const matchesType =
+      !typeFilter || typeFilter === "all" || issue.distribution === typeFilter;
     const matchesQuery =
       !normalizedQuery ||
       issue.name.toLowerCase().includes(normalizedQuery) ||
       issue.id.toLowerCase().includes(normalizedQuery) ||
       matchedIssueIds.has(issue.id);
 
-    return matchesStatus && matchesQuery;
+    return matchesStatus && matchesType && matchesQuery;
   });
+
+  const distributionLabels: Record<string, string> = {
+    open: "홈페이지",
+    direct: "지급 전용",
+    guest: "비회원 QR",
+  };
   const recentEvents = (eventRows ?? []).map(mapCouponEvent);
 
   const one = <T,>(value: T | T[] | null | undefined): T | undefined =>
@@ -287,18 +291,24 @@ export default async function AdminCouponsPage({
                 <div className="grid gap-4 p-5">
                   <form
                     action="/admin/coupons"
-                    className="grid gap-3 lg:grid-cols-[150px_minmax(0,1fr)_auto_auto]"
+                    className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[130px_130px_150px_minmax(0,1fr)_auto_auto]"
                   >
-                    <div className="flex min-h-11 items-center justify-between rounded-[12px] border border-[rgba(255,255,255,.09)] bg-black/20 px-3 text-sm font-semibold text-white/62">
-                      전체 매장
-                      <CalendarDays size={15} aria-hidden="true" />
-                    </div>
                     <Select name="status" defaultValue={statusFilter || "all"} aria-label="쿠폰 상태">
                       <option value="all">전체 상태</option>
                       <option value="issuing">활성</option>
                       <option value="ended">종료</option>
                     </Select>
-                    <label className="flex min-h-11 items-center gap-3 rounded-[12px] border border-[rgba(255,255,255,.09)] bg-black/20 px-3 text-sm font-semibold text-white/42">
+                    <Select name="type" defaultValue={typeFilter || "all"} aria-label="쿠폰 종류">
+                      <option value="all">전체 종류</option>
+                      <option value="open">홈페이지 공개</option>
+                      <option value="direct">지급 전용</option>
+                      <option value="guest">비회원 QR</option>
+                    </Select>
+                    <div className="hidden min-h-11 items-center justify-between rounded-[12px] border border-[rgba(255,255,255,.09)] bg-black/20 px-3 text-sm font-semibold text-white/62 lg:flex">
+                      전체 매장
+                      <CalendarDays size={15} aria-hidden="true" />
+                    </div>
+                    <label className="flex min-h-11 items-center gap-3 rounded-[12px] border border-[rgba(255,255,255,.09)] bg-black/20 px-3 text-sm font-semibold text-white/42 sm:col-span-2 lg:col-span-1">
                       <Search size={16} aria-hidden="true" />
                       <Input
                         name="q"
@@ -332,16 +342,22 @@ export default async function AdminCouponsPage({
                     </div>
                   ) : null}
 
-                  {/* 모바일·태블릿: 카드 리스트 */}
+                  {/* 모바일·태블릿: 카드 리스트 — 카드를 누르면 상세로 이동 */}
                   <div className="grid gap-3 lg:hidden">
-                    {filteredCouponIssues.map((issue) => (
-                      <div
+                    {filteredCouponIssues.map((issue, index) => (
+                      <Link
                         key={issue.id}
-                        className="rounded-[16px] border border-[rgba(255,255,255,.08)] bg-black/20 p-4"
+                        href={`/admin/coupons/${issue.id}`}
+                        className="hm-link-focus block rounded-[16px] border border-[rgba(255,255,255,.08)] bg-black/20 p-4 transition hover:border-[rgba(247,230,193,.28)]"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <p className="text-[15px] font-bold leading-snug text-white">{issue.name}</p>
+                            <p className="text-[15px] font-bold leading-snug text-white">
+                              <span className="mr-1.5 font-mono text-xs text-white/35">
+                                {String(index + 1).padStart(2, "0")}
+                              </span>
+                              {issue.name}
+                            </p>
                             <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                               <Badge tone={issue.status === "issuing" ? "green" : "neutral"}>
                                 {issue.status === "issuing" ? "활성" : "종료"}
@@ -382,34 +398,11 @@ export default async function AdminCouponsPage({
                           <span className="text-[11px] font-semibold text-white/45">
                             다운로드 후 {issue.validityDays}일
                           </span>
-                          <div className="flex items-center gap-2">
-                            <Link
-                              href={`/admin/coupons/${issue.id}`}
-                              className="hm-link-focus rounded-[10px] border border-[rgba(247,230,193,.24)] px-3 py-1.5 text-xs font-bold text-[var(--hm-primary)]"
-                            >
-                              상세
-                            </Link>
-                            <form
-                              action={
-                                issue.status === "issuing"
-                                  ? stopCouponIssueAction
-                                  : resumeCouponIssueAction
-                              }
-                            >
-                              <input name="issueId" type="hidden" value={issue.id} />
-                              <button
-                                type="submit"
-                                className="hm-link-focus rounded-[10px] border border-[rgba(255,255,255,.12)] px-3 py-1.5 text-xs font-bold text-white/55 disabled:opacity-30"
-                                disabled={
-                                  issue.status === "ended" && issue.endReason !== "admin_stopped"
-                                }
-                              >
-                                {issue.status === "issuing" ? "발행중단" : "재발행"}
-                              </button>
-                            </form>
-                          </div>
+                          <span className="text-[11px] font-bold text-[var(--hm-accent-gold)]">
+                            상세 보기 ›
+                          </span>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                     {filteredCouponIssues.length === 0 ? (
                       <p className="rounded-[16px] border border-dashed border-[rgba(255,255,255,.12)] px-5 py-8 text-center text-sm font-semibold text-white/42">
@@ -418,85 +411,48 @@ export default async function AdminCouponsPage({
                     ) : null}
                   </div>
 
-                  {/* PC: 테이블 */}
-                  <div className="hidden overflow-x-auto rounded-[18px] border border-[rgba(255,255,255,.08)] lg:block">
-                    <table className="min-w-[860px] w-full border-collapse text-sm">
-                      <thead className="bg-white/[0.035]">
-                        <tr>
-                          {["쿠폰명", "할인 혜택", "발급 수", "사용 수", "사용률", "상태", "기간", "관리"].map((head) => (
-                            <th
-                              key={head}
-                              className="px-4 py-4 text-left text-xs font-extrabold text-[var(--hm-accent-gold)]"
-                            >
-                              {head}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-[rgba(255,255,255,.06)]">
-                        {filteredCouponIssues.map((issue) => (
-                          <tr key={issue.id} className="transition hover:bg-white/[0.025]">
-                            <td className="px-4 py-4 font-bold text-white">
-                              {issue.name}
-                              {issue.distribution === "direct" ? (
-                                <span className="ml-2 rounded-full border border-[rgba(247,230,193,.3)] px-2 py-0.5 text-[10px] font-bold text-[var(--hm-accent-gold)]">
-                                  지급 전용
-                                </span>
-                              ) : null}
-                              {issue.distribution === "guest" ? (
-                                <span className="ml-2 rounded-full border border-[rgba(247,230,193,.3)] px-2 py-0.5 text-[10px] font-bold text-[var(--hm-accent-gold)]">
-                                  비회원 QR
-                                </span>
-                              ) : null}
-                            </td>
-                            <td className="px-4 py-4 text-white/64">{formatCurrency(issue.amount)}</td>
-                            <td className="px-4 py-4 text-white/64">{issue.downloadedCount}</td>
-                            <td className="px-4 py-4 text-white/64">{issue.usedCount}</td>
-                            <td className="px-4 py-4 text-white/64">
-                              {percent(issue.usedCount, issue.downloadedCount)}%
-                            </td>
-                            <td className="px-4 py-4">
-                              <Badge tone={issue.status === "issuing" ? "green" : "neutral"}>
-                                {issue.status === "issuing" ? "활성" : "종료"}
-                              </Badge>
-                            </td>
-                            <td className="px-4 py-4 text-white/64">
-                              다운로드 후 {issue.validityDays}일
-                            </td>
-                            <td className="px-4 py-4">
-                              <div className="flex items-center gap-2">
-                                <Link
-                                  href={`/admin/coupons/${issue.id}`}
-                                  className="hm-link-focus text-xs font-bold text-[var(--hm-primary)]"
-                                >
-                                  상세
-                                </Link>
-                                <form
-                                  action={
-                                    issue.status === "issuing"
-                                      ? stopCouponIssueAction
-                                      : resumeCouponIssueAction
-                                  }
-                                >
-                                  <input name="issueId" type="hidden" value={issue.id} />
-                                  <button
-                                    type="submit"
-                                    className="hm-link-focus grid h-8 w-8 place-items-center rounded-[10px] text-white/46 transition hover:bg-white/[0.05] hover:text-[var(--hm-primary)] disabled:opacity-30"
-                                    disabled={
-                                      issue.status === "ended" &&
-                                      issue.endReason !== "admin_stopped"
-                                    }
-                                    aria-label={issue.status === "issuing" ? "발행중단" : "재발행"}
-                                  >
-                                    <MoreHorizontal size={18} aria-hidden="true" />
-                                  </button>
-                                </form>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  {/* PC: 행을 누르면 상세로 이동 */}
+                  <div className="hidden rounded-[18px] border border-[rgba(255,255,255,.08)] lg:block">
+                    <div className="grid grid-cols-[48px_minmax(0,1fr)_100px_110px_64px_64px_72px_76px_150px] items-center gap-2 bg-white/[0.035] px-4 py-3.5 text-xs font-extrabold text-[var(--hm-accent-gold)]">
+                      <span>번호</span>
+                      <span>쿠폰명</span>
+                      <span>종류</span>
+                      <span>할인 혜택</span>
+                      <span>발급</span>
+                      <span>사용</span>
+                      <span>사용률</span>
+                      <span>상태</span>
+                      <span>기간</span>
+                    </div>
+                    <div className="divide-y divide-[rgba(255,255,255,.06)]">
+                      {filteredCouponIssues.map((issue, index) => (
+                        <Link
+                          key={issue.id}
+                          href={`/admin/coupons/${issue.id}`}
+                          className="hm-link-focus grid grid-cols-[48px_minmax(0,1fr)_100px_110px_64px_64px_72px_76px_150px] items-center gap-2 px-4 py-4 text-sm transition hover:bg-white/[0.03]"
+                        >
+                          <span className="font-mono text-xs text-white/40">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <span className="truncate font-bold text-white">{issue.name}</span>
+                          <span className="text-xs font-bold text-[var(--hm-accent-gold)]">
+                            {distributionLabels[issue.distribution]}
+                          </span>
+                          <span className="text-white/64">{formatCurrency(issue.amount)}</span>
+                          <span className="text-white/64">{issue.downloadedCount}</span>
+                          <span className="text-white/64">{issue.usedCount}</span>
+                          <span className="text-white/64">
+                            {percent(issue.usedCount, issue.downloadedCount)}%
+                          </span>
+                          <span>
+                            <Badge tone={issue.status === "issuing" ? "green" : "neutral"}>
+                              {issue.status === "issuing" ? "활성" : "종료"}
+                            </Badge>
+                          </span>
+                          <span className="text-white/64">다운로드 후 {issue.validityDays}일</span>
+                        </Link>
+                      ))}
+                    </div>
                     {filteredCouponIssues.length === 0 ? (
                       <p className="px-5 py-8 text-sm font-semibold text-white/42">
                         조건에 맞는 쿠폰이 없습니다.

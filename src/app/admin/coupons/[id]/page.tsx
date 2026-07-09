@@ -40,6 +40,9 @@ const eventLabels: Record<string, string> = {
   coupon_downloaded: "다운로드",
   coupon_used: "사용완료",
   coupon_expired: "기간만료",
+  coupon_granted: "직접 지급",
+  coupon_revoked: "지급 회수",
+  guest_coupon_claimed: "비회원 발급",
 };
 
 const couponStatusLabels = {
