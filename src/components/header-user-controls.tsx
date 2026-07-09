@@ -133,11 +133,7 @@ function HeaderDropdown({
         </button>
       )}
       {open ? (
-        <div
-          className={`absolute right-0 top-[calc(100%+10px)] z-50 overflow-hidden rounded-[20px] border border-[rgba(247,230,193,.14)] bg-[#161310] shadow-[0_28px_80px_rgba(0,0,0,.55)] ${panelClassName}`}
-        >
-          {children}
-        </div>
+        <div className={`hm-header-panel ${panelClassName}`}>{children}</div>
       ) : null}
     </div>
   );
@@ -154,7 +150,7 @@ export function NotificationBell({
     <HeaderDropdown
       label="알림"
       triggerHref="/notifications"
-      panelClassName="w-[330px] max-w-[calc(100vw-32px)]"
+      panelClassName="w-[330px]"
       trigger={
         <span className="relative">
           <Bell size={20} aria-hidden="true" />
@@ -269,7 +265,9 @@ export function UserMenu({ user }: { user: HeaderUser }) {
     >
       <div className="px-5 pb-4 pt-5">
         <p className="text-[15px] font-bold text-white">{displayName} 님</p>
-        <p className="mt-1 truncate text-xs font-medium text-white/45">{user.email}</p>
+        <p className="mt-1 truncate text-xs font-medium text-white/45" title={user.email}>
+          {user.email}
+        </p>
         {user.memberUid ? (
           <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white/32">
             UID{" "}

@@ -75,6 +75,23 @@ html {
   }
 }
 
+/* 헤더 드롭다운(알림·내 계정) 공통 패널.
+   위치·배경·테두리 같은 핵심 표시 속성을 유틸리티 대신 여기 고정해,
+   개발 중 스타일시트가 일부만 갱신돼도 패널이 투명해지거나 찌그러지지 않게 한다. */
+.hm-header-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  z-index: 50;
+  overflow: hidden;
+  min-width: 280px;
+  max-width: calc(100vw - 32px);
+  border-radius: 20px;
+  border: 1px solid rgba(247, 230, 193, 0.14);
+  background: #161310;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55);
+}
+
 /* 가로 스크롤 칩 목록에서 스크롤바를 감춘다 (스와이프는 그대로 동작) */
 .hm-no-scrollbar {
   -ms-overflow-style: none;
