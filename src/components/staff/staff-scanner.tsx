@@ -712,7 +712,7 @@ export function StaffScanner({
               ) : null}
               {coupon.source === "guest_claim" ? (
                 <span className="ml-2 rounded-full border border-[rgba(247,230,193,.32)] px-2.5 py-1 text-[12px] font-bold text-[var(--hm-accent-gold)]">
-                  비회원 감사쿠폰
+                  비회원 쿠폰
                 </span>
               ) : null}
             </p>
@@ -860,7 +860,7 @@ export function StaffScanner({
             </span>
             <span className="min-w-0">
               <span className="block text-[16px] font-extrabold text-[var(--hm-primary)]">
-                감사쿠폰 발급
+                쿠폰 발급
               </span>
               <span className="mt-0.5 block text-xs font-semibold text-white/50">
                 손님에게 발급 QR 보여주기 · 가입 불필요
@@ -978,7 +978,7 @@ export function StaffScanner({
 
 const guestQrInitialState: GuestClaimQrState = { ok: false, message: "" };
 
-// 계산대 감사쿠폰 발급 오버레이: 캠페인 선택 → 1회용 QR 표시 → 수령 감지 시 자동 완료.
+// 계산대 쿠폰 발급 오버레이: 캠페인 선택 → 1회용 QR 표시 → 수령 감지 시 자동 완료.
 function GuestGrantOverlay({
   issues,
   onClose,
@@ -1046,13 +1046,13 @@ function GuestGrantOverlay({
             <CheckCircle2 size={56} className="mx-auto text-emerald-300" aria-hidden="true" />
             <p className="mt-5 text-[20px] font-bold text-white">쿠폰 발급 완료!</p>
             <p className="mt-2 text-sm font-semibold text-white/55">
-              손님 휴대폰에 감사쿠폰이 전달되었습니다.
+              손님 휴대폰에 쿠폰이 전달되었습니다.
             </p>
           </div>
         ) : !state.ok ? (
           <form action={formAction} className="grid gap-4 py-2">
             <Gift size={34} className="mx-auto text-[var(--hm-accent-gold)]" aria-hidden="true" />
-            <p className="text-[18px] font-bold text-[var(--hm-primary)]">감사쿠폰 발급</p>
+            <p className="text-[18px] font-bold text-[var(--hm-primary)]">쿠폰 발급</p>
             <p className="text-xs font-semibold text-white/45">
               발급할 쿠폰을 누르면 바로 QR이 표시됩니다
             </p>
@@ -1095,7 +1095,7 @@ function GuestGrantOverlay({
             <div className="relative mx-auto w-full max-w-[300px] rounded-[18px] bg-white p-4">
               <Image
                 src={state.qrDataUrl ?? ""}
-                alt="감사쿠폰 발급 QR"
+                alt="쿠폰 발급 QR"
                 width={420}
                 height={420}
                 unoptimized

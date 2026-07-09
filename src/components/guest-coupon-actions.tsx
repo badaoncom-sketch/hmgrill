@@ -131,7 +131,7 @@ export function GuestCouponActions({
       );
       if (!blob) return;
 
-      const fileName = `화목-감사쿠폰-${couponNumber}.png`;
+      const fileName = `화목-쿠폰-${couponNumber}.png`;
       const dataUrl = canvas.toDataURL("image/png");
       const isTouchDevice = navigator.maxTouchPoints > 0;
       // 카카오톡 등 인앱 브라우저는 파일 공유·download 링크를 지원하지 않는다.
@@ -162,7 +162,7 @@ export function GuestCouponActions({
         try {
           await navigator.share({
             files: [new File([blob], fileName, { type: "image/png" })],
-            title: "화목 감사쿠폰",
+            title: "화목 쿠폰",
           });
           return;
         } catch (error) {
@@ -191,10 +191,10 @@ export function GuestCouponActions({
   }
 
   async function share() {
-    const text = `화목 감사쿠폰 ${amountText} (${validUntilText})`;
+    const text = `화목 쿠폰 ${amountText} (${validUntilText})`;
     if (typeof navigator.share === "function") {
       try {
-        await navigator.share({ title: "화목 감사쿠폰", text, url: shareUrl });
+        await navigator.share({ title: "화목 쿠폰", text, url: shareUrl });
         return;
       } catch (error) {
         if ((error as DOMException)?.name === "AbortError") {
@@ -270,7 +270,7 @@ export function GuestCouponActions({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={previewUrl}
-              alt={`화목 감사쿠폰 ${couponNumber}`}
+              alt={`화목 쿠폰 ${couponNumber}`}
               className="max-h-full w-auto max-w-full rounded-[14px] shadow-[0_24px_80px_rgba(0,0,0,.6)]"
             />
           </div>

@@ -6,7 +6,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { formatCurrency } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "감사쿠폰 받기",
+  title: "쿠폰 받기",
   robots: { index: false, follow: false },
 };
 

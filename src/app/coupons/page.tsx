@@ -134,36 +134,33 @@ export default async function CouponsPage() {
               입력해 두면 새 쿠폰이 나올 때마다 바로 받을 수 있습니다.
             </p>
           </div>
-          {user ? (
-            <div className="flex shrink-0 gap-2">
-              <ButtonLink href="/coupons/my" variant="outline">
-                내 쿠폰
-              </ButtonLink>
-              <ButtonLink href="/coupons/history" variant="ghost">
-                사용내역
-              </ButtonLink>
-            </div>
-          ) : null}
+          <div className="flex shrink-0 gap-2">
+            {user ? (
+              <>
+                <ButtonLink href="/coupons/my" variant="outline">
+                  내 쿠폰
+                </ButtonLink>
+                <ButtonLink href="/coupons/history" variant="ghost">
+                  사용내역
+                </ButtonLink>
+              </>
+            ) : (
+              <>
+                <ButtonLink href="/login" variant="outline">
+                  로그인
+                </ButtonLink>
+                <ButtonLink href="/signup" variant="ghost">
+                  회원가입
+                </ButtonLink>
+              </>
+            )}
+          </div>
         </div>
 
-        {!user ? (
-          <div className="mt-7 flex flex-col gap-4 rounded-[20px] border border-[rgba(247,230,193,.2)] bg-[radial-gradient(60%_120%_at_50%_0%,rgba(184,130,30,.09),transparent_70%),var(--hm-surface)] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-7 md:mt-10">
-            <div>
-              <p className="text-[16px] font-bold text-[var(--hm-primary)]">
-                로그인하면 쿠폰을 바로 받을 수 있어요
-              </p>
-              <p className="mt-1.5 text-sm leading-6 text-[var(--hm-subtext)]">
-                회원가입 후 이메일 인증만 마치면 발행 중인 방문 혜택이 열립니다.
-              </p>
-            </div>
-            <div className="flex shrink-0 gap-2">
-              <ButtonLink href="/login">로그인</ButtonLink>
-              <ButtonLink href="/signup" variant="outline">
-                회원가입
-              </ButtonLink>
-            </div>
-          </div>
-        ) : null}
+        {/* 쿠폰 상태 조회 — 회원·비회원 공용, 상단 고정 배치 */}
+        <div className="mt-7 md:mt-10">
+          <GuestCouponLookup />
+        </div>
 
         {couponIssues.length > 0 ? (
           <>
@@ -231,10 +228,6 @@ export default async function CouponsPage() {
             </ButtonLink>
           </div>
         )}
-
-        <div className="mt-8 md:mt-12">
-          <GuestCouponLookup />
-        </div>
 
         {endedIssues.length > 0 ? (
           <section className="mt-14">

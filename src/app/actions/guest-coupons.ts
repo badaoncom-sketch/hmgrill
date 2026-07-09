@@ -45,7 +45,7 @@ async function requireStaff() {
   return { user, message: "" };
 }
 
-// 계산대: 감사쿠폰 발급 QR(1회용, 5분 유효)을 생성한다.
+// 계산대: 쿠폰 발급 QR(1회용, 5분 유효)을 생성한다.
 export async function createGuestClaimQrAction(
   _prevState: GuestClaimQrState,
   formData: FormData,
@@ -92,7 +92,7 @@ export async function createGuestClaimQrAction(
     claimUrl,
     qrDataUrl,
     expiresAt: String(expiresAt),
-    issueName: issue?.name ?? "감사쿠폰",
+    issueName: issue?.name ?? "쿠폰",
     amount: issue?.amount ?? 0,
   };
 }
@@ -140,7 +140,7 @@ export type GuestCouponStatusState = {
   result?: {
     couponName: string;
     amount: number;
-    statusLabel: "사용 가능" | "사용 완료" | "기간 만료";
+    statusLabel: "사용 가능" | "사용 완료" | "기간 만료" | "사용 불가";
     statusTone: "green" | "neutral" | "red";
     validUntil: string;
     usedAt: string | null;
@@ -148,7 +148,7 @@ export type GuestCouponStatusState = {
   };
 };
 
-// 비회원 감사쿠폰 상태 조회: 쿠폰번호 8자리만으로 상태를 확인한다.
+// 비회원 쿠폰 상태 조회: 쿠폰번호 8자리만으로 상태를 확인한다.
 // QR·링크(소지자 비밀)는 노출하지 않고 상태 정보만 돌려준다.
 export async function lookupGuestCouponStatusAction(
   _prevState: GuestCouponStatusState,
@@ -160,17 +160,17 @@ export async function lookupGuestCouponStatusAction(
     return { ok: false, message: "쿠폰번호 8자리를 입력해 주세요." };
   }
 
+  // 회원·비회원 모든 쿠폰을 번호로 조회한다 (상태 정보만 노출, QR·개인정보 미노출).
   const { data } = await createAdminClient()
     .from("member_coupons")
     .select("status,valid_until,used_at,revoked_at,source,coupon_issues(name,amount)")
     .eq("coupon_number", number)
-    .eq("source", "guest_claim")
     .maybeSingle();
 
   if (!data) {
     return {
       ok: false,
-      message: "해당 번호의 감사쿠폰을 찾을 수 없습니다. 번호를 다시 확인해 주세요.",
+      message: "해당 번호의 쿠폰을 찾을 수 없습니다. 번호를 다시 확인해 주세요.",
     };
   }
 
@@ -179,14 +179,19 @@ export async function lookupGuestCouponStatusAction(
     : data.coupon_issues;
   const expired =
     data.status === "expired" || new Date(data.valid_until) < new Date();
-  const statusLabel =
-    data.status === "used" ? "사용 완료" : expired ? "기간 만료" : "사용 가능";
+  const statusLabel = data.revoked_at
+    ? ("사용 불가" as const)
+    : data.status === "used"
+      ? ("사용 완료" as const)
+      : expired
+        ? ("기간 만료" as const)
+        : ("사용 가능" as const);
 
   return {
     ok: true,
     message: "",
     result: {
-      couponName: issue?.name ?? "감사쿠폰",
+      couponName: issue?.name ?? "쿠폰",
       amount: issue?.amount ?? 0,
       statusLabel,
       statusTone:

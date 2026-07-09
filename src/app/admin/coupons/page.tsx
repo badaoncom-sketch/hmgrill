@@ -757,7 +757,7 @@ export default async function AdminCouponsPage({
           </AdminPanel>
 
           <AdminPanel>
-            <AdminPanelHeader title="비회원 감사쿠폰 내역 — 계산대 QR 발급" />
+            <AdminPanelHeader title="비회원 쿠폰 내역 — 계산대 QR 발급" />
             <div className="p-4 md:p-5">
               <div className="mb-4 flex flex-wrap gap-x-5 gap-y-1.5 rounded-[14px] border border-[rgba(255,255,255,.08)] bg-black/20 px-4 py-3 text-[13px] font-semibold text-white/60 md:text-sm">
                 <span>
@@ -801,7 +801,7 @@ export default async function AdminCouponsPage({
                 ))}
                 {guestCoupons.length === 0 ? (
                   <p className="rounded-[16px] border border-dashed border-[rgba(255,255,255,.12)] px-5 py-8 text-center text-sm font-semibold text-white/42">
-                    발급된 비회원 감사쿠폰이 없습니다.
+                    발급된 비회원 쿠폰이 없습니다.
                   </p>
                 ) : null}
               </div>
@@ -861,7 +861,7 @@ export default async function AdminCouponsPage({
                 </table>
                 {guestCoupons.length === 0 ? (
                   <p className="px-5 py-8 text-sm font-semibold text-white/42">
-                    발급된 비회원 감사쿠폰이 없습니다.
+                    발급된 비회원 쿠폰이 없습니다.
                   </p>
                 ) : null}
               </div>

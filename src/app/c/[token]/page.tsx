@@ -27,15 +27,15 @@ export async function generateMetadata({
 
   const base: Metadata = { robots: { index: false, follow: false } };
   if (!row) {
-    return { ...base, title: "화목 감사쿠폰" };
+    return { ...base, title: "화목 쿠폰" };
   }
 
   const issue = Array.isArray(row.coupon_issues)
     ? row.coupon_issues[0]
     : row.coupon_issues;
   const amountText = formatCurrency(issue?.amount ?? 0);
-  const title = `화목 감사쿠폰 ${amountText}`;
-  const description = `${issue?.name ?? "감사쿠폰"} · ${formatDate(row.valid_until)}까지 사용 가능 · No.${row.coupon_number}`;
+  const title = `화목 쿠폰 ${amountText}`;
+  const description = `${issue?.name ?? "쿠폰"} · ${formatDate(row.valid_until)}까지 사용 가능 · No.${row.coupon_number}`;
 
   return {
     ...base,
@@ -104,8 +104,8 @@ export default async function GuestCouponPage({
       <Container>
         <div className="mx-auto max-w-2xl">
           <div className="text-center">
-            <p className="hm-eyebrow">Hwamok Thank You Coupon</p>
-            <h1 className="hm-subsection-title mt-3">화목 감사쿠폰</h1>
+            <p className="hm-eyebrow">Hwamok Coupon</p>
+            <h1 className="hm-subsection-title mt-3">화목 쿠폰</h1>
             <p className="hm-caption mt-2 text-[var(--hm-subtext)]">
               {status === "available"
                 ? "방문 시 아래 QR을 직원에게 보여주세요. 스크린샷·저장한 이미지도 그대로 사용할 수 있습니다."
@@ -136,7 +136,7 @@ export default async function GuestCouponPage({
                 </p>
                 <p className="mt-0.5 text-xs leading-5 text-white/60">
                   아쉽지만 이 쿠폰은 더 이상 사용할 수 없습니다. 다음 방문 때
-                  계산대에서 새 감사쿠폰을 받아 주세요.
+                  계산대에서 새 쿠폰을 받아 주세요.
                 </p>
               </div>
             </div>

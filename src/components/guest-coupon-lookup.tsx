@@ -44,11 +44,11 @@ export function GuestCouponLookup() {
         </span>
         <div>
           <h2 className="text-[16px] font-bold text-[var(--hm-primary)]">
-            감사쿠폰 상태 조회
+            쿠폰 상태 조회
           </h2>
           <p className="mt-1 text-xs leading-5 text-[var(--hm-subtext)]">
-            매장에서 받은 감사쿠폰의 사용 가능 여부를 쿠폰번호 8자리로
-            확인할 수 있습니다. 가입이 필요 없어요.
+            회원·비회원 관계없이 쿠폰번호 8자리만으로 사용 가능 여부를
+            바로 확인할 수 있습니다.
           </p>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import QRCode from "qrcode";
 import { CheckCircle2, TimerOff } from "lucide-react";
+import { CopyButton } from "@/components/copy-button";
 import { Badge } from "@/components/ui/badge";
 import {
   getEffectiveMemberCouponStatus,
@@ -152,8 +153,9 @@ export async function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/36">
               Coupon No.
             </p>
-            <p className="mt-1.5 font-mono text-[15px] font-semibold tracking-[0.16em] text-[var(--hm-primary)]">
+            <p className="mt-1.5 flex items-center justify-center gap-1.5 font-mono text-[15px] font-semibold tracking-[0.16em] text-[var(--hm-primary)]">
               {coupon.couponNumber}
+              <CopyButton value={coupon.couponNumber} ariaLabel="쿠폰번호 복사" />
             </p>
           </div>
         </div>

@@ -59,7 +59,7 @@ export function CouponIssueForm() {
           <Select name="distribution" defaultValue="open">
             <option value="open">홈페이지 공개 — 회원이 직접 다운로드</option>
             <option value="direct">관리자 지급 전용 — 홈페이지 비노출</option>
-            <option value="guest">비회원 감사쿠폰 — 계산대 QR 발급</option>
+            <option value="guest">비회원 쿠폰 — 계산대 QR 발급</option>
           </Select>
         </Field>
       </div>
