@@ -17,24 +17,6 @@ async function requireUser() {
   return { supabase, user };
 }
 
-export async function openNotificationAction(formData: FormData) {
-  const id = String(formData.get("id") ?? "");
-  const href = String(formData.get("href") ?? "");
-  const { supabase, user } = await requireUser();
-
-  if (id) {
-    await supabase
-      .from("member_notifications")
-      .update({ read_at: new Date().toISOString() })
-      .eq("id", id)
-      .eq("member_id", user.id)
-      .is("read_at", null);
-  }
-
-  revalidatePath("/", "layout");
-  redirect(href.startsWith("/") ? href : "/notifications");
-}
-
 export async function markNotificationReadAction(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const { supabase, user } = await requireUser();

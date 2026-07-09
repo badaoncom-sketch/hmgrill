@@ -13,11 +13,9 @@ import {
   UserRound,
 } from "lucide-react";
 import { logoutAction } from "@/app/actions/auth";
-import {
-  markAllNotificationsReadAction,
-  openNotificationAction,
-} from "@/app/actions/notifications";
+import { markAllNotificationsReadAction } from "@/app/actions/notifications";
 import { notificationMeta } from "@/components/notification-meta";
+import { NotificationOpenLink } from "@/components/notification-open-link";
 import type { MemberNotification } from "@/lib/notifications/db";
 import { formatDate } from "@/lib/utils";
 
@@ -192,39 +190,41 @@ export function NotificationBell({
             const Icon = meta.icon;
             const unread = !item.readAt;
             return (
-              <form key={item.id} action={openNotificationAction}>
-                <input type="hidden" name="id" value={item.id} />
-                <input type="hidden" name="href" value={item.href ?? "/notifications"} />
-                <DropdownSubmitButton className="hm-link-focus flex w-full items-start gap-3 rounded-[14px] px-3 py-3 text-left transition hover:bg-white/[0.05]">
+              <NotificationOpenLink
+                key={item.id}
+                id={item.id}
+                href={item.href}
+                unread={unread}
+                className="hm-link-focus flex w-full items-start gap-3 rounded-[14px] px-3 py-3 text-left transition hover:bg-white/[0.05]"
+              >
+                <span
+                  className={`mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-[10px] border ${
+                    unread
+                      ? "border-[rgba(247,230,193,.3)] text-[var(--hm-primary)]"
+                      : "border-[var(--hm-border)] text-white/35"
+                  }`}
+                >
+                  <Icon size={15} aria-hidden="true" />
+                </span>
+                <span className="min-w-0 flex-1">
                   <span
-                    className={`mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-[10px] border ${
-                      unread
-                        ? "border-[rgba(247,230,193,.3)] text-[var(--hm-primary)]"
-                        : "border-[var(--hm-border)] text-white/35"
+                    className={`block truncate text-[13px] font-semibold ${
+                      unread ? "text-white" : "text-white/50"
                     }`}
                   >
-                    <Icon size={15} aria-hidden="true" />
+                    {item.title}
                   </span>
-                  <span className="min-w-0 flex-1">
-                    <span
-                      className={`block truncate text-[13px] font-semibold ${
-                        unread ? "text-white" : "text-white/50"
-                      }`}
-                    >
-                      {item.title}
-                    </span>
-                    <span className="mt-1 block text-[11px] font-semibold text-white/38">
-                      {meta.label} · {formatDate(item.createdAt)}
-                    </span>
+                  <span className="mt-1 block text-[11px] font-semibold text-white/38">
+                    {meta.label} · {formatDate(item.createdAt)}
                   </span>
-                  {unread ? (
-                    <span
-                      className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[var(--hm-accent-gold)]"
-                      aria-label="읽지 않음"
-                    />
-                  ) : null}
-                </DropdownSubmitButton>
-              </form>
+                </span>
+                {unread ? (
+                  <span
+                    className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[var(--hm-accent-gold)]"
+                    aria-label="읽지 않음"
+                  />
+                ) : null}
+              </NotificationOpenLink>
             );
           })
         ) : (

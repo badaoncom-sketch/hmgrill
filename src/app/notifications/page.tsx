@@ -13,11 +13,10 @@ import {
   deleteNotificationAction,
   markAllNotificationsReadAction,
   markNotificationReadAction,
-  openNotificationAction,
   toggleNotificationArchiveAction,
 } from "@/app/actions/notifications";
 import { notificationMeta } from "@/components/notification-meta";
-import { InlineSubmitButton } from "@/components/inline-submit-button";
+import { NotificationOpenLink } from "@/components/notification-open-link";
 import { MenuSubmitButton, RowActionsMenu } from "@/components/row-actions-menu";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/layout";
@@ -169,48 +168,46 @@ export default async function NotificationsPage({
                       unread ? "bg-[rgba(247,230,193,.03)]" : ""
                     }`}
                   >
-                    <form action={openNotificationAction} className="min-w-0 flex-1">
-                      <input type="hidden" name="id" value={item.id} />
-                      <input type="hidden" name="href" value={item.href ?? "/notifications"} />
-                      <InlineSubmitButton
-                        dim
-                        className="hm-link-focus flex w-full items-start gap-4 rounded-[14px] p-1.5 text-left transition hover:bg-white/[0.03]"
+                    <NotificationOpenLink
+                      id={item.id}
+                      href={item.href}
+                      unread={unread}
+                      className="hm-link-focus flex min-w-0 flex-1 items-start gap-4 rounded-[14px] p-1.5 text-left transition hover:bg-white/[0.03]"
+                    >
+                      <span
+                        className={`mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-[12px] border ${
+                          unread
+                            ? "border-[rgba(247,230,193,.3)] text-[var(--hm-primary)]"
+                            : "border-[var(--hm-border)] text-white/35"
+                        }`}
                       >
+                        <Icon size={18} aria-hidden="true" />
+                      </span>
+                      <span className="min-w-0 flex-1">
                         <span
-                          className={`mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-[12px] border ${
-                            unread
-                              ? "border-[rgba(247,230,193,.3)] text-[var(--hm-primary)]"
-                              : "border-[var(--hm-border)] text-white/35"
+                          className={`block text-[15px] font-bold leading-snug ${
+                            unread ? "text-white" : "text-white/55"
                           }`}
                         >
-                          <Icon size={18} aria-hidden="true" />
+                          {item.title}
                         </span>
-                        <span className="min-w-0 flex-1">
-                          <span
-                            className={`block text-[15px] font-bold leading-snug ${
-                              unread ? "text-white" : "text-white/55"
-                            }`}
-                          >
-                            {item.title}
+                        {item.body ? (
+                          <span className="hm-caption mt-1 block text-[var(--hm-subtext)]">
+                            {item.body}
                           </span>
-                          {item.body ? (
-                            <span className="hm-caption mt-1 block text-[var(--hm-subtext)]">
-                              {item.body}
-                            </span>
-                          ) : null}
-                          <span className="mt-2 block text-xs font-semibold text-white/38">
-                            {meta.label} · {formatDate(item.createdAt)}
-                            {archived ? " · 보관됨" : ""}
-                          </span>
-                        </span>
-                        {unread ? (
-                          <span
-                            className="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--hm-accent-gold)]"
-                            aria-label="읽지 않음"
-                          />
                         ) : null}
-                      </InlineSubmitButton>
-                    </form>
+                        <span className="mt-2 block text-xs font-semibold text-white/38">
+                          {meta.label} · {formatDate(item.createdAt)}
+                          {archived ? " · 보관됨" : ""}
+                        </span>
+                      </span>
+                      {unread ? (
+                        <span
+                          className="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--hm-accent-gold)]"
+                          aria-label="읽지 않음"
+                        />
+                      ) : null}
+                    </NotificationOpenLink>
 
                     <div className="shrink-0 pt-1">
                       <RowActionsMenu>
