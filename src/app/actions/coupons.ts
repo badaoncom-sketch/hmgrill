@@ -104,7 +104,7 @@ export async function issueCouponAction(
   }
 
   const admin = createAdminClient();
-  const { error } = await admin.rpc("issue_coupon", {
+  const { data: issueId, error } = await admin.rpc("issue_coupon", {
     p_admin_id: auth.user.id,
     p_name: name,
     p_amount: amount,
@@ -118,6 +118,14 @@ export async function issueCouponAction(
 
   if (error) {
     return { ok: false, message: error.message };
+  }
+
+  // 지급 전용 발행은 홈페이지에 노출되지 않고 관리자 직접 지급에서만 사용된다.
+  if (readString(formData, "distribution") === "direct" && issueId) {
+    await admin
+      .from("coupon_issues")
+      .update({ distribution: "direct", updated_at: new Date().toISOString() })
+      .eq("id", issueId);
   }
 
   revalidatePath("/admin/coupons");

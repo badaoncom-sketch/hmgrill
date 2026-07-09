@@ -12,10 +12,12 @@ import {
   Ticket,
   TimerReset,
 } from "lucide-react";
+import { revokeGrantedCouponAction } from "@/app/actions/coupon-grants";
 import {
   resumeCouponIssueAction,
   stopCouponIssueAction,
 } from "@/app/actions/coupons";
+import { CouponGrantPanel } from "@/components/admin/coupon-grant-panel";
 import { CouponIssueForm } from "@/components/admin/coupon-issue-form";
 import {
   AdminActionLink,
@@ -57,7 +59,7 @@ export default async function AdminCouponsPage({
   const statusFilter = readSearchValue(params.status);
   const { canAccess } = await requireAdminAccess();
   const admin = createAdminClient();
-  const [{ data: rows }, { data: matchedCouponRows }, { data: eventRows }] = canAccess
+  const [{ data: rows }, { data: matchedCouponRows }, { data: eventRows }, { data: grantRows }] = canAccess
     ? await Promise.all([
         admin
           .from("coupon_issues")
@@ -74,8 +76,16 @@ export default async function AdminCouponsPage({
           .select(couponEventSelect)
           .order("created_at", { ascending: false })
           .limit(3),
+        admin
+          .from("member_coupons")
+          .select(
+            "id,coupon_number,status,used_at,revoked_at,grant_note,downloaded_at,valid_until,coupon_issues(name,amount),member_profile:profiles!member_coupons_member_id_fkey(name,member_uid),granter:profiles!member_coupons_granted_by_fkey(name)",
+          )
+          .eq("source", "admin_grant")
+          .order("downloaded_at", { ascending: false })
+          .limit(20),
       ])
-    : [{ data: [] }, { data: [] }, { data: [] }];
+    : [{ data: [] }, { data: [] }, { data: [] }, { data: [] }];
   const couponIssues = (rows ?? []).map(mapCouponIssue);
   const matchedIssueIds = new Set(
     ((matchedCouponRows ?? []) as { issue_id: string }[]).map((row) => row.issue_id),
@@ -96,6 +106,43 @@ export default async function AdminCouponsPage({
     return matchesStatus && matchesQuery;
   });
   const recentEvents = (eventRows ?? []).map(mapCouponEvent);
+
+  const one = <T,>(value: T | T[] | null | undefined): T | undefined =>
+    Array.isArray(value) ? value[0] : (value ?? undefined);
+  const grants = ((grantRows ?? []) as Record<string, unknown>[]).map((row) => {
+    const issue = one(row.coupon_issues as { name: string; amount: number } | null);
+    const member = one(row.member_profile as { name: string | null; member_uid: string } | null);
+    const granter = one(row.granter as { name: string | null } | null);
+    return {
+      id: row.id as string,
+      couponNumber: row.coupon_number as string,
+      status: row.status as string,
+      usedAt: (row.used_at as string | null) ?? null,
+      revokedAt: (row.revoked_at as string | null) ?? null,
+      note: (row.grant_note as string | null) ?? null,
+      grantedAt: row.downloaded_at as string,
+      couponName: issue?.name ?? "쿠폰",
+      amount: issue?.amount ?? 0,
+      memberName: member?.name ?? "-",
+      memberUid: member?.member_uid ?? "-",
+      granterName: granter?.name ?? "-",
+    };
+  });
+  // 지급 가능한 발행: 지급 전용(direct) + 발행중 + 재고 보유
+  const grantableIssues = couponIssues
+    .filter(
+      (issue) =>
+        issue.distribution === "direct" &&
+        issue.status === "issuing" &&
+        issue.quantity - issue.downloadedCount > 0,
+    )
+    .map((issue) => ({
+      id: issue.id,
+      name: issue.name,
+      amount: issue.amount,
+      remaining: issue.quantity - issue.downloadedCount,
+      validityDays: issue.validityDays,
+    }));
 
   const totalIssued = couponIssues.reduce((sum, item) => sum + item.quantity, 0);
   const activeCount = couponIssues.filter((issue) => issue.status === "issuing").length;
@@ -262,7 +309,14 @@ export default async function AdminCouponsPage({
                       <tbody className="divide-y divide-[rgba(255,255,255,.06)]">
                         {filteredCouponIssues.map((issue) => (
                           <tr key={issue.id} className="transition hover:bg-white/[0.025]">
-                            <td className="px-4 py-4 font-bold text-white">{issue.name}</td>
+                            <td className="px-4 py-4 font-bold text-white">
+                              {issue.name}
+                              {issue.distribution === "direct" ? (
+                                <span className="ml-2 rounded-full border border-[rgba(247,230,193,.3)] px-2 py-0.5 text-[10px] font-bold text-[var(--hm-accent-gold)]">
+                                  지급 전용
+                                </span>
+                              ) : null}
+                            </td>
                             <td className="px-4 py-4 text-white/64">{formatCurrency(issue.amount)}</td>
                             <td className="px-4 py-4 text-white/64">{issue.downloadedCount}</td>
                             <td className="px-4 py-4 text-white/64">{issue.usedCount}</td>
@@ -326,6 +380,12 @@ export default async function AdminCouponsPage({
                   <CouponIssueForm />
                 </div>
               </AdminPanel>
+
+              <AdminPanel>
+                <AdminPanelHeader title="쿠폰 직접 지급 — 회원 지정 지급" />
+                <CouponGrantPanel issues={grantableIssues} />
+              </AdminPanel>
+
             </div>
 
             <div className="grid gap-5">
@@ -406,6 +466,85 @@ export default async function AdminCouponsPage({
               </AdminPanel>
             </div>
           </div>
+
+          <AdminPanel>
+            <AdminPanelHeader title="직접 지급 내역" />
+            <div className="p-5">
+              <div className="overflow-x-auto rounded-[18px] border border-[rgba(255,255,255,.08)]">
+                <table className="w-full min-w-[820px] border-collapse text-sm">
+                  <thead className="bg-white/[0.035]">
+                    <tr>
+                          {["지급일", "회원", "쿠폰", "금액", "지급자", "메모", "상태", "관리"].map((head) => (
+                        <th key={head} className="px-4 py-3.5 text-left text-xs font-extrabold text-[var(--hm-accent-gold)]">
+                              {head}
+                        </th>
+                          ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[rgba(255,255,255,.06)]">
+                        {grants.map((grant) => {
+                          const revoked = Boolean(grant.revokedAt);
+                          const stateLabel = revoked
+                            ? "회수됨"
+                            : grant.status === "used"
+                              ? "사용완료"
+                              : grant.status === "available"
+                                ? "미사용"
+                                : "기간만료";
+                          return (
+                        <tr key={grant.id} className="transition hover:bg-white/[0.025]">
+                          <td className="px-4 py-3.5 text-white/60">
+                                {new Date(grant.grantedAt).toLocaleDateString("ko-KR")}
+                          </td>
+                          <td className="px-4 py-3.5">
+                            <span className="font-bold text-white">{grant.memberName}</span>
+                            <span className="ml-2 font-mono text-[11px] tracking-[0.1em] text-[var(--hm-accent-gold)]">
+                                  {grant.memberUid}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3.5 text-white/72">{grant.couponName}</td>
+                          <td className="px-4 py-3.5 font-bold text-[var(--hm-primary)]">
+                                {formatCurrency(grant.amount)}
+                          </td>
+                          <td className="px-4 py-3.5 text-white/60">{grant.granterName}</td>
+                          <td className="max-w-[180px] truncate px-4 py-3.5 text-white/50">
+                                {grant.note ?? "-"}
+                          </td>
+                          <td className="px-4 py-3.5">
+                            <Badge
+                                  tone={revoked ? "red" : grant.status === "used" ? "neutral" : grant.status === "available" ? "green" : "neutral"}
+                                >
+                                  {stateLabel}
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-3.5">
+                                {!revoked && grant.status === "available" ? (
+                              <form action={revokeGrantedCouponAction}>
+                                <input type="hidden" name="memberCouponId" value={grant.id} />
+                                <button
+                                      type="submit"
+                                      className="hm-link-focus rounded-[8px] border border-[rgba(198,59,45,.4)] px-2.5 py-1 text-xs font-bold text-[#f0a39b] transition hover:bg-[rgba(198,59,45,.14)]"
+                                    >
+                                      회수
+                                </button>
+                              </form>
+                                ) : (
+                              <span className="text-xs text-white/30">-</span>
+                                )}
+                          </td>
+                        </tr>
+                          );
+                        })}
+                  </tbody>
+                </table>
+                    {grants.length === 0 ? (
+                  <p className="px-5 py-8 text-sm font-semibold text-white/42">
+                        직접 지급한 쿠폰이 없습니다.
+                  </p>
+                    ) : null}
+              </div>
+            </div>
+          </AdminPanel>
         </div>
       )}
     </AdminFrame>

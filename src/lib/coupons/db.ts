@@ -21,6 +21,7 @@ type CouponIssueRow = {
   use_flow: CouponUseFlow;
   status: "issuing" | "ended";
   end_reason: "quantity_sold_out" | "admin_stopped" | null;
+  distribution: "open" | "direct";
 };
 
 type MemberCouponRow = {
@@ -33,6 +34,8 @@ type MemberCouponRow = {
   valid_until: string;
   status: "available" | "used" | "expired";
   used_at: string | null;
+  source: "download" | "admin_grant";
+  revoked_at: string | null;
   coupon_issues:
     | {
         name: string;
@@ -98,6 +101,7 @@ export const couponIssueSelect = [
   "use_flow",
   "status",
   "end_reason",
+  "distribution",
 ].join(",");
 
 export const memberCouponSelect = [
@@ -110,6 +114,8 @@ export const memberCouponSelect = [
   "valid_until",
   "status",
   "used_at",
+  "source",
+  "revoked_at",
   "coupon_issues(name,amount,condition_text,qr_notice)",
   "member_profile:profiles!member_coupons_member_id_fkey(name)",
   "staff_profile:profiles!member_coupons_used_by_staff_id_fkey(name)",
@@ -142,6 +148,7 @@ export function mapCouponIssue(row: unknown): CouponIssue {
     useFlow: item.use_flow,
     status: item.status,
     endReason: item.end_reason ?? undefined,
+    distribution: item.distribution,
   };
 }
 
@@ -173,6 +180,8 @@ export function mapMemberCoupon(row: unknown): MemberCoupon {
     usedByStaffName: staff?.name ?? undefined,
     conditionText: issue?.condition_text ?? "",
     qrNotice: issue?.qr_notice ?? "",
+    source: item.source,
+    revokedAt: item.revoked_at ?? undefined,
   };
 }
 

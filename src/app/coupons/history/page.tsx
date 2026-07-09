@@ -119,6 +119,11 @@ export default async function CouponHistoryPage() {
                       <h2 className="truncate text-[15px] font-bold text-[var(--hm-text)] md:text-lg">
                         {coupon.couponName}
                       </h2>
+                      {coupon.source === "admin_grant" ? (
+                        <span className="shrink-0 rounded-full border border-[rgba(247,230,193,.3)] px-2 py-0.5 text-[10px] font-bold text-[var(--hm-accent-gold)]">
+                          화목이 드린 혜택
+                        </span>
+                      ) : null}
                     </div>
                     <p className="shrink-0 text-[16px] font-bold leading-none text-[var(--hm-accent-gold)] md:text-[20px]">
                       {formatCurrency(coupon.amount)}
@@ -128,7 +133,10 @@ export default async function CouponHistoryPage() {
                     <span className="font-mono tracking-[0.12em] text-[var(--hm-primary)]/80">
                       No. {coupon.couponNumber}
                     </span>
-                    <span>다운로드 {formatDate(coupon.downloadedAt)}</span>
+                    <span>
+                      {coupon.source === "admin_grant" ? "지급" : "다운로드"}{" "}
+                      {formatDate(coupon.downloadedAt)}
+                    </span>
                     <span>
                       {coupon.usedAt
                         ? `사용 ${new Date(coupon.usedAt).toLocaleString("ko-KR")}`

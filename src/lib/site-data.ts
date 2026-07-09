@@ -56,6 +56,7 @@ export const couponIssues: CouponIssue[] = [
     redownloadPolicy: "after_use_allowed",
     useFlow: "staff_confirm",
     status: "issuing",
+    distribution: "open",
   },
   {
     id: "weekday-5000",
@@ -72,6 +73,7 @@ export const couponIssues: CouponIssue[] = [
     useFlow: "staff_confirm",
     status: "ended",
     endReason: "quantity_sold_out",
+    distribution: "open",
   },
 ];
 
@@ -88,6 +90,7 @@ export const memberCoupons: MemberCoupon[] = [
     validFrom: "2026-07-01",
     validUntil: "2026-07-10",
     status: "available",
+    source: "download",
     conditionText:
       "300,000원 이상 결제 시 사용 가능합니다.\n타 쿠폰과 중복 사용이 불가능합니다.",
     qrNotice:
@@ -105,6 +108,7 @@ export const memberCoupons: MemberCoupon[] = [
     validFrom: "2026-06-20",
     validUntil: "2026-06-26",
     status: "used",
+    source: "download",
     usedAt: "2026-06-24T12:30:00+09:00",
     usedByStaffName: "직원 A",
     conditionText: "평일 방문 시 사용 가능합니다.",

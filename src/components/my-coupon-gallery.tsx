@@ -11,6 +11,7 @@ export type GalleryCoupon = {
   amountText: string;
   remainingText: string;
   couponNumber: string;
+  gifted: boolean;
   detail: ReactNode;
 };
 
@@ -39,9 +40,15 @@ export function MyCouponGallery({ items }: { items: GalleryCoupon[] }) {
                 <Badge tone="green" className="whitespace-nowrap">
                   사용 가능
                 </Badge>
-                <span className="text-[9px] font-bold uppercase tracking-[0.26em] text-[var(--hm-accent-gold)]/85">
-                  Hwamok
-                </span>
+                {item.gifted ? (
+                  <span className="whitespace-nowrap text-[9px] font-bold text-[var(--hm-accent-gold)]">
+                    화목이 드린 혜택
+                  </span>
+                ) : (
+                  <span className="text-[9px] font-bold uppercase tracking-[0.26em] text-[var(--hm-accent-gold)]/85">
+                    Hwamok
+                  </span>
+                )}
               </div>
               <p className="hm-serif mt-3.5 text-[24px] font-bold leading-none text-[var(--hm-primary)]">
                 {item.amountText}

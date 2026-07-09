@@ -683,7 +683,14 @@ export function StaffScanner({
         {view === "usable" && coupon ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 py-6 text-center">
             <RobotFace mood={mood} className="h-24 w-24" />
-            <p className="mt-2 text-[17px] font-bold text-emerald-200">사용 가능한 쿠폰입니다</p>
+            <p className="mt-2 text-[17px] font-bold text-emerald-200">
+              사용 가능한 쿠폰입니다
+              {coupon.source === "admin_grant" ? (
+                <span className="ml-2 rounded-full border border-[rgba(247,230,193,.32)] px-2.5 py-1 text-[12px] font-bold text-[var(--hm-accent-gold)]">
+                  지급 쿠폰
+                </span>
+              ) : null}
+            </p>
             <h2 className="text-[clamp(20px,2.4vw,27px)] font-bold leading-snug text-white">
               {coupon.couponName}
             </h2>

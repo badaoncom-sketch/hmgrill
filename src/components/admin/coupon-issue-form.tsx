@@ -55,6 +55,12 @@ export function CouponIssueForm() {
             <option value="staff_confirm">직원 확인 후 사용완료</option>
           </Select>
         </Field>
+        <Field label="배포 방식">
+          <Select name="distribution" defaultValue="open">
+            <option value="open">홈페이지 공개 — 회원이 직접 다운로드</option>
+            <option value="direct">관리자 지급 전용 — 홈페이지 비노출</option>
+          </Select>
+        </Field>
       </div>
       <Field label="사용조건">
         <Textarea name="conditionText" defaultValue={defaultCondition} />

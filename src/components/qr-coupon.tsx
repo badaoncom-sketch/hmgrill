@@ -41,9 +41,16 @@ export async function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
     >
       <div className="grid md:grid-cols-[1fr_270px]">
         <div className="p-7 lg:p-8">
-          <Badge tone={isAvailable ? "green" : "neutral"}>
-            {statusLabel[effectiveStatus]}
-          </Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge tone={isAvailable ? "green" : "neutral"}>
+              {statusLabel[effectiveStatus]}
+            </Badge>
+            {coupon.source === "admin_grant" ? (
+              <span className="rounded-full border border-[rgba(247,230,193,.3)] px-2.5 py-1 text-[11px] font-bold text-[var(--hm-accent-gold)]">
+                화목이 드린 혜택
+              </span>
+            ) : null}
+          </div>
           <h2 className="mt-4 text-[22px] font-bold leading-snug text-[var(--hm-text)]">
             {coupon.couponName}
           </h2>

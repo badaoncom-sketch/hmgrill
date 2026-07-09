@@ -24,6 +24,12 @@ export type CouponUseFlow = "auto_complete" | "staff_confirm";
 
 export type MemberCouponStatus = "available" | "used" | "expired";
 
+// open = 홈페이지 공개 다운로드, direct = 관리자 지급 전용
+export type CouponDistribution = "open" | "direct";
+
+// download = 회원이 직접 다운로드, admin_grant = 관리자가 지급
+export type MemberCouponSource = "download" | "admin_grant";
+
 export type CouponIssue = {
   id: string;
   name: string;
@@ -39,6 +45,7 @@ export type CouponIssue = {
   useFlow: CouponUseFlow;
   status: CouponIssueStatus;
   endReason?: CouponEndReason;
+  distribution: CouponDistribution;
 };
 
 export type MemberCoupon = {
@@ -57,6 +64,8 @@ export type MemberCoupon = {
   usedByStaffName?: string;
   conditionText: string;
   qrNotice: string;
+  source: MemberCouponSource;
+  revokedAt?: string;
 };
 
 export type CouponEvent = {

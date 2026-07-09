@@ -2,8 +2,10 @@ import {
   AlarmClock,
   CalendarDays,
   CheckCircle2,
+  Gift,
   Megaphone,
   Ticket,
+  Undo2,
   type LucideIcon,
 } from "lucide-react";
 import type { MemberNotificationType } from "@/lib/notifications/db";
@@ -13,6 +15,8 @@ export const notificationMeta: Record<
   { label: string; icon: LucideIcon }
 > = {
   coupon_issued: { label: "쿠폰 발급", icon: Ticket },
+  coupon_granted: { label: "쿠폰 도착", icon: Gift },
+  coupon_revoked: { label: "쿠폰 회수", icon: Undo2 },
   coupon_used: { label: "사용 완료", icon: CheckCircle2 },
   coupon_expiring: { label: "만료 임박", icon: AlarmClock },
   notice: { label: "공지", icon: Megaphone },

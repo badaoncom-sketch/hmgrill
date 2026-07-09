@@ -2,6 +2,8 @@ export type MemberNotificationType =
   | "coupon_issued"
   | "coupon_used"
   | "coupon_expiring"
+  | "coupon_granted"
+  | "coupon_revoked"
   | "notice"
   | "event";
 

@@ -50,11 +50,14 @@ export default async function CouponsPage() {
       .from("coupon_issues")
       .select(couponIssueSelect)
       .eq("status", "issuing")
+      // 관리자 지급 전용(direct) 발행은 홈페이지에 노출하지 않는다.
+      .eq("distribution", "open")
       .order("created_at", { ascending: false }),
     supabase
       .from("coupon_issues")
       .select(couponIssueSelect)
       .eq("status", "ended")
+      .eq("distribution", "open")
       .order("created_at", { ascending: false })
       .limit(4),
   ]);

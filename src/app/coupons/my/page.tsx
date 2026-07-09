@@ -92,6 +92,7 @@ export default async function MyCouponsPage() {
                       ? "오늘까지"
                       : `${getRemainingDaysText(coupon.validUntil)} 남음`,
                   couponNumber: coupon.couponNumber,
+                  gifted: coupon.source === "admin_grant",
                   detail: <QrCoupon coupon={coupon} />,
                 }))}
               />
@@ -115,7 +116,11 @@ export default async function MyCouponsPage() {
                     <details key={coupon.id} className="group">
                       <summary className="hm-link-focus flex cursor-pointer list-none items-center gap-3 p-4 transition hover:bg-white/[0.03] sm:px-6 [&::-webkit-details-marker]:hidden">
                         <Badge tone={status === "used" ? "neutral" : "red"}>
-                          {status === "used" ? "사용 완료" : "기간 만료"}
+                          {status === "used"
+                            ? "사용 완료"
+                            : coupon.revokedAt
+                              ? "회수됨"
+                              : "기간 만료"}
                         </Badge>
                         <span className="min-w-0 flex-1 truncate text-[15px] font-bold text-white/75">
                           {coupon.couponName}
