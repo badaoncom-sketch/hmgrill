@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { Geist_Mono, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import type { HeaderUser } from "@/components/header-user-controls";
+import { InstallPrompt } from "@/components/install-prompt";
+import { LiveUpdates } from "@/components/live-updates";
 import { NavigationProgress } from "@/components/navigation-progress";
 import { PullToRefresh } from "@/components/pull-to-refresh";
 import { SiteFooter } from "@/components/site-footer";
@@ -65,6 +67,15 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
+    },
+    // iOS 홈 화면 추가 시 관리자 설정 아이콘을 쓴다.
+    icons: {
+      apple: settings["app.icon"],
+    },
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "black-translucent",
+      title: settings["app.short_name"],
     },
   };
 }
@@ -149,6 +160,11 @@ export default async function RootLayout({
           tagline={settings["footer.tagline"]}
         />
         <MobileBottomNav user={headerUser} />
+        <LiveUpdates />
+        <InstallPrompt
+          appName={settings["app.short_name"]}
+          iconSrc={settings["app.icon"]}
+        />
       </body>
     </html>
   );

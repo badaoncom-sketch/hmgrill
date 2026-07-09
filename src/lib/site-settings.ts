@@ -43,6 +43,11 @@ export const siteSettingDefaults = {
   "footer.eyebrow": "Hwamok · 참나무 장작구이",
   "footer.tagline": "참나무 장작의 깊은 향,\n화목의 시간",
 
+  // ── 앱 설치(PWA): 홈 화면 아이콘과 이름 ──
+  "app.name": "화목 · 참나무 장작구이",
+  "app.short_name": "화목",
+  "app.icon": "/icons/icon-512.png",
+
   // ── SEO: 사이트 기본값 ──
   "seo.site.title": "화목 · 참나무 장작구이",
   "seo.site.description":

@@ -426,15 +426,30 @@ async function SeoSection() {
   return (
     <AdminFrame active="seo" title={meta.title} description={meta.description}>
       <div className="grid gap-5">
-        <FormPanel title="사이트 기본 SEO — 모든 페이지의 기본값">
-          <form action={updateSiteSettingsAction} className="grid gap-4">
-            <SettingTextField label="사이트 제목 (브라우저 탭·검색 결과)" name="seo.site.title" settings={settings} />
-            <SettingTextField label="사이트 설명 (검색 결과 요약, 80~160자 권장)" name="seo.site.description" settings={settings} textarea />
-            <SettingTextField label="키워드 (쉼표로 구분)" name="seo.site.keywords" settings={settings} />
-            <SettingImageField label="대표 공유 이미지 — 카카오톡·SNS 링크 미리보기 (1200×630 권장)" name="seo.site.og_image" settings={settings} />
-            <SettingsSaveButton />
-          </form>
-        </FormPanel>
+        <div className="grid gap-5 lg:grid-cols-2">
+          <FormPanel title="사이트 기본 SEO — 모든 페이지의 기본값">
+            <form action={updateSiteSettingsAction} className="grid gap-4">
+              <SettingTextField label="사이트 제목 (브라우저 탭·검색 결과)" name="seo.site.title" settings={settings} />
+              <SettingTextField label="사이트 설명 (검색 결과 요약, 80~160자 권장)" name="seo.site.description" settings={settings} textarea />
+              <SettingTextField label="키워드 (쉼표로 구분)" name="seo.site.keywords" settings={settings} />
+              <SettingImageField label="대표 공유 이미지 — 카카오톡·SNS 링크 미리보기 (1200×630 권장)" name="seo.site.og_image" settings={settings} />
+              <SettingsSaveButton />
+            </form>
+          </FormPanel>
+
+          <FormPanel title="앱 설치 설정 — 홈 화면에 추가되는 아이콘과 이름">
+            <form action={updateSiteSettingsAction} className="grid gap-4">
+              <SettingTextField label="앱 이름 (설치 안내에 표시)" name="app.name" settings={settings} />
+              <SettingTextField label="짧은 이름 (홈 화면 아이콘 아래 표시)" name="app.short_name" settings={settings} />
+              <SettingImageField label="앱 아이콘 (정사각형 512×512 권장)" name="app.icon" settings={settings} />
+              <p className="text-xs leading-5 text-white/45">
+                저장하면 새로 접속·설치하는 사용자부터 적용됩니다. 이미 설치된
+                기기의 아이콘·이름은 운영체제가 갱신할 때 반영됩니다.
+              </p>
+              <SettingsSaveButton />
+            </form>
+          </FormPanel>
+        </div>
 
         <div className="grid gap-5 lg:grid-cols-2">
           {seoPages.map((page) => (
