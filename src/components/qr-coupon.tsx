@@ -1,5 +1,6 @@
 import Image from "next/image";
 import QRCode from "qrcode";
+import { CheckCircle2, TimerOff } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   getEffectiveMemberCouponStatus,
@@ -124,9 +125,27 @@ export async function QrCoupon({ coupon }: { coupon: MemberCoupon }) {
                 className="h-auto w-full object-contain"
               />
             </div>
+          ) : effectiveStatus === "used" ? (
+            <div className="mx-auto grid aspect-square w-full max-w-[220px] place-items-center rounded-[16px] border border-[rgba(52,211,153,.35)] bg-[rgba(16,185,129,.08)]">
+              <div className="px-4 text-center">
+                <CheckCircle2 size={46} className="mx-auto text-emerald-300" aria-hidden="true" />
+                <p className="mt-3 text-[20px] font-bold text-emerald-200">사용 완료</p>
+                {coupon.usedAt ? (
+                  <p className="mt-1.5 text-[11px] font-semibold leading-5 text-white/55">
+                    {new Date(coupon.usedAt).toLocaleString("ko-KR")}
+                  </p>
+                ) : null}
+              </div>
+            </div>
           ) : (
-            <div className="mx-auto grid aspect-square w-full max-w-[220px] place-items-center rounded-[16px] border border-[var(--hm-border)] bg-[var(--hm-card)] text-sm font-semibold text-[var(--hm-subtext)]">
-              QR 숨김
+            <div className="mx-auto grid aspect-square w-full max-w-[220px] place-items-center rounded-[16px] border border-[rgba(198,59,45,.4)] bg-[rgba(198,59,45,.08)]">
+              <div className="px-4 text-center">
+                <TimerOff size={46} className="mx-auto text-[#f0a39b]" aria-hidden="true" />
+                <p className="mt-3 text-[20px] font-bold text-[#f0a39b]">기간 만료</p>
+                <p className="mt-1.5 text-[11px] font-semibold leading-5 text-white/55">
+                  {formatDate(coupon.validUntil)}까지였습니다
+                </p>
+              </div>
             </div>
           )}
           <div className="text-center">
