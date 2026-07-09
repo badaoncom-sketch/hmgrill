@@ -72,9 +72,9 @@ export default async function MenuPage() {
         {menuSections.length > 0 ? (
           <nav
             aria-label="메뉴 카테고리"
-            className="sticky top-16 z-30 mt-10 -mx-5 bg-[rgba(13,13,13,.88)] px-5 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 md:top-20"
+            className="hm-autohide-subnav sticky top-16 z-30 mt-10 -mx-5 bg-[rgba(13,13,13,.88)] px-5 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 md:top-20"
           >
-            <div className="flex gap-2 overflow-x-auto pb-1">
+            <div className="hm-no-scrollbar flex gap-2 overflow-x-auto">
               {menuSections.map((section, index) => (
                 <a
                   key={section.category}

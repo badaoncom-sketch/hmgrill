@@ -127,7 +127,7 @@ export default async function NotificationsPage({
           ) : null}
         </div>
 
-        <div className="mt-7 flex gap-2 overflow-x-auto pb-1 md:mt-10">
+        <div className="hm-no-scrollbar mt-7 flex gap-2 overflow-x-auto md:mt-10">
           {tabs.map((item) => {
             const active = item.key === activeTab;
             return (
