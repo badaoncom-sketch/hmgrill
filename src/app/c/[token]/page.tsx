@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import QRCode from "qrcode";
 import { CheckCircle2, TicketX, TimerOff } from "lucide-react";
 import { GuestCouponActions } from "@/components/guest-coupon-actions";
+import { GuestStoreInfo } from "@/components/guest-store-info";
 import { QrCoupon } from "@/components/qr-coupon";
 import { Container } from "@/components/ui/layout";
 import { getEffectiveMemberCouponStatus } from "@/lib/coupon-policy";
@@ -157,15 +158,17 @@ export default async function GuestCouponPage({
             />
           ) : null}
 
+          <GuestStoreInfo />
+
           {status === "available" ? (
-            <p className="mt-8 text-center text-xs leading-6 text-white/40">
+            <p className="mt-6 text-center text-xs leading-6 text-white/40">
               이 링크가 곧 쿠폰입니다 — 잃어버리지 않게 이미지 저장 또는
               카카오톡 공유로 보관해 주세요.
               <br />
               쿠폰번호 {coupon.couponNumber}만 알아도 매장에서 사용할 수 있습니다.
             </p>
           ) : (
-            <p className="mt-8 text-center text-xs leading-6 text-white/40">
+            <p className="mt-6 text-center text-xs leading-6 text-white/40">
               화목을 찾아 주셔서 감사합니다. 새 혜택은 방문 시 계산대에서
               안내해 드립니다.
             </p>
