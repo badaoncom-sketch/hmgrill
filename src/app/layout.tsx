@@ -8,6 +8,7 @@ import { NavigationProgress } from "@/components/navigation-progress";
 import { PullToRefresh } from "@/components/pull-to-refresh";
 import { HideOnAdmin } from "@/components/route-chrome";
 import { ScrollChrome } from "@/components/scroll-chrome";
+import { ScrollToTopOnNav } from "@/components/scroll-to-top-on-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { MobileBottomNav } from "@/components/site-header-client";
@@ -165,6 +166,9 @@ export default async function RootLayout({
         </HideOnAdmin>
         <MobileBottomNav user={headerUser} />
         <ScrollChrome />
+        <Suspense fallback={null}>
+          <ScrollToTopOnNav />
+        </Suspense>
         <LiveUpdates />
         <InstallPrompt
           appName={settings["app.short_name"]}

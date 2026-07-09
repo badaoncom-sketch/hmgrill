@@ -37,9 +37,8 @@
   --font-mono: var(--font-geist-mono);
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* 전역 smooth 스크롤은 라우트 이동 시 최상단 리셋과 충돌해 어중간한 위치에 멈춘다.
+   부드러운 스크롤이 필요한 곳(위로가기, 하단탭 재탭 등)은 개별적으로 behavior:smooth를 지정한다. */
 
 /* 브라우저 기본 당김 새로고침을 꺼서 커스텀 pull-to-refresh와 중복되지 않게 한다. */
 html,
