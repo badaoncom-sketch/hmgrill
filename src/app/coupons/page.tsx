@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight, Ticket } from "lucide-react";
 import { CouponCard } from "@/components/coupon-card";
@@ -16,10 +17,10 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { formatCurrency } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "쿠폰",
-  description: "화목을 다시 찾는 회원을 위한 방문 혜택입니다.",
-};
+// 관리자(SEO 관리)에서 제목·설명·공유 이미지를 수정할 수 있다.
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("coupons");
+}
 
 const usageSteps = [
   {

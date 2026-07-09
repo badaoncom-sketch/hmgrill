@@ -8,6 +8,7 @@ import { Container } from "@/components/ui/layout";
 import { contentPostSelect, mapContentPost } from "@/lib/content/db";
 import { eventImages } from "@/lib/site-data";
 import { createClient } from "@/lib/supabase/server";
+import { detailMetadata } from "@/lib/seo";
 import { formatDate } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -19,11 +20,17 @@ export async function generateMetadata({
   const supabase = await createClient();
   const { data } = await supabase
     .from("content_posts")
-    .select("title")
+    .select("title,body")
     .eq("type", "event")
     .eq("id", id)
     .maybeSingle();
-  return { title: data?.title ?? "이벤트" };
+  if (!data) return { title: "이벤트" };
+  return detailMetadata({
+    title: data.title,
+    description: data.body,
+    path: `/events/${id}`,
+    image: eventImages[0] ?? null,
+  });
 }
 
 export default async function EventDetailPage({

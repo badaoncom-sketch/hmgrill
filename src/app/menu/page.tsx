@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import { MenuCard } from "@/components/menu-card";
 import { Container } from "@/components/ui/layout";
 import { mapMenuItem, menuItemSelect } from "@/lib/content/db";
 import type { MenuItem } from "@/lib/types";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata: Metadata = {
-  title: "메뉴",
-  description: "장작불의 온기와 숙성 고기의 깊이를 담은 화목의 메뉴입니다.",
-};
+// 관리자(SEO 관리)에서 제목·설명·공유 이미지를 수정할 수 있다.
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("menu");
+}
 
 // 카테고리 테이블이 비어 있을 때만 쓰는 예비 순서
 const fallbackCategoryOrder = ["대표메뉴", "세트메뉴", "사이드", "음료", "전체메뉴"];

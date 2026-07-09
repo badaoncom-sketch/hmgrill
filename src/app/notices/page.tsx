@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ChevronRight, RotateCcw } from "lucide-react";
@@ -8,10 +9,10 @@ import { contentPostSelect, mapContentPost } from "@/lib/content/db";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "공지사항",
-  description: "영업 안내, 이용 공지, 방문 전 확인할 정보를 정리합니다.",
-};
+// 관리자(SEO 관리)에서 제목·설명·공유 이미지를 수정할 수 있다.
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("notices");
+}
 
 export default async function NoticesPage({
   searchParams,

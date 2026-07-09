@@ -42,6 +42,7 @@ import {
 } from "@/app/actions/content";
 import { IconSubmitButton } from "@/components/icon-submit-button";
 import { LiveSearchInput } from "@/components/live-search-input";
+import { seoPages } from "@/lib/seo";
 import {
   fetchSiteSettings,
   type SiteSettingKey,
@@ -86,6 +87,7 @@ import { formatCurrency } from "@/lib/utils";
 
 type SectionKey =
   | "home"
+  | "seo"
   | "members"
   | "staff"
   | "menu"
@@ -114,6 +116,10 @@ const sectionMeta: Record<SectionKey, { title: string; description: string }> = 
   home: {
     title: "홈페이지 관리",
     description: "로고, 히어로, 소개 섹션, 갤러리, 푸터의 문구와 이미지를 관리합니다.",
+  },
+  seo: {
+    title: "SEO 관리",
+    description: "검색·SNS 노출에 쓰이는 페이지별 제목, 설명, 공유 이미지를 관리합니다.",
   },
   members: {
     title: "회원 관리",
@@ -269,6 +275,10 @@ export default async function AdminSectionPage({
     return <HomeSection />;
   }
 
+  if (section === "seo") {
+    return <SeoSection />;
+  }
+
   if (section === "members" || section === "staff") {
     return <UserSection section={section} query={query} />;
   }
@@ -404,6 +414,59 @@ async function UserSection({
             {profiles.length === 0 ? <EmptyState>표시할 계정이 없습니다.</EmptyState> : null}
           </div>
         </AdminPanel>
+      </div>
+    </AdminFrame>
+  );
+}
+
+async function SeoSection() {
+  const meta = sectionMeta.seo;
+  const settings = await fetchSiteSettings(createAdminClient());
+
+  return (
+    <AdminFrame active="seo" title={meta.title} description={meta.description}>
+      <div className="grid gap-5">
+        <FormPanel title="사이트 기본 SEO — 모든 페이지의 기본값">
+          <form action={updateSiteSettingsAction} className="grid gap-4">
+            <SettingTextField label="사이트 제목 (브라우저 탭·검색 결과)" name="seo.site.title" settings={settings} />
+            <SettingTextField label="사이트 설명 (검색 결과 요약, 80~160자 권장)" name="seo.site.description" settings={settings} textarea />
+            <SettingTextField label="키워드 (쉼표로 구분)" name="seo.site.keywords" settings={settings} />
+            <SettingImageField label="대표 공유 이미지 — 카카오톡·SNS 링크 미리보기 (1200×630 권장)" name="seo.site.og_image" settings={settings} />
+            <SettingsSaveButton />
+          </form>
+        </FormPanel>
+
+        <div className="grid gap-5 lg:grid-cols-2">
+          {seoPages.map((page) => (
+            <FormPanel key={page.key} title={`${page.label} (${page.path})`}>
+              <form action={updateSiteSettingsAction} className="grid gap-4">
+                <SettingTextField
+                  label="제목"
+                  name={`seo.${page.key}.title` as SiteSettingKey}
+                  settings={settings}
+                />
+                <SettingTextField
+                  label="설명"
+                  name={`seo.${page.key}.description` as SiteSettingKey}
+                  settings={settings}
+                  textarea
+                />
+                <SettingImageField
+                  label="공유 이미지"
+                  name={`seo.${page.key}.og_image` as SiteSettingKey}
+                  settings={settings}
+                />
+                <SettingsSaveButton />
+              </form>
+            </FormPanel>
+          ))}
+        </div>
+
+        <p className="text-xs leading-5 text-white/45">
+          저장하면 즉시 반영됩니다. 메뉴·이벤트·공지 상세 페이지는 각 콘텐츠의
+          제목·내용·이미지로 자동 구성되며, robots.txt와 sitemap.xml은 공개 상태에
+          맞춰 자동 생성됩니다.
+        </p>
       </div>
     </AdminFrame>
   );

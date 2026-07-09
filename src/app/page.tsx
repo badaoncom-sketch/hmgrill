@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -108,6 +110,11 @@ const storeInfo = {
   phone: siteContact.phoneDisplay,
   hours: [siteContact.hoursWeekday, siteContact.hoursWeekend],
 };
+
+// 관리자(SEO 관리)에서 제목·설명·공유 이미지를 수정할 수 있다.
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("home");
+}
 
 export default async function HomePage() {
   const supabase = await createClient();

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, ChevronRight } from "lucide-react";
@@ -9,10 +10,10 @@ import { eventImages } from "@/lib/site-data";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "이벤트",
-  description: "화목의 계절 메뉴, 매장 소식, 회원 혜택을 전합니다.",
-};
+// 관리자(SEO 관리)에서 제목·설명·공유 이미지를 수정할 수 있다.
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("events");
+}
 
 export default async function EventsPage() {
   const supabase = await createClient();

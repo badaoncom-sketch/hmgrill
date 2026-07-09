@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import {
   CheckCircle2,
   ChevronDown,
@@ -20,10 +21,10 @@ import { Container } from "@/components/ui/layout";
 import { siteContact } from "@/lib/navigation";
 import { faqs } from "@/lib/site-data";
 
-export const metadata: Metadata = {
-  title: "고객센터",
-  description: "방문 전 궁금한 내용을 확인하고 필요한 문의를 남겨 주세요.",
-};
+// 관리자(SEO 관리)에서 제목·설명·공유 이미지를 수정할 수 있다.
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("support");
+}
 
 const quickActions = [
   {

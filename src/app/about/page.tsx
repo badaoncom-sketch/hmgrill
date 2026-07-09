@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import Image from "next/image";
 import { ArrowRight, Clock, MapPin, Phone } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { Container, Section } from "@/components/ui/layout";
 import { siteContact } from "@/lib/navigation";
 
-export const metadata: Metadata = {
-  title: "화목 소개",
-  description: "참나무 장작불로 고기의 맛을 연구하는 화목의 이야기입니다.",
-};
+// 관리자(SEO 관리)에서 제목·설명·공유 이미지를 수정할 수 있다.
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("about");
+}
 
 const nameMeanings = [
   {

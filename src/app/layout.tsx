@@ -7,6 +7,8 @@ import { PullToRefresh } from "@/components/pull-to-refresh";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { MobileBottomNav } from "@/components/site-header-client";
+import { RestaurantStructuredData } from "@/components/structured-data";
+import { getSiteUrl } from "@/lib/seo";
 import {
   mapMemberNotification,
   memberNotificationSelect,
@@ -35,13 +37,37 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "화목",
-    template: "%s | 화목",
-  },
-  description: "장작불의 온기로 고기를 연구하는 화목 장작구이",
-};
+// 관리자 SEO 설정(사이트 제목·설명·키워드·대표 공유 이미지)을 전 페이지 기본값으로 쓴다.
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const settings = await fetchSiteSettings(supabase);
+  const siteTitle = settings["seo.site.title"];
+  const description = settings["seo.site.description"];
+
+  return {
+    metadataBase: new URL(getSiteUrl()),
+    title: {
+      default: siteTitle,
+      template: "%s | 화목",
+    },
+    description,
+    keywords: settings["seo.site.keywords"]
+      .split(",")
+      .map((keyword) => keyword.trim())
+      .filter(Boolean),
+    openGraph: {
+      type: "website",
+      locale: "ko_KR",
+      siteName: "화목",
+      title: siteTitle,
+      description,
+      images: [{ url: settings["seo.site.og_image"] }],
+    },
+    twitter: {
+      card: "summary_large_image",
+    },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#0d0d0d",
@@ -106,6 +132,7 @@ export default async function RootLayout({
   return (
     <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable} ${geistMono.variable}`}>
       <body>
+        <RestaurantStructuredData settings={settings} />
         <Suspense fallback={null}>
           <NavigationProgress />
         </Suspense>

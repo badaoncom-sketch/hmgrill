@@ -42,6 +42,45 @@ export const siteSettingDefaults = {
 
   "footer.eyebrow": "Hwamok · 참나무 장작구이",
   "footer.tagline": "참나무 장작의 깊은 향,\n화목의 시간",
+
+  // ── SEO: 사이트 기본값 ──
+  "seo.site.title": "화목 · 참나무 장작구이",
+  "seo.site.description":
+    "부산 동래구 참나무 장작구이 전문점 화목. 장작불의 온기로 구워낸 고기와 방문 혜택 QR 쿠폰을 만나보세요.",
+  "seo.site.keywords": "참나무 장작구이, 부산 맛집, 동래구 고기집, 장작구이, 화목",
+  "seo.site.og_image": "/images/brand/brand-hero-background.png",
+
+  // ── SEO: 페이지별 (제목·설명·공유 이미지) ──
+  "seo.home.title": "화목 · 참나무 장작구이",
+  "seo.home.description":
+    "참나무 장작의 깊은 향, 화목의 시간. 부산 동래구 장작구이 전문점 화목의 메뉴와 방문 혜택을 확인하세요.",
+  "seo.home.og_image": "/images/brand/brand-hero-background.png",
+  "seo.about.title": "화목 소개",
+  "seo.about.description":
+    "장작불의 온기로 고기를 연구하는 화목의 이야기. 참나무 장작구이에 담는 정성과 공간을 소개합니다.",
+  "seo.about.og_image": "/images/brand/brand-storefront.png",
+  "seo.menu.title": "메뉴",
+  "seo.menu.description":
+    "참나무 장작으로 구워내는 화목의 대표 메뉴. 숙성 고기와 곁들임 구성을 확인하세요.",
+  "seo.menu.og_image": "/images/brand/brand-hero-background.png",
+  "seo.coupons.title": "방문 혜택",
+  "seo.coupons.description":
+    "화목을 다시 찾는 회원을 위한 방문 혜택. 최초 1회 정보 입력으로 QR 할인 쿠폰을 바로 받으세요.",
+  "seo.coupons.og_image": "/images/brand/brand-hero-background.png",
+  "seo.events.title": "이벤트",
+  "seo.events.description": "화목의 새로운 소식과 진행 중인 이벤트를 확인하세요.",
+  "seo.events.og_image": "/images/brand/brand-hero-background.png",
+  "seo.store.title": "매장 안내",
+  "seo.store.description":
+    "부산광역시 동래구 온천천로 447-2. 화목 매장의 위치, 영업시간, 오시는 길을 안내합니다.",
+  "seo.store.og_image": "/images/brand/brand-storefront.png",
+  "seo.support.title": "고객센터",
+  "seo.support.description":
+    "방문 전 궁금한 점을 빠르게 확인하고 문의를 남겨 주세요. 전화 051-1234-5678.",
+  "seo.support.og_image": "/images/brand/brand-hero-background.png",
+  "seo.notices.title": "공지사항",
+  "seo.notices.description": "영업 안내, 이용 공지 등 방문 전 확인할 정보를 정리합니다.",
+  "seo.notices.og_image": "/images/brand/brand-hero-background.png",
 } as const;
 
 export type SiteSettingKey = keyof typeof siteSettingDefaults;

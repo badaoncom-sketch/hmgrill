@@ -6,6 +6,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Container } from "@/components/ui/layout";
 import { contentPostSelect, mapContentPost } from "@/lib/content/db";
+import { detailMetadata } from "@/lib/seo";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
 
@@ -18,11 +19,16 @@ export async function generateMetadata({
   const supabase = await createClient();
   const { data } = await supabase
     .from("content_posts")
-    .select("title")
+    .select("title,body")
     .eq("type", "notice")
     .eq("id", id)
     .maybeSingle();
-  return { title: data?.title ?? "공지사항" };
+  if (!data) return { title: "공지사항" };
+  return detailMetadata({
+    title: data.title,
+    description: data.body,
+    path: `/notices/${id}`,
+  });
 }
 
 export default async function NoticeDetailPage({

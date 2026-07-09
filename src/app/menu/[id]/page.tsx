@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/layout";
 import { mapMenuItem, menuItemSelect } from "@/lib/content/db";
+import { detailMetadata } from "@/lib/seo";
 import { createClient } from "@/lib/supabase/server";
 import { formatCurrency } from "@/lib/utils";
 
@@ -19,10 +20,16 @@ export async function generateMetadata({
   const supabase = await createClient();
   const { data } = await supabase
     .from("menu_items")
-    .select("name")
+    .select("name,description,image_url")
     .eq("id", id)
     .maybeSingle();
-  return { title: data?.name ?? "메뉴" };
+  if (!data) return { title: "메뉴" };
+  return detailMetadata({
+    title: data.name,
+    description: data.description,
+    path: `/menu/${id}`,
+    image: data.image_url,
+  });
 }
 
 const highlights = [

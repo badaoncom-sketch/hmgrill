@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import Image from "next/image";
 import { ArrowUpRight, Clock, MapPin, Phone } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/layout";
 import { siteContact } from "@/lib/navigation";
 
-export const metadata: Metadata = {
-  title: "매장 안내",
-  description: "화목의 따뜻한 장작불과 차분한 다이닝 공간을 안내합니다.",
-};
+// 관리자(SEO 관리)에서 제목·설명·공유 이미지를 수정할 수 있다.
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("store");
+}
 
 const storeHours = [
   siteContact.hoursWeekday,
