@@ -1,12 +1,11 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import {
   BarChart3,
-  CalendarDays,
   CircleDollarSign,
   ClipboardList,
   Download,
   Plus,
-  Search,
   Send,
   Store,
   Ticket,
@@ -14,7 +13,9 @@ import {
 } from "lucide-react";
 import { revokeGrantedCouponAction } from "@/app/actions/coupon-grants";
 import { CouponGrantPanel } from "@/components/admin/coupon-grant-panel";
+import { CouponListFilters } from "@/components/admin/coupon-list-filters";
 import { CouponIssueForm } from "@/components/admin/coupon-issue-form";
+import { InlineSubmitButton } from "@/components/inline-submit-button";
 import {
   AdminActionLink,
   AdminFrame,
@@ -23,7 +24,6 @@ import {
   AdminStatCard,
 } from "@/components/admin/admin-frame";
 import { Badge } from "@/components/ui/badge";
-import { Input, Select } from "@/components/ui/field";
 import { requireAdminAccess } from "@/lib/auth/access";
 import {
   couponEventSelect,
@@ -290,40 +290,10 @@ export default async function AdminCouponsPage({
               <AdminPanel>
                 <AdminPanelHeader title="쿠폰 목록" />
                 <div className="grid gap-4 p-5">
-                  <form
-                    action="/admin/coupons"
-                    className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[130px_130px_150px_minmax(0,1fr)_auto_auto]"
-                  >
-                    <Select name="status" defaultValue={statusFilter || "all"} aria-label="쿠폰 상태">
-                      <option value="all">전체 상태</option>
-                      <option value="issuing">활성</option>
-                      <option value="ended">종료</option>
-                    </Select>
-                    <Select name="type" defaultValue={typeFilter || "all"} aria-label="쿠폰 종류">
-                      <option value="all">전체 종류</option>
-                      <option value="open">홈페이지 공개</option>
-                      <option value="direct">지급 전용</option>
-                      <option value="guest">비회원 QR</option>
-                    </Select>
-                    <div className="hidden min-h-11 items-center justify-between rounded-[12px] border border-[rgba(255,255,255,.09)] bg-black/20 px-3 text-sm font-semibold text-white/62 lg:flex">
-                      전체 매장
-                      <CalendarDays size={15} aria-hidden="true" />
-                    </div>
-                    <label className="flex min-h-11 items-center gap-3 rounded-[12px] border border-[rgba(255,255,255,.09)] bg-black/20 px-3 text-sm font-semibold text-white/42 sm:col-span-2 lg:col-span-1">
-                      <Search size={16} aria-hidden="true" />
-                      <Input
-                        name="q"
-                        defaultValue={query}
-                        placeholder="쿠폰명, ID, 쿠폰번호 검색"
-                        className="min-h-0 border-0 bg-transparent px-0 shadow-none"
-                      />
-                    </label>
-                    <button
-                      type="submit"
-                      className="hm-link-focus inline-flex min-h-11 items-center justify-center rounded-[12px] border border-[rgba(247,230,193,.24)] px-4 text-sm font-extrabold text-[var(--hm-primary)] transition hover:bg-[var(--hm-primary)] hover:text-[#0d0d0d]"
-                    >
-                      검색
-                    </button>
+                  <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto]">
+                    <Suspense fallback={null}>
+                      <CouponListFilters />
+                    </Suspense>
                     <Link
                       href="#coupon-create"
                       className="hm-link-focus inline-flex min-h-11 items-center justify-center gap-2 rounded-[12px] bg-[var(--hm-primary)] px-4 text-sm font-extrabold text-[#0d0d0d] transition hover:bg-[var(--hm-accent-gold)] hover:text-white"
@@ -331,7 +301,7 @@ export default async function AdminCouponsPage({
                       <Plus size={17} aria-hidden="true" />
                       쿠폰 생성
                     </Link>
-                  </form>
+                  </div>
                   {query || (statusFilter && statusFilter !== "all") ? (
                     <div className="flex flex-wrap items-center justify-between gap-3 rounded-[14px] border border-[rgba(255,255,255,.08)] bg-black/20 px-4 py-3 text-sm font-semibold text-white/54">
                       <span>
@@ -617,12 +587,9 @@ export default async function AdminCouponsPage({
                         {!revoked && grant.status === "available" ? (
                           <form action={revokeGrantedCouponAction}>
                             <input type="hidden" name="memberCouponId" value={grant.id} />
-                            <button
-                              type="submit"
-                              className="hm-link-focus rounded-[10px] border border-[rgba(198,59,45,.4)] px-3 py-1.5 text-xs font-bold text-[#f0a39b]"
-                            >
+                            <InlineSubmitButton className="hm-link-focus rounded-[10px] border border-[rgba(198,59,45,.4)] px-3 py-1.5 text-xs font-bold text-[#f0a39b]">
                               회수
-                            </button>
+                            </InlineSubmitButton>
                           </form>
                         ) : null}
                       </div>

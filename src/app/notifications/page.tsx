@@ -17,6 +17,7 @@ import {
   toggleNotificationArchiveAction,
 } from "@/app/actions/notifications";
 import { notificationMeta } from "@/components/notification-meta";
+import { InlineSubmitButton } from "@/components/inline-submit-button";
 import { MenuSubmitButton, RowActionsMenu } from "@/components/row-actions-menu";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/layout";
@@ -171,8 +172,8 @@ export default async function NotificationsPage({
                     <form action={openNotificationAction} className="min-w-0 flex-1">
                       <input type="hidden" name="id" value={item.id} />
                       <input type="hidden" name="href" value={item.href ?? "/notifications"} />
-                      <button
-                        type="submit"
+                      <InlineSubmitButton
+                        dim
                         className="hm-link-focus flex w-full items-start gap-4 rounded-[14px] p-1.5 text-left transition hover:bg-white/[0.03]"
                       >
                         <span
@@ -208,7 +209,7 @@ export default async function NotificationsPage({
                             aria-label="읽지 않음"
                           />
                         ) : null}
-                      </button>
+                      </InlineSubmitButton>
                     </form>
 
                     <div className="shrink-0 pt-1">
