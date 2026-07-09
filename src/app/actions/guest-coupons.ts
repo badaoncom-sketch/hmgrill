@@ -133,3 +133,71 @@ export async function claimGuestCouponAction(
 
   redirect(`/c/${data}`);
 }
+
+export type GuestCouponStatusState = {
+  ok: boolean;
+  message: string;
+  result?: {
+    couponName: string;
+    amount: number;
+    statusLabel: "사용 가능" | "사용 완료" | "기간 만료";
+    statusTone: "green" | "neutral" | "red";
+    validUntil: string;
+    usedAt: string | null;
+    checkedAt: string;
+  };
+};
+
+// 비회원 감사쿠폰 상태 조회: 쿠폰번호 8자리만으로 상태를 확인한다.
+// QR·링크(소지자 비밀)는 노출하지 않고 상태 정보만 돌려준다.
+export async function lookupGuestCouponStatusAction(
+  _prevState: GuestCouponStatusState,
+  formData: FormData,
+): Promise<GuestCouponStatusState> {
+  const number = String(formData.get("couponNumber") ?? "").replace(/\D/g, "");
+
+  if (!/^[0-9]{8}$/.test(number)) {
+    return { ok: false, message: "쿠폰번호 8자리를 입력해 주세요." };
+  }
+
+  const { data } = await createAdminClient()
+    .from("member_coupons")
+    .select("status,valid_until,used_at,revoked_at,source,coupon_issues(name,amount)")
+    .eq("coupon_number", number)
+    .eq("source", "guest_claim")
+    .maybeSingle();
+
+  if (!data) {
+    return {
+      ok: false,
+      message: "해당 번호의 감사쿠폰을 찾을 수 없습니다. 번호를 다시 확인해 주세요.",
+    };
+  }
+
+  const issue = Array.isArray(data.coupon_issues)
+    ? data.coupon_issues[0]
+    : data.coupon_issues;
+  const expired =
+    data.status === "expired" || new Date(data.valid_until) < new Date();
+  const statusLabel =
+    data.status === "used" ? "사용 완료" : expired ? "기간 만료" : "사용 가능";
+
+  return {
+    ok: true,
+    message: "",
+    result: {
+      couponName: issue?.name ?? "감사쿠폰",
+      amount: issue?.amount ?? 0,
+      statusLabel,
+      statusTone:
+        statusLabel === "사용 가능"
+          ? "green"
+          : statusLabel === "사용 완료"
+            ? "neutral"
+            : "red",
+      validUntil: data.valid_until,
+      usedAt: data.used_at,
+      checkedAt: new Date().toISOString(),
+    },
+  };
+}

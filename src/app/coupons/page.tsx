@@ -3,6 +3,7 @@ import { buildPageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight, Ticket } from "lucide-react";
 import { CouponCard } from "@/components/coupon-card";
+import { GuestCouponLookup } from "@/components/guest-coupon-lookup";
 import { CouponShowcase, type ShowcaseCoupon } from "@/components/coupon-showcase";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
@@ -230,6 +231,10 @@ export default async function CouponsPage() {
             </ButtonLink>
           </div>
         )}
+
+        <div className="mt-8 md:mt-12">
+          <GuestCouponLookup />
+        </div>
 
         {endedIssues.length > 0 ? (
           <section className="mt-14">
