@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ImageDown, Link2, Share2 } from "lucide-react";
+import { Check, ImageDown, Link2, Share2, X } from "lucide-react";
 
 // 비회원 쿠폰 보관 수단 3종: 이미지 저장(갤러리) / 기기 공유(카카오톡 등) / 링크 복사.
 export function GuestCouponActions({
@@ -23,6 +23,8 @@ export function GuestCouponActions({
 }) {
   const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
+  // 공유·다운로드가 막힌 인앱 브라우저(카카오톡 등)용: 이미지를 띄우고 길게 눌러 저장하게 한다.
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   // 브랜드 티켓 디자인의 쿠폰 이미지를 캔버스로 합성해 갤러리에 저장한다.
   async function downloadImage() {
@@ -113,36 +115,49 @@ export function GuestCouponActions({
       if (!blob) return;
 
       const fileName = `화목-감사쿠폰-${couponNumber}.png`;
-
-      // 휴대폰: 파일 공유 시트를 열어 '이미지 저장'으로 갤러리에 바로 저장하게 한다.
-      // (iOS는 download 속성으로 사진첩 저장이 안 되므로 이 경로가 표준이다)
-      const file = new File([blob], fileName, { type: "image/png" });
+      const dataUrl = canvas.toDataURL("image/png");
       const isTouchDevice = navigator.maxTouchPoints > 0;
+      // 카카오톡 등 인앱 브라우저는 파일 공유·download 링크를 지원하지 않는다.
+      const isInAppBrowser = /KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line\//i.test(
+        navigator.userAgent,
+      );
+
+      // ① 데스크톱: 일반 다운로드
+      if (!isTouchDevice) {
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = fileName;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        // 다운로드가 시작되기 전에 URL을 해제하면 실패하는 브라우저가 있다.
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        return;
+      }
+
+      // ② 휴대폰(일반 브라우저): 파일 공유 시트 → '이미지 저장'으로 갤러리 저장
       if (
-        isTouchDevice &&
+        !isInAppBrowser &&
         typeof navigator.canShare === "function" &&
-        navigator.canShare({ files: [file] })
+        navigator.canShare({ files: [new File([blob], fileName, { type: "image/png" })] })
       ) {
         try {
-          await navigator.share({ files: [file], title: "화목 감사쿠폰" });
+          await navigator.share({
+            files: [new File([blob], fileName, { type: "image/png" })],
+            title: "화목 감사쿠폰",
+          });
           return;
         } catch (error) {
           if ((error as DOMException)?.name === "AbortError") {
             return; // 사용자가 공유 시트를 닫은 경우
           }
-          // 공유 실패 시 아래 다운로드로 폴백
+          // 공유가 거부되면 아래 길게 눌러 저장으로 폴백
         }
       }
 
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = fileName;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      // 다운로드가 시작되기 전에 URL을 해제하면 일부 모바일 브라우저에서 실패한다.
-      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      // ③ 인앱 브라우저·공유 미지원: 이미지를 전체 화면으로 띄워 길게 눌러 저장
+      setPreviewUrl(dataUrl);
     } finally {
       setSaving(false);
     }
@@ -197,6 +212,40 @@ export function GuestCouponActions({
         {copied ? <Check size={20} aria-hidden="true" /> : <Link2 size={20} aria-hidden="true" />}
         {copied ? "복사 완료" : "링크 복사"}
       </button>
+
+      {previewUrl ? (
+        <div className="fixed inset-0 z-[90] flex flex-col bg-black/92 p-4 backdrop-blur-[3px]">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm font-bold text-[var(--hm-primary)]">쿠폰 이미지 저장</p>
+            <button
+              type="button"
+              onClick={() => setPreviewUrl(null)}
+              aria-label="닫기"
+              className="hm-link-focus grid size-10 place-items-center rounded-full bg-white/[0.08] text-white/70"
+            >
+              <X size={18} aria-hidden="true" />
+            </button>
+          </div>
+          <div className="flex min-h-0 flex-1 items-center justify-center py-4">
+            {/* 길게 눌러 저장해야 하므로 next/image 대신 원본 img를 그대로 노출한다 */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={previewUrl}
+              alt={`화목 감사쿠폰 ${couponNumber}`}
+              className="max-h-full w-auto max-w-full rounded-[14px] shadow-[0_24px_80px_rgba(0,0,0,.6)]"
+            />
+          </div>
+          <div className="rounded-[16px] border border-[rgba(247,230,193,.28)] bg-[#171009] p-4 text-center">
+            <p className="text-[15px] font-bold text-[var(--hm-primary)]">
+              위 이미지를 길게 눌러 주세요
+            </p>
+            <p className="mt-1.5 text-xs leading-5 text-white/60">
+              메뉴가 뜨면 <span className="font-bold text-white/85">&lsquo;이미지 저장&rsquo;(사진에 저장)</span>을
+              선택하면 갤러리에 저장됩니다.
+            </p>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
