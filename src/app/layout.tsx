@@ -6,6 +6,7 @@ import { InstallPrompt } from "@/components/install-prompt";
 import { LiveUpdates } from "@/components/live-updates";
 import { NavigationProgress } from "@/components/navigation-progress";
 import { PullToRefresh } from "@/components/pull-to-refresh";
+import { ScrollChrome } from "@/components/scroll-chrome";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { MobileBottomNav } from "@/components/site-header-client";
@@ -160,6 +161,7 @@ export default async function RootLayout({
           tagline={settings["footer.tagline"]}
         />
         <MobileBottomNav user={headerUser} />
+        <ScrollChrome />
         <LiveUpdates />
         <InstallPrompt
           appName={settings["app.short_name"]}

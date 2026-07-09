@@ -22,7 +22,7 @@ export function SiteHeader({
   logoSrc: string;
 }) {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 h-16 border-b border-[var(--hm-border-soft)] bg-[rgba(13,13,13,.4)] text-[var(--hm-text)] backdrop-blur-md md:h-20 md:bg-[rgba(13,13,13,.28)]">
+    <header className="hm-autohide-top fixed inset-x-0 top-0 z-50 h-16 border-b border-[var(--hm-border-soft)] bg-[rgba(13,13,13,.4)] text-[var(--hm-text)] backdrop-blur-md md:h-20 md:bg-[rgba(13,13,13,.28)]">
       <div className="hm-container grid h-full grid-cols-[auto_1fr_auto] items-center gap-3 md:gap-4">
         <Link href="/" className="hm-link-focus flex items-center gap-3" aria-label="화목 홈">
           <span className="relative block h-[46px] w-[68px] md:h-[66px] md:w-[96px]">

@@ -352,7 +352,7 @@ export function MobileBottomNav({ user }: { user: HeaderUser | null }) {
   return (
     <nav
       aria-label="모바일 하단 메뉴"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--hm-border-soft)] bg-[rgba(13,13,13,.94)] px-3 pb-[max(10px,env(safe-area-inset-bottom))] pt-2 text-[11px] font-bold text-white/56 backdrop-blur-md md:hidden"
+      className="hm-autohide-bottom fixed inset-x-0 bottom-0 z-40 border-t border-[var(--hm-border-soft)] bg-[rgba(13,13,13,.94)] px-3 pb-[max(10px,env(safe-area-inset-bottom))] pt-2 text-[11px] font-bold text-white/56 backdrop-blur-md md:hidden"
     >
       <div className="mx-auto flex max-w-[520px] items-center justify-around">
         {bottomNavItems.map((item) => {

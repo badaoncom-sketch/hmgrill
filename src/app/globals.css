@@ -47,6 +47,23 @@ body {
   overscroll-behavior-y: contain;
 }
 
+/* 모바일·태블릿: 스크롤 중에는 상단 헤더와 하단 탭을 숨기고, 멈추면 스르륵 복귀시킨다.
+   data-hm-scrolling 속성은 ScrollChrome 컴포넌트가 관리한다. */
+.hm-autohide-top,
+.hm-autohide-bottom {
+  transition: transform 340ms ease;
+}
+
+@media (max-width: 1023px) {
+  html[data-hm-scrolling] .hm-autohide-top {
+    transform: translateY(-100%);
+  }
+
+  html[data-hm-scrolling] .hm-autohide-bottom {
+    transform: translateY(110%);
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
