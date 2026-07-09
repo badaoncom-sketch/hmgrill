@@ -491,6 +491,24 @@ async function SeoSection() {
         </div>
 
         <div className="grid gap-5 lg:grid-cols-2">
+          <FormPanel title="카카오톡 공유 설정 — 쿠폰 페이지의 카카오톡 공유 버튼">
+            <form action={updateSiteSettingsAction} className="grid gap-4">
+              <SettingTextField
+                label="카카오 JavaScript 키"
+                name="share.kakao_js_key"
+                settings={settings}
+              />
+              <ol className="grid list-decimal gap-1.5 pl-4 text-xs leading-5 text-white/45">
+                <li>developers.kakao.com에서 애플리케이션을 만들고 [앱 키]의 JavaScript 키를 복사해 붙여넣으세요.</li>
+                <li>[플랫폼 &gt; Web]에 사이트 도메인을 등록해야 공유가 동작합니다.</li>
+                <li>키를 저장하면 비회원 쿠폰 페이지에 카카오톡 공유 버튼이 나타나고, 쿠폰 미리보기 카드로 전송됩니다.</li>
+              </ol>
+              <SettingsSaveButton />
+            </form>
+          </FormPanel>
+        </div>
+
+        <div className="grid gap-5 lg:grid-cols-2">
           {seoPages.map((page) => (
             <FormPanel key={page.key} title={`${page.label} (${page.path})`}>
               <form action={updateSiteSettingsAction} className="grid gap-4">

@@ -46,6 +46,12 @@ body {
   overscroll-behavior-y: contain;
 }
 
+/* 카카오톡 등 인앱 브라우저가 글자 크기를 임의로 키우거나 줄이지 못하게 고정한다. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 /* 모바일·태블릿: 스크롤 중에는 상단 헤더와 하단 탭을 숨기고, 멈추면 스르륵 복귀시킨다.
    data-hm-scrolling 속성은 ScrollChrome 컴포넌트가 관리한다. */
 .hm-autohide-top,

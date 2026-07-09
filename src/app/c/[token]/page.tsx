@@ -8,6 +8,7 @@ import { Container } from "@/components/ui/layout";
 import { getEffectiveMemberCouponStatus } from "@/lib/coupon-policy";
 import { mapMemberCoupon, memberCouponSelect } from "@/lib/coupons/db";
 import { getSiteUrl } from "@/lib/seo";
+import { fetchSiteSettings } from "@/lib/site-settings";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -44,7 +45,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      images: [{ url: "/images/brand/brand-hero-background.png" }],
+      images: [{ url: (await fetchSiteSettings(createAdminClient()))["seo.site.og_image"] }],
     },
     twitter: {
       card: "summary_large_image",
@@ -62,12 +63,15 @@ export default async function GuestCouponPage({
 }) {
   const { token } = await params;
   const admin = createAdminClient();
-  const { data: row } = await admin
-    .from("member_coupons")
-    .select(memberCouponSelect)
-    .eq("token", token)
-    .eq("source", "guest_claim")
-    .maybeSingle();
+  const [{ data: row }, settings] = await Promise.all([
+    admin
+      .from("member_coupons")
+      .select(memberCouponSelect)
+      .eq("token", token)
+      .eq("source", "guest_claim")
+      .maybeSingle(),
+    fetchSiteSettings(admin),
+  ]);
 
   if (!row) {
     return (
@@ -155,6 +159,8 @@ export default async function GuestCouponPage({
               conditionText={coupon.conditionText}
               qrDataUrl={qrDataUrl}
               shareUrl={`${getSiteUrl()}/c/${coupon.token}`}
+              kakaoJsKey={settings["share.kakao_js_key"]}
+              shareImageUrl={new URL(settings["seo.site.og_image"], getSiteUrl()).toString()}
             />
           ) : null}
 

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Geist_Mono, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import type { HeaderUser } from "@/components/header-user-controls";
 import { InstallPrompt } from "@/components/install-prompt";
+import { KakaoExternalEscape } from "@/components/kakao-external-escape";
 import { LiveUpdates } from "@/components/live-updates";
 import { NavigationProgress } from "@/components/navigation-progress";
 import { PullToRefresh } from "@/components/pull-to-refresh";
@@ -170,6 +171,7 @@ export default async function RootLayout({
           <ScrollToTopOnNav />
         </Suspense>
         <LiveUpdates />
+        <KakaoExternalEscape />
         <InstallPrompt
           appName={settings["app.short_name"]}
           iconSrc={settings["app.icon"]}

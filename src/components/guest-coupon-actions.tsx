@@ -4,7 +4,58 @@ import { useState } from "react";
 import { Check, ImageDown, Link2, Share2, X } from "lucide-react";
 import { siteContact } from "@/lib/navigation";
 
-// 비회원 쿠폰 보관 수단 3종: 이미지 저장(갤러리) / 기기 공유(카카오톡 등) / 링크 복사.
+type KakaoSdk = {
+  isInitialized: () => boolean;
+  init: (jsKey: string) => void;
+  Share: { sendDefault: (settings: Record<string, unknown>) => void };
+};
+
+declare global {
+  interface Window {
+    Kakao?: KakaoSdk;
+  }
+}
+
+// 카카오 SDK는 공유 버튼을 누를 때 한 번만 내려받는다.
+let kakaoSdkLoader: Promise<KakaoSdk> | null = null;
+
+function loadKakaoSdk(jsKey: string): Promise<KakaoSdk> {
+  if (!kakaoSdkLoader) {
+    kakaoSdkLoader = new Promise<KakaoSdk>((resolve, reject) => {
+      if (window.Kakao) {
+        resolve(window.Kakao);
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js";
+      script.async = true;
+      script.onload = () =>
+        window.Kakao ? resolve(window.Kakao) : reject(new Error("Kakao SDK unavailable"));
+      script.onerror = () => {
+        kakaoSdkLoader = null; // 네트워크 실패 시 다음 클릭에서 다시 시도
+        reject(new Error("Kakao SDK load failed"));
+      };
+      document.head.appendChild(script);
+    });
+  }
+  return kakaoSdkLoader.then((kakao) => {
+    if (!kakao.isInitialized()) {
+      kakao.init(jsKey);
+    }
+    return kakao;
+  });
+}
+
+// 카카오 말풍선 심볼 — 공식 노란색 버튼용
+function KakaoSymbol() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 3C6.48 3 2 6.54 2 10.9c0 2.79 1.85 5.24 4.63 6.65l-.94 3.47c-.08.31.27.56.54.38l4.13-2.73c.54.06 1.09.09 1.64.09 5.52 0 10-3.53 10-7.86S17.52 3 12 3z" />
+    </svg>
+  );
+}
+
+// 비회원 쿠폰 보관 수단: 이미지 저장(갤러리) / 카카오톡 공유 / 기기 공유 / 링크 복사.
 export function GuestCouponActions({
   couponName,
   amountText,
@@ -13,6 +64,8 @@ export function GuestCouponActions({
   conditionText,
   qrDataUrl,
   shareUrl,
+  kakaoJsKey = "",
+  shareImageUrl = "",
 }: {
   couponName: string;
   amountText: string;
@@ -21,6 +74,8 @@ export function GuestCouponActions({
   conditionText: string;
   qrDataUrl: string;
   shareUrl: string;
+  kakaoJsKey?: string;
+  shareImageUrl?: string;
 }) {
   const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -190,6 +245,31 @@ export function GuestCouponActions({
     setTimeout(() => setShareNotice(null), 6000);
   }
 
+  // 카카오톡 공유: 쿠폰 미리보기 카드(금액·쿠폰명·유효기간)로 대화방에 전송한다.
+  async function shareKakao() {
+    try {
+      const kakao = await loadKakaoSdk(kakaoJsKey);
+      kakao.Share.sendDefault({
+        objectType: "feed",
+        content: {
+          title: `화목 쿠폰 ${amountText}`,
+          description: `${couponName} · ${validUntilText} 사용 가능`,
+          imageUrl: shareImageUrl,
+          link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
+        },
+        buttons: [
+          {
+            title: "쿠폰 확인하기",
+            link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
+          },
+        ],
+      });
+    } catch {
+      // SDK 로드 실패·도메인 미등록 등: 링크 복사로 대신 전달한다.
+      await shareFallback();
+    }
+  }
+
   async function share() {
     const text = `화목 쿠폰 ${amountText} (${validUntilText})`;
     if (typeof navigator.share === "function") {
@@ -215,8 +295,10 @@ export function GuestCouponActions({
     } catch {}
   }
 
+  const hasKakao = Boolean(kakaoJsKey);
+
   return (
-    <div className="mt-5 grid grid-cols-3 gap-2">
+    <div className={`mt-5 grid gap-2 ${hasKakao ? "grid-cols-2" : "grid-cols-3"}`}>
       <button
         type="button"
         onClick={downloadImage}
@@ -226,6 +308,16 @@ export function GuestCouponActions({
         <ImageDown size={20} aria-hidden="true" />
         {saving ? "저장 중" : "이미지 저장"}
       </button>
+      {hasKakao ? (
+        <button
+          type="button"
+          onClick={shareKakao}
+          className="hm-link-focus flex min-h-[74px] flex-col items-center justify-center gap-1.5 rounded-[16px] bg-[#FEE500] text-[12px] font-extrabold text-[#191919] transition hover:brightness-95"
+        >
+          <KakaoSymbol />
+          카카오톡 공유
+        </button>
+      ) : null}
       <button
         type="button"
         onClick={share}
@@ -245,7 +337,7 @@ export function GuestCouponActions({
 
       {shareNotice ? (
         <p
-          className="col-span-3 rounded-[12px] border border-[rgba(247,230,193,.28)] bg-[rgba(247,230,193,.06)] px-4 py-3 text-center text-xs font-semibold leading-5 text-[var(--hm-primary)]"
+          className={`${hasKakao ? "col-span-2" : "col-span-3"} rounded-[12px] border border-[rgba(247,230,193,.28)] bg-[rgba(247,230,193,.06)] px-4 py-3 text-center text-xs font-semibold leading-5 text-[var(--hm-primary)]`}
           aria-live="polite"
         >
           {shareNotice}

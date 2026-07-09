@@ -48,6 +48,10 @@ export const siteSettingDefaults = {
   "app.short_name": "화목",
   "app.icon": "/icons/icon-512.png",
 
+  // ── 카카오톡 공유: developers.kakao.com 앱의 JavaScript 키 ──
+  // 키가 저장되면 쿠폰 페이지에 카카오톡 공유 버튼이 나타난다.
+  "share.kakao_js_key": "",
+
   // ── SEO: 사이트 기본값 ──
   "seo.site.title": "화목 · 참나무 장작구이",
   "seo.site.description":
