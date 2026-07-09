@@ -196,21 +196,38 @@ export async function loginAction(
   });
 
   if (error || !data.user) {
+    // 이용 중지(ban) 계정은 Auth 단계에서 거절된다 — 한글 안내로 변환.
+    const banned = error?.message?.toLowerCase().includes("banned");
     return {
       ok: false,
-      message: error?.message ?? "로그인에 실패했습니다.",
+      message: banned
+        ? "이용이 중지되었거나 탈퇴 처리된 계정입니다. 고객센터(help@hmgrill.com)로 문의해 주세요."
+        : (error?.message ?? "로그인에 실패했습니다."),
     };
   }
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("email_verified")
+    .select("email_verified,status")
     .eq("id", data.user.id)
     .maybeSingle();
 
   if (profileError) {
     await supabase.auth.signOut();
     return { ok: false, message: profileError.message };
+  }
+
+  if (profile?.status === "suspended") {
+    await supabase.auth.signOut();
+    return {
+      ok: false,
+      message: "이용이 중지된 계정입니다. 고객센터(help@hmgrill.com)로 문의해 주세요.",
+    };
+  }
+
+  if (profile?.status === "withdrawn") {
+    await supabase.auth.signOut();
+    return { ok: false, message: "탈퇴 처리된 계정입니다." };
   }
 
   if (!profile?.email_verified) {

@@ -45,12 +45,20 @@ async function getCurrentVerifiedUser() {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("id,role,email_verified,name,phone,address,privacy_accepted_at,profile_completed_at")
+    .select("id,role,email_verified,status,name,phone,address,privacy_accepted_at,profile_completed_at")
     .eq("id", user.id)
     .maybeSingle();
 
   if (error) {
     return { user: null, profile: null, message: error.message };
+  }
+
+  if (profile?.status === "suspended" || profile?.status === "withdrawn") {
+    return {
+      user: null,
+      profile: null,
+      message: "이용할 수 없는 계정입니다. 고객센터로 문의해 주세요.",
+    };
   }
 
   if (!profile?.email_verified) {

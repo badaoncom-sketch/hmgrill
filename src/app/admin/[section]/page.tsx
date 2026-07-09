@@ -21,7 +21,10 @@ import {
   UsersRound,
   XCircle,
 } from "lucide-react";
-import { updateUserRoleAction } from "@/app/actions/admin-users";
+import {
+  updateUserRoleAction,
+  updateUserStatusAction,
+} from "@/app/actions/admin-users";
 import {
   createContentPostAction,
   createMenuCategoryAction,
@@ -107,9 +110,17 @@ type ProfileRow = {
   address: string | null;
   role: UserRole;
   email_verified: boolean;
+  status: "active" | "suspended" | "withdrawn";
+  status_note: string | null;
   privacy_accepted_at: string | null;
   profile_completed_at: string | null;
   created_at: string;
+};
+
+const accountStatusLabels: Record<ProfileRow["status"], string> = {
+  active: "정상",
+  suspended: "이용 중지",
+  withdrawn: "탈퇴",
 };
 
 const sectionMeta: Record<SectionKey, { title: string; description: string }> = {
@@ -313,7 +324,7 @@ async function UserSection({
   const profilesQuery = createAdminClient()
     .from("profiles")
     .select(
-      "id,member_uid,name,email,phone,address,role,email_verified,privacy_accepted_at,profile_completed_at,created_at",
+      "id,member_uid,name,email,phone,address,role,email_verified,status,status_note,privacy_accepted_at,profile_completed_at,created_at",
     )
     .order("created_at", { ascending: false });
   const { data: rows } =
@@ -374,6 +385,9 @@ async function UserSection({
                     <Badge tone={profile.profile_completed_at ? "green" : "neutral"}>
                       {profile.profile_completed_at ? "프로필 완료" : "프로필 대기"}
                     </Badge>
+                    {profile.status !== "active" ? (
+                      <Badge tone="red">{accountStatusLabels[profile.status]}</Badge>
+                    ) : null}
                   </div>
                   <dl className="mt-4 grid gap-3 text-sm text-white/58 md:grid-cols-5">
                     <div>
@@ -400,15 +414,40 @@ async function UserSection({
                     </div>
                   </dl>
                 </div>
-                <form action={updateUserRoleAction} className="grid gap-3 sm:grid-cols-[1fr_auto]">
-                  <input name="userId" type="hidden" value={profile.id} />
-                  <Select name="role" aria-label="권한" defaultValue={profile.role}>
-                    <option value="member">회원</option>
-                    <option value="staff">직원</option>
-                    <option value="admin">관리자</option>
-                  </Select>
-                  <Button type="submit" variant="outline">권한 변경</Button>
-                </form>
+                <div className="grid gap-3">
+                  <form action={updateUserRoleAction} className="grid gap-3 sm:grid-cols-[1fr_auto]">
+                    <input name="userId" type="hidden" value={profile.id} />
+                    <Select name="role" aria-label="권한" defaultValue={profile.role}>
+                      <option value="member">회원</option>
+                      <option value="staff">직원</option>
+                      <option value="admin">관리자</option>
+                    </Select>
+                    <Button type="submit" variant="outline">권한 변경</Button>
+                  </form>
+                  <form action={updateUserStatusAction} className="grid gap-2">
+                    <input name="userId" type="hidden" value={profile.id} />
+                    <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+                      <Select name="status" aria-label="계정 상태" defaultValue={profile.status}>
+                        <option value="active">정상</option>
+                        <option value="suspended">이용 중지 — 로그인 차단</option>
+                        <option value="withdrawn">탈퇴 처리</option>
+                      </Select>
+                      <Button type="submit" variant="outline">상태 변경</Button>
+                    </div>
+                    <Input
+                      name="statusNote"
+                      defaultValue={profile.status_note ?? ""}
+                      placeholder="사유 메모 (내부용, 선택)"
+                      maxLength={200}
+                      className="min-h-9 text-xs"
+                    />
+                    {profile.status_note ? (
+                      <p className="text-[11px] font-semibold text-white/40">
+                        메모: {profile.status_note}
+                      </p>
+                    ) : null}
+                  </form>
+                </div>
               </div>
             ))}
             {profiles.length === 0 ? <EmptyState>표시할 계정이 없습니다.</EmptyState> : null}

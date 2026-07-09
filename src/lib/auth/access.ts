@@ -10,6 +10,7 @@ type ProfileAccess = {
   profile: {
     role: UserRole;
     email_verified: boolean;
+    status: "active" | "suspended" | "withdrawn";
   } | null;
 };
 
@@ -25,7 +26,7 @@ export async function getCurrentProfileAccess(): Promise<ProfileAccess | null> {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role,email_verified")
+    .select("role,email_verified,status")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -45,7 +46,9 @@ export async function requireAdminAccess() {
   return {
     ...access,
     canAccess:
-      access.profile?.email_verified === true && access.profile.role === "admin",
+      access.profile?.email_verified === true &&
+      access.profile.role === "admin" &&
+      access.profile.status === "active",
   };
 }
 
@@ -60,6 +63,7 @@ export async function requireStaffAccess() {
     ...access,
     canAccess:
       access.profile?.email_verified === true &&
-      (access.profile.role === "staff" || access.profile.role === "admin"),
+      (access.profile.role === "staff" || access.profile.role === "admin") &&
+      access.profile.status === "active",
   };
 }
