@@ -95,8 +95,9 @@ function HeaderDropdown({
   }, []);
 
   const openOnHover = () => {
-    // 터치 기기에서는 탭이 mouseenter를 함께 발생시키므로, 호버 지원 기기에서만 미리보기를 연다.
-    if (!window.matchMedia("(hover: hover)").matches) return;
+    // PC 화면(1024px 이상 + 마우스 환경)에서만 호버 미리보기 패널을 연다.
+    // 태블릿·모바일에서는 패널 없이 클릭 동작(알림센터 이동 등)만 쓴다.
+    if (!window.matchMedia("(hover: hover) and (min-width: 1024px)").matches) return;
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setOpen(true);
   };
