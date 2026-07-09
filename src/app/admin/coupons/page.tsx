@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   BarChart3,
   CalendarDays,
+  CircleDollarSign,
   ClipboardList,
   Download,
   Plus,
@@ -560,6 +561,10 @@ export default async function AdminCouponsPage({
               <AdminPanel>
                 <AdminPanelHeader title="운영 안내" />
                 <div className="grid gap-3 p-5">
+                  <AdminActionLink href="/admin/coupons/settlement">
+                    <CircleDollarSign size={17} aria-hidden="true" />
+                    쿠폰 정산 리포트
+                  </AdminActionLink>
                   <AdminActionLink href="/admin/coupons/insights/overview">
                     <BarChart3 size={17} aria-hidden="true" />
                     전체 쿠폰 분석
