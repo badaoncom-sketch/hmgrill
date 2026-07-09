@@ -87,7 +87,10 @@ export default async function MyCouponsPage() {
                   id: coupon.id,
                   name: coupon.couponName,
                   amountText: formatCurrency(coupon.amount),
-                  remainingText: `${getRemainingDaysText(coupon.validUntil)} · ${formatDate(coupon.validUntil)}까지`,
+                  remainingText:
+                    getRemainingDaysText(coupon.validUntil) === "오늘까지"
+                      ? "오늘까지"
+                      : `${getRemainingDaysText(coupon.validUntil)} 남음`,
                   couponNumber: coupon.couponNumber,
                   detail: <QrCoupon coupon={coupon} />,
                 }))}
