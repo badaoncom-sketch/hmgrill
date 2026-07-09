@@ -155,6 +155,7 @@ export default async function AdminPage() {
       <div className="grid gap-5">
         <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
           <AdminStatCard
+            href="/admin/coupons"
             icon={<Ticket size={25} strokeWidth={1.8} aria-hidden="true" />}
             label="활성 쿠폰"
             value={<>{activeIssues}개</>}
@@ -165,6 +166,7 @@ export default async function AdminPage() {
             }
           />
           <AdminStatCard
+            href="/admin/coupons/insights/issued"
             icon={<ClipboardList size={25} strokeWidth={1.8} aria-hidden="true" />}
             label="오늘 다운로드"
             value={<>{todayDownloaded}장</>}
@@ -175,6 +177,7 @@ export default async function AdminPage() {
             }
           />
           <AdminStatCard
+            href="/admin/coupons/insights/used"
             icon={<CalendarDays size={25} strokeWidth={1.8} aria-hidden="true" />}
             label="오늘 사용"
             value={<>{todayUsed}장</>}
@@ -185,6 +188,7 @@ export default async function AdminPage() {
             }
           />
           <AdminStatCard
+            href="/admin/members"
             icon={<UsersRound size={25} strokeWidth={1.8} aria-hidden="true" />}
             label="회원"
             value={<>{memberCount}명</>}
