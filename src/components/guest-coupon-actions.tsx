@@ -23,6 +23,7 @@ export function GuestCouponActions({
 }) {
   const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [shareNotice, setShareNotice] = useState<string | null>(null);
   // 공유·다운로드가 막힌 인앱 브라우저(카카오톡 등)용: 이미지를 띄우고 길게 눌러 저장하게 한다.
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -163,18 +164,31 @@ export function GuestCouponActions({
     }
   }
 
+  // 공유 API가 없거나 거부된 환경: 링크를 복사해 주고 붙여넣기 안내를 띄운다.
+  // 복사한 링크를 대화방에 붙여넣으면 쿠폰 미리보기(금액·유효기간)가 함께 전송된다.
+  async function shareFallback() {
+    await copyLink();
+    setShareNotice(
+      "쿠폰 링크를 복사했어요. 카카오톡 대화방에 붙여넣으면 쿠폰 미리보기와 함께 전달됩니다.",
+    );
+    setTimeout(() => setShareNotice(null), 6000);
+  }
+
   async function share() {
     const text = `화목 감사쿠폰 ${amountText} (${validUntilText})`;
-    if (navigator.share) {
+    if (typeof navigator.share === "function") {
       try {
         await navigator.share({ title: "화목 감사쿠폰", text, url: shareUrl });
         return;
-      } catch {
-        // 사용자가 공유를 취소한 경우 등 — 조용히 무시
+      } catch (error) {
+        if ((error as DOMException)?.name === "AbortError") {
+          return; // 사용자가 공유 시트를 닫은 경우
+        }
+        await shareFallback();
         return;
       }
     }
-    await copyLink();
+    await shareFallback();
   }
 
   async function copyLink() {
@@ -212,6 +226,15 @@ export function GuestCouponActions({
         {copied ? <Check size={20} aria-hidden="true" /> : <Link2 size={20} aria-hidden="true" />}
         {copied ? "복사 완료" : "링크 복사"}
       </button>
+
+      {shareNotice ? (
+        <p
+          className="col-span-3 rounded-[12px] border border-[rgba(247,230,193,.28)] bg-[rgba(247,230,193,.06)] px-4 py-3 text-center text-xs font-semibold leading-5 text-[var(--hm-primary)]"
+          aria-live="polite"
+        >
+          {shareNotice}
+        </p>
+      ) : null}
 
       {previewUrl ? (
         <div className="fixed inset-0 z-[90] flex flex-col bg-black/92 p-4 backdrop-blur-[3px]">

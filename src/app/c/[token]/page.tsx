@@ -10,10 +10,48 @@ import { getSiteUrl } from "@/lib/seo";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "화목 감사쿠폰",
-  robots: { index: false, follow: false },
-};
+// 카카오톡·SNS로 링크를 공유하면 쿠폰 금액·이름·유효기간이 미리보기로 보인다.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ token: string }>;
+}): Promise<Metadata> {
+  const { token } = await params;
+  const { data: row } = await createAdminClient()
+    .from("member_coupons")
+    .select("coupon_number,valid_until,status,coupon_issues(name,amount)")
+    .eq("token", token)
+    .eq("source", "guest_claim")
+    .maybeSingle();
+
+  const base: Metadata = { robots: { index: false, follow: false } };
+  if (!row) {
+    return { ...base, title: "화목 감사쿠폰" };
+  }
+
+  const issue = Array.isArray(row.coupon_issues)
+    ? row.coupon_issues[0]
+    : row.coupon_issues;
+  const amountText = formatCurrency(issue?.amount ?? 0);
+  const title = `화목 감사쿠폰 ${amountText}`;
+  const description = `${issue?.name ?? "감사쿠폰"} · ${formatDate(row.valid_until)}까지 사용 가능 · No.${row.coupon_number}`;
+
+  return {
+    ...base,
+    title: { absolute: title },
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [{ url: "/images/brand/brand-hero-background.png" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
+}
 
 // 비회원 소지자 쿠폰 페이지 — 링크(토큰)를 아는 사람이 쿠폰의 소유자다.
 export default async function GuestCouponPage({
