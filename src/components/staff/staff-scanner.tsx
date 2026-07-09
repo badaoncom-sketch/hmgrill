@@ -1053,29 +1053,36 @@ function GuestGrantOverlay({
           <form action={formAction} className="grid gap-4 py-2">
             <Gift size={34} className="mx-auto text-[var(--hm-accent-gold)]" aria-hidden="true" />
             <p className="text-[18px] font-bold text-[var(--hm-primary)]">감사쿠폰 발급</p>
-            {issues.length > 1 ? (
-              <select
-                name="issueId"
-                className="min-h-11 rounded-[12px] border border-[var(--hm-border)] bg-[var(--hm-surface)] px-3 text-sm text-[var(--hm-text)] outline-none"
-                defaultValue={issues[0]?.id}
-              >
-                {issues.map((issue) => (
-                  <option key={issue.id} value={issue.id}>
-                    {issue.name} · {formatCurrency(issue.amount)} · 남은 {issue.remaining}장
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <>
-                <input type="hidden" name="issueId" value={issues[0]?.id ?? ""} />
-                <p className="text-sm font-semibold text-white/65">
-                  {issues[0]?.name} · {formatCurrency(issues[0]?.amount ?? 0)}
-                </p>
-              </>
-            )}
-            <Button type="submit" disabled={isPending} className="w-full">
-              {isPending ? "QR 생성 중" : "발급 QR 띄우기"}
-            </Button>
+            <p className="text-xs font-semibold text-white/45">
+              발급할 쿠폰을 누르면 바로 QR이 표시됩니다
+            </p>
+            <div className="grid max-h-[46vh] gap-2 overflow-y-auto">
+              {issues.map((issue) => (
+                <button
+                  key={issue.id}
+                  type="submit"
+                  name="issueId"
+                  value={issue.id}
+                  disabled={isPending}
+                  className="hm-link-focus flex items-center justify-between gap-4 rounded-[16px] border border-[rgba(247,230,193,.22)] bg-black/25 px-4 py-3.5 text-left transition hover:border-[var(--hm-primary)] hover:bg-[rgba(247,230,193,.05)] disabled:opacity-50"
+                >
+                  <span className="min-w-0">
+                    <span className="block truncate text-[15px] font-bold text-white">
+                      {issue.name}
+                    </span>
+                    <span className="mt-0.5 block text-[11px] font-semibold text-white/45">
+                      남은 {issue.remaining}장
+                    </span>
+                  </span>
+                  <span className="shrink-0 text-[20px] font-bold leading-none text-[var(--hm-primary)]">
+                    {formatCurrency(issue.amount)}
+                  </span>
+                </button>
+              ))}
+            </div>
+            {isPending ? (
+              <p className="text-xs font-semibold text-white/55">QR 생성 중...</p>
+            ) : null}
             {state.message ? (
               <p className="text-xs font-semibold text-[#f0a39b]">{state.message}</p>
             ) : null}
@@ -1109,7 +1116,11 @@ function GuestGrantOverlay({
                 : `1회용 QR · ${Math.floor(remaining / 60)}분 ${remaining % 60}초 후 만료`}
             </p>
             <form action={formAction}>
-              <input type="hidden" name="issueId" value={issues[0]?.id ?? ""} />
+              <input
+                type="hidden"
+                name="issueId"
+                value={state.issueId ?? issues[0]?.id ?? ""}
+              />
               <Button type="submit" variant="outline" disabled={isPending} className="w-full">
                 {isPending ? "QR 생성 중" : "새 QR 생성"}
               </Button>

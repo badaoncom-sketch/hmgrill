@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/server";
 export type GuestClaimQrState = {
   ok: boolean;
   message: string;
+  issueId?: string;
   claimToken?: string;
   claimUrl?: string;
   qrDataUrl?: string;
@@ -86,6 +87,7 @@ export async function createGuestClaimQrAction(
   return {
     ok: true,
     message: "",
+    issueId,
     claimToken,
     claimUrl,
     qrDataUrl,
