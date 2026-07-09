@@ -120,11 +120,12 @@ export async function issueCouponAction(
     return { ok: false, message: error.message };
   }
 
-  // 지급 전용 발행은 홈페이지에 노출되지 않고 관리자 직접 지급에서만 사용된다.
-  if (readString(formData, "distribution") === "direct" && issueId) {
+  // 지급 전용(direct)·비회원(guest) 발행은 홈페이지에 노출되지 않는다.
+  const distribution = readString(formData, "distribution");
+  if ((distribution === "direct" || distribution === "guest") && issueId) {
     await admin
       .from("coupon_issues")
-      .update({ distribution: "direct", updated_at: new Date().toISOString() })
+      .update({ distribution, updated_at: new Date().toISOString() })
       .eq("id", issueId);
   }
 

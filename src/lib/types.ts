@@ -24,11 +24,11 @@ export type CouponUseFlow = "auto_complete" | "staff_confirm";
 
 export type MemberCouponStatus = "available" | "used" | "expired";
 
-// open = 홈페이지 공개 다운로드, direct = 관리자 지급 전용
-export type CouponDistribution = "open" | "direct";
+// open = 홈페이지 공개 다운로드, direct = 관리자 지급 전용, guest = 비회원 계산대 QR 발급
+export type CouponDistribution = "open" | "direct" | "guest";
 
-// download = 회원이 직접 다운로드, admin_grant = 관리자가 지급
-export type MemberCouponSource = "download" | "admin_grant";
+// download = 회원 다운로드, admin_grant = 관리자 지급, guest_claim = 비회원 QR 수령
+export type MemberCouponSource = "download" | "admin_grant" | "guest_claim";
 
 export type CouponIssue = {
   id: string;

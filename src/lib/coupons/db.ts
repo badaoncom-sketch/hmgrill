@@ -21,7 +21,7 @@ type CouponIssueRow = {
   use_flow: CouponUseFlow;
   status: "issuing" | "ended";
   end_reason: "quantity_sold_out" | "admin_stopped" | null;
-  distribution: "open" | "direct";
+  distribution: "open" | "direct" | "guest";
 };
 
 type MemberCouponRow = {
@@ -34,7 +34,7 @@ type MemberCouponRow = {
   valid_until: string;
   status: "available" | "used" | "expired";
   used_at: string | null;
-  source: "download" | "admin_grant";
+  source: "download" | "admin_grant" | "guest_claim";
   revoked_at: string | null;
   coupon_issues:
     | {

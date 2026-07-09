@@ -19,6 +19,8 @@ export default function robots(): MetadataRoute.Robots {
           "/qr-coupon",
           "/staff",
           "/auth/",
+          "/c/",
+          "/claim/",
           "/login",
           "/signup",
           "/reset-password",

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import {
   StaffScanner,
+  type GuestIssueOption,
   type StaffRecentEvent,
   type TodayStats,
 } from "@/components/staff/staff-scanner";
@@ -81,6 +82,7 @@ export default async function QrCouponPage() {
 
   let recentEvents: StaffRecentEvent[] = [];
   let today: TodayStats = { usedCount: 0, discountTotal: 0 };
+  let guestIssues: GuestIssueOption[] = [];
 
   if (canAccess) {
     const admin = createAdminClient();
@@ -88,7 +90,7 @@ export default async function QrCouponPage() {
       timeZone: "Asia/Seoul",
     }).format(new Date());
 
-    const [{ data: eventRows }, { data: todayRows }] = await Promise.all([
+    const [{ data: eventRows }, { data: todayRows }, { data: guestIssueRows }] = await Promise.all([
       // 공용 계산대 태블릿이므로 직원 구분 없이 매장 전체 내역을 보여준다.
       admin
         .from("coupon_events")
@@ -103,9 +105,25 @@ export default async function QrCouponPage() {
         )
         .eq("event_type", "coupon_used")
         .gte("created_at", `${kstDay}T00:00:00+09:00`),
+      admin
+        .from("coupon_issues")
+        .select("id,name,amount,quantity,downloaded_count")
+        .eq("distribution", "guest")
+        .eq("status", "issuing")
+        .order("created_at", { ascending: false }),
     ]);
 
     recentEvents = (eventRows ?? []).map(mapStaffEvent);
+    guestIssues = ((guestIssueRows ?? []) as {
+      id: string; name: string; amount: number; quantity: number; downloaded_count: number;
+    }[])
+      .filter((row) => row.quantity - row.downloaded_count > 0)
+      .map((row) => ({
+        id: row.id,
+        name: row.name,
+        amount: row.amount,
+        remaining: row.quantity - row.downloaded_count,
+      }));
     today = {
       usedCount: (todayRows ?? []).length,
       discountTotal: (todayRows ?? []).reduce((sum, row) => {
@@ -129,7 +147,11 @@ export default async function QrCouponPage() {
 
         {canAccess ? (
           <div className="mt-10">
-            <StaffScanner recentEvents={recentEvents} today={today} />
+            <StaffScanner
+              recentEvents={recentEvents}
+              today={today}
+              guestIssues={guestIssues}
+            />
           </div>
         ) : (
           <div className="mt-10 rounded-[20px] border border-[var(--hm-border)] bg-[var(--hm-surface)] px-8 py-16 text-center">

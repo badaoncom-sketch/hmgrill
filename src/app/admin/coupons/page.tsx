@@ -59,7 +59,7 @@ export default async function AdminCouponsPage({
   const statusFilter = readSearchValue(params.status);
   const { canAccess } = await requireAdminAccess();
   const admin = createAdminClient();
-  const [{ data: rows }, { data: matchedCouponRows }, { data: eventRows }, { data: grantRows }] = canAccess
+  const [{ data: rows }, { data: matchedCouponRows }, { data: eventRows }, { data: grantRows }, { data: guestRows }] = canAccess
     ? await Promise.all([
         admin
           .from("coupon_issues")
@@ -84,8 +84,16 @@ export default async function AdminCouponsPage({
           .eq("source", "admin_grant")
           .order("downloaded_at", { ascending: false })
           .limit(20),
+        admin
+          .from("member_coupons")
+          .select(
+            "id,coupon_number,status,used_at,revoked_at,downloaded_at,valid_until,coupon_issues(name,amount),granter:profiles!member_coupons_granted_by_fkey(name),staff_profile:profiles!member_coupons_used_by_staff_id_fkey(name)",
+          )
+          .eq("source", "guest_claim")
+          .order("downloaded_at", { ascending: false })
+          .limit(30),
       ])
-    : [{ data: [] }, { data: [] }, { data: [] }, { data: [] }];
+    : [{ data: [] }, { data: [] }, { data: [] }, { data: [] }, { data: [] }];
   const couponIssues = (rows ?? []).map(mapCouponIssue);
   const matchedIssueIds = new Set(
     ((matchedCouponRows ?? []) as { issue_id: string }[]).map((row) => row.issue_id),
@@ -128,6 +136,38 @@ export default async function AdminCouponsPage({
       granterName: granter?.name ?? "-",
     };
   });
+  const guestCoupons = ((guestRows ?? []) as Record<string, unknown>[]).map((row) => {
+    const issue = one(row.coupon_issues as { name: string; amount: number } | null);
+    const granter = one(row.granter as { name: string | null } | null);
+    const staff = one(row.staff_profile as { name: string | null } | null);
+    const expired =
+      (row.status as string) === "expired" ||
+      new Date(row.valid_until as string) < new Date();
+    return {
+      id: row.id as string,
+      couponNumber: row.coupon_number as string,
+      status: row.status as string,
+      usedAt: (row.used_at as string | null) ?? null,
+      issuedAt: row.downloaded_at as string,
+      validUntil: row.valid_until as string,
+      couponName: issue?.name ?? "쿠폰",
+      amount: issue?.amount ?? 0,
+      issuerName: granter?.name ?? "-",
+      staffName: staff?.name ?? null,
+      expired,
+    };
+  });
+  const guestSummary = {
+    issued: guestCoupons.length,
+    used: guestCoupons.filter((coupon) => coupon.status === "used").length,
+    unused: guestCoupons.filter((coupon) => coupon.status === "available" && !coupon.expired).length,
+    expired: guestCoupons.filter((coupon) => coupon.status !== "used" && coupon.expired).length,
+    issuedAmount: guestCoupons.reduce((sum, coupon) => sum + coupon.amount, 0),
+    usedAmount: guestCoupons
+      .filter((coupon) => coupon.status === "used")
+      .reduce((sum, coupon) => sum + coupon.amount, 0),
+  };
+
   // 지급 가능한 발행: 지급 전용(direct) + 발행중 + 재고 보유
   const grantableIssues = couponIssues
     .filter(
@@ -314,6 +354,11 @@ export default async function AdminCouponsPage({
                               {issue.distribution === "direct" ? (
                                 <span className="ml-2 rounded-full border border-[rgba(247,230,193,.3)] px-2 py-0.5 text-[10px] font-bold text-[var(--hm-accent-gold)]">
                                   지급 전용
+                                </span>
+                              ) : null}
+                              {issue.distribution === "guest" ? (
+                                <span className="ml-2 rounded-full border border-[rgba(247,230,193,.3)] px-2 py-0.5 text-[10px] font-bold text-[var(--hm-accent-gold)]">
+                                  비회원 QR
                                 </span>
                               ) : null}
                             </td>
@@ -542,6 +587,81 @@ export default async function AdminCouponsPage({
                         직접 지급한 쿠폰이 없습니다.
                   </p>
                     ) : null}
+              </div>
+            </div>
+          </AdminPanel>
+
+          <AdminPanel>
+            <AdminPanelHeader title="비회원 감사쿠폰 내역 — 계산대 QR 발급" />
+            <div className="p-5">
+              <div className="mb-4 flex flex-wrap gap-x-6 gap-y-2 rounded-[14px] border border-[rgba(255,255,255,.08)] bg-black/20 px-4 py-3 text-sm font-semibold text-white/60">
+                <span>
+                  발급 {guestSummary.issued}장 · {formatCurrency(guestSummary.issuedAmount)}
+                </span>
+                <span className="text-emerald-200/80">
+                  사용 {guestSummary.used}장 · {formatCurrency(guestSummary.usedAmount)}
+                </span>
+                <span>미사용 {guestSummary.unused}장</span>
+                <span className="text-white/40">만료 {guestSummary.expired}장</span>
+              </div>
+              <div className="overflow-x-auto rounded-[18px] border border-[rgba(255,255,255,.08)]">
+                <table className="w-full min-w-[820px] border-collapse text-sm">
+                  <thead className="bg-white/[0.035]">
+                    <tr>
+                      {["발급일", "쿠폰번호", "캠페인", "금액", "발급 직원", "유효기간", "상태", "처리 직원"].map((head) => (
+                        <th
+                          key={head}
+                          className="px-4 py-3.5 text-left text-xs font-extrabold text-[var(--hm-accent-gold)]"
+                        >
+                          {head}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[rgba(255,255,255,.06)]">
+                    {guestCoupons.map((coupon) => (
+                      <tr key={coupon.id} className="transition hover:bg-white/[0.025]">
+                        <td className="px-4 py-3.5 text-white/60">
+                          {new Date(coupon.issuedAt).toLocaleDateString("ko-KR")}
+                        </td>
+                        <td className="px-4 py-3.5 font-mono text-[13px] tracking-[0.1em] text-[var(--hm-primary)]">
+                          {coupon.couponNumber}
+                        </td>
+                        <td className="px-4 py-3.5 text-white/72">{coupon.couponName}</td>
+                        <td className="px-4 py-3.5 font-bold text-[var(--hm-primary)]">
+                          {formatCurrency(coupon.amount)}
+                        </td>
+                        <td className="px-4 py-3.5 text-white/60">{coupon.issuerName}</td>
+                        <td className="px-4 py-3.5 text-white/60">
+                          {new Date(coupon.validUntil).toLocaleDateString("ko-KR")}
+                        </td>
+                        <td className="px-4 py-3.5">
+                          <Badge
+                            tone={
+                              coupon.status === "used"
+                                ? "green"
+                                : coupon.expired
+                                  ? "red"
+                                  : "neutral"
+                            }
+                          >
+                            {coupon.status === "used"
+                              ? "사용완료"
+                              : coupon.expired
+                                ? "만료"
+                                : "미사용"}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3.5 text-white/60">{coupon.staffName ?? "-"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {guestCoupons.length === 0 ? (
+                  <p className="px-5 py-8 text-sm font-semibold text-white/42">
+                    발급된 비회원 감사쿠폰이 없습니다.
+                  </p>
+                ) : null}
               </div>
             </div>
           </AdminPanel>

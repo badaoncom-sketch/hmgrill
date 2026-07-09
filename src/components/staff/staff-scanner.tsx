@@ -2,22 +2,32 @@
 
 import {
   Fragment,
+  useActionState,
   useCallback,
   useEffect,
+  useRef,
   useState,
   useTransition,
 } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   Check,
   CheckCircle2,
   ChevronDown,
+  Gift,
   Maximize,
   Minimize,
   RotateCcw,
   ScanLine,
   WifiOff,
+  X,
 } from "lucide-react";
+import {
+  checkGuestClaimAction,
+  createGuestClaimQrAction,
+  type GuestClaimQrState,
+} from "@/app/actions/guest-coupons";
 import {
   lookupCouponAction,
   useCouponAction as consumeCouponAction,
@@ -42,6 +52,13 @@ export type StaffRecentEvent = {
 export type TodayStats = {
   usedCount: number;
   discountTotal: number;
+};
+
+export type GuestIssueOption = {
+  id: string;
+  name: string;
+  amount: number;
+  remaining: number;
 };
 
 type StaffScannerState = Awaited<ReturnType<typeof lookupCouponAction>>;
@@ -209,9 +226,11 @@ function playBeep(positive: boolean) {
 export function StaffScanner({
   recentEvents = [],
   today,
+  guestIssues = [],
 }: {
   recentEvents?: StaffRecentEvent[];
   today?: TodayStats;
+  guestIssues?: GuestIssueOption[];
 }) {
   const router = useRouter();
   const [display, setDisplay] = useState<DisplayResult | null>(null);
@@ -222,6 +241,7 @@ export function StaffScanner({
   const [clock, setClock] = useState("");
   const [resetRemaining, setResetRemaining] = useState<number | null>(null);
   const [greetIndex, setGreetIndex] = useState(0);
+  const [guestQrOpen, setGuestQrOpen] = useState(false);
 
   const coupon = display?.coupon;
   const pending = isLookupPending || isUsePending;
@@ -690,6 +710,11 @@ export function StaffScanner({
                   지급 쿠폰
                 </span>
               ) : null}
+              {coupon.source === "guest_claim" ? (
+                <span className="ml-2 rounded-full border border-[rgba(247,230,193,.32)] px-2.5 py-1 text-[12px] font-bold text-[var(--hm-accent-gold)]">
+                  비회원 감사쿠폰
+                </span>
+              ) : null}
             </p>
             <h2 className="text-[clamp(20px,2.4vw,27px)] font-bold leading-snug text-white">
               {coupon.couponName}
@@ -698,7 +723,11 @@ export function StaffScanner({
               {formatCurrency(coupon.amount)}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-sm font-semibold text-white/60">
-              <span>회원 {coupon.memberName || "-"}</span>
+              <span>
+                {coupon.source === "guest_claim"
+                  ? "비회원 손님"
+                  : `회원 ${coupon.memberName || "-"}`}
+              </span>
               <span>쿠폰번호 {coupon.couponNumber}</span>
               <span>{formatDate(coupon.validUntil)}까지</span>
             </div>
@@ -735,7 +764,11 @@ export function StaffScanner({
               감사합니다. POS에서 위 금액을 할인한 뒤 결제를 진행해 주세요.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-sm font-semibold text-white/55">
-              <span>회원 {coupon.memberName || "-"}</span>
+              <span>
+                {coupon.source === "guest_claim"
+                  ? "비회원 손님"
+                  : `회원 ${coupon.memberName || "-"}`}
+              </span>
               <span>쿠폰번호 {coupon.couponNumber}</span>
               {coupon.usedAt ? (
                 <span>{new Date(coupon.usedAt).toLocaleString("ko-KR")} 처리</span>
@@ -816,6 +849,26 @@ export function StaffScanner({
       </div>
 
       <aside className="grid gap-5">
+        {guestIssues.length > 0 ? (
+          <button
+            type="button"
+            onClick={() => setGuestQrOpen(true)}
+            className="hm-link-focus flex items-center gap-4 rounded-[20px] border border-[rgba(247,230,193,.3)] bg-[linear-gradient(135deg,rgba(247,230,193,.12),rgba(184,130,30,.1))] p-5 text-left transition hover:border-[var(--hm-primary)]"
+          >
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[14px] bg-[var(--hm-primary)] text-[#171009]">
+              <Gift size={22} aria-hidden="true" />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-[16px] font-extrabold text-[var(--hm-primary)]">
+                감사쿠폰 발급
+              </span>
+              <span className="mt-0.5 block text-xs font-semibold text-white/50">
+                손님에게 발급 QR 보여주기 · 가입 불필요
+              </span>
+            </span>
+          </button>
+        ) : null}
+
         <section className="rounded-[20px] border border-[var(--hm-warm-border)] bg-[var(--hm-surface)] p-6">
           <h2 className="text-sm font-bold uppercase tracking-[0.14em] text-[var(--hm-accent-gold)]">
             오늘 처리 현황
@@ -912,6 +965,158 @@ export function StaffScanner({
           </div>
         </section>
       </aside>
+
+      {guestQrOpen ? (
+        <GuestGrantOverlay
+          issues={guestIssues}
+          onClose={() => setGuestQrOpen(false)}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+const guestQrInitialState: GuestClaimQrState = { ok: false, message: "" };
+
+// 계산대 감사쿠폰 발급 오버레이: 캠페인 선택 → 1회용 QR 표시 → 수령 감지 시 자동 완료.
+function GuestGrantOverlay({
+  issues,
+  onClose,
+}: {
+  issues: GuestIssueOption[];
+  onClose: () => void;
+}) {
+  const [state, formAction, isPending] = useActionState(
+    createGuestClaimQrAction,
+    guestQrInitialState,
+  );
+  const [claimed, setClaimed] = useState(false);
+  const [remaining, setRemaining] = useState(300);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // QR 유효시간 카운트다운 + 손님 수령 감지 폴링
+  useEffect(() => {
+    if (!state.ok || !state.claimToken || claimed) return;
+
+    const expiry = state.expiresAt ? new Date(state.expiresAt).getTime() : 0;
+    const tick = setInterval(() => {
+      setRemaining(Math.max(0, Math.round((expiry - Date.now()) / 1000)));
+    }, 1000);
+    const poll = setInterval(async () => {
+      const result = await checkGuestClaimAction(state.claimToken as string);
+      if (result.claimed) setClaimed(true);
+    }, 2500);
+    return () => {
+      clearInterval(tick);
+      clearInterval(poll);
+    };
+  }, [state, claimed]);
+
+  // 발급 완료 후 잠시 보여주고 자동으로 닫는다.
+  useEffect(() => {
+    if (!claimed) return;
+    closeTimer.current = setTimeout(onClose, 2600);
+    return () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    };
+  }, [claimed, onClose]);
+
+  const expired = state.ok && !claimed && remaining <= 0;
+
+  return (
+    <div className="fixed inset-0 z-[70] grid place-items-center p-4">
+      <button
+        type="button"
+        aria-label="닫기"
+        onClick={onClose}
+        className="absolute inset-0 h-full w-full cursor-default bg-black/75 backdrop-blur-[3px]"
+      />
+      <div className="relative w-full max-w-[440px] rounded-[24px] border border-[rgba(247,230,193,.24)] bg-[#14100b] p-6 text-center shadow-[0_30px_90px_rgba(0,0,0,.6)]">
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="닫기"
+          className="hm-link-focus absolute right-4 top-4 grid size-9 place-items-center rounded-full text-white/45 transition hover:bg-white/[0.06] hover:text-white/80"
+        >
+          <X size={18} aria-hidden="true" />
+        </button>
+
+        {claimed ? (
+          <div className="py-10">
+            <CheckCircle2 size={56} className="mx-auto text-emerald-300" aria-hidden="true" />
+            <p className="mt-5 text-[20px] font-bold text-white">쿠폰 발급 완료!</p>
+            <p className="mt-2 text-sm font-semibold text-white/55">
+              손님 휴대폰에 감사쿠폰이 전달되었습니다.
+            </p>
+          </div>
+        ) : !state.ok ? (
+          <form action={formAction} className="grid gap-4 py-2">
+            <Gift size={34} className="mx-auto text-[var(--hm-accent-gold)]" aria-hidden="true" />
+            <p className="text-[18px] font-bold text-[var(--hm-primary)]">감사쿠폰 발급</p>
+            {issues.length > 1 ? (
+              <select
+                name="issueId"
+                className="min-h-11 rounded-[12px] border border-[var(--hm-border)] bg-[var(--hm-surface)] px-3 text-sm text-[var(--hm-text)] outline-none"
+                defaultValue={issues[0]?.id}
+              >
+                {issues.map((issue) => (
+                  <option key={issue.id} value={issue.id}>
+                    {issue.name} · {formatCurrency(issue.amount)} · 남은 {issue.remaining}장
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <>
+                <input type="hidden" name="issueId" value={issues[0]?.id ?? ""} />
+                <p className="text-sm font-semibold text-white/65">
+                  {issues[0]?.name} · {formatCurrency(issues[0]?.amount ?? 0)}
+                </p>
+              </>
+            )}
+            <Button type="submit" disabled={isPending} className="w-full">
+              {isPending ? "QR 생성 중" : "발급 QR 띄우기"}
+            </Button>
+            {state.message ? (
+              <p className="text-xs font-semibold text-[#f0a39b]">{state.message}</p>
+            ) : null}
+          </form>
+        ) : (
+          <div className="grid gap-4">
+            <p className="text-[17px] font-bold text-[var(--hm-primary)]">
+              {state.issueName} · {formatCurrency(state.amount ?? 0)}
+            </p>
+            <div className="relative mx-auto w-full max-w-[300px] rounded-[18px] bg-white p-4">
+              <Image
+                src={state.qrDataUrl ?? ""}
+                alt="감사쿠폰 발급 QR"
+                width={420}
+                height={420}
+                unoptimized
+                className={`h-auto w-full ${expired ? "opacity-20" : ""}`}
+              />
+              {expired ? (
+                <p className="absolute inset-0 grid place-items-center text-sm font-extrabold text-[#0d0d0d]">
+                  QR이 만료되었습니다
+                </p>
+              ) : null}
+            </div>
+            <p className="text-[15px] font-bold text-white">
+              손님 휴대폰 카메라로 QR을 스캔해 주세요
+            </p>
+            <p className="text-xs font-semibold text-white/45">
+              {expired
+                ? "새 QR을 생성해 주세요"
+                : `1회용 QR · ${Math.floor(remaining / 60)}분 ${remaining % 60}초 후 만료`}
+            </p>
+            <form action={formAction}>
+              <input type="hidden" name="issueId" value={issues[0]?.id ?? ""} />
+              <Button type="submit" variant="outline" disabled={isPending} className="w-full">
+                {isPending ? "QR 생성 중" : "새 QR 생성"}
+              </Button>
+            </form>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
