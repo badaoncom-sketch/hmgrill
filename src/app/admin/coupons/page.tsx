@@ -332,8 +332,8 @@ export default async function AdminCouponsPage({
                     </div>
                   ) : null}
 
-                  {/* 모바일: 카드 리스트 */}
-                  <div className="grid gap-3 md:hidden">
+                  {/* 모바일·태블릿: 카드 리스트 */}
+                  <div className="grid gap-3 lg:hidden">
                     {filteredCouponIssues.map((issue) => (
                       <div
                         key={issue.id}
@@ -418,8 +418,8 @@ export default async function AdminCouponsPage({
                     ) : null}
                   </div>
 
-                  {/* 태블릿·PC: 테이블 */}
-                  <div className="hidden overflow-x-auto rounded-[18px] border border-[rgba(255,255,255,.08)] md:block">
+                  {/* PC: 테이블 */}
+                  <div className="hidden overflow-x-auto rounded-[18px] border border-[rgba(255,255,255,.08)] lg:block">
                     <table className="min-w-[860px] w-full border-collapse text-sm">
                       <thead className="bg-white/[0.035]">
                         <tr>
@@ -629,8 +629,8 @@ export default async function AdminCouponsPage({
           <AdminPanel>
             <AdminPanelHeader title="직접 지급 내역" />
             <div className="p-4 md:p-5">
-              {/* 모바일: 카드 리스트 */}
-              <div className="grid gap-3 md:hidden">
+              {/* 모바일·태블릿: 카드 리스트 */}
+              <div className="grid gap-3 lg:hidden">
                 {grants.map((grant) => {
                   const revoked = Boolean(grant.revokedAt);
                   return (
@@ -680,7 +680,7 @@ export default async function AdminCouponsPage({
                 ) : null}
               </div>
 
-              <div className="hidden overflow-x-auto rounded-[18px] border border-[rgba(255,255,255,.08)] md:block">
+              <div className="hidden overflow-x-auto rounded-[18px] border border-[rgba(255,255,255,.08)] lg:block">
                 <table className="w-full min-w-[820px] border-collapse text-sm">
                   <thead className="bg-white/[0.035]">
                     <tr>
@@ -769,8 +769,8 @@ export default async function AdminCouponsPage({
                 <span>미사용 {guestSummary.unused}장</span>
                 <span className="text-white/40">만료 {guestSummary.expired}장</span>
               </div>
-              {/* 모바일: 카드 리스트 */}
-              <div className="grid gap-3 md:hidden">
+              {/* 모바일·태블릿: 카드 리스트 */}
+              <div className="grid gap-3 lg:hidden">
                 {guestCoupons.map((coupon) => (
                   <div key={coupon.id} className="rounded-[16px] border border-[rgba(255,255,255,.08)] bg-black/20 p-4">
                     <div className="flex items-start justify-between gap-3">
@@ -806,7 +806,7 @@ export default async function AdminCouponsPage({
                 ) : null}
               </div>
 
-              <div className="hidden overflow-x-auto rounded-[18px] border border-[rgba(255,255,255,.08)] md:block">
+              <div className="hidden overflow-x-auto rounded-[18px] border border-[rgba(255,255,255,.08)] lg:block">
                 <table className="w-full min-w-[820px] border-collapse text-sm">
                   <thead className="bg-white/[0.035]">
                     <tr>

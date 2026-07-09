@@ -1,47 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { ChevronDown, LogOut, Store } from "lucide-react";
+import { AdminMobileNav } from "@/components/admin/admin-mobile-nav";
 import {
-  BarChart3,
-  Bell,
-  CalendarDays,
-  ChevronDown,
-  ClipboardList,
-  Globe,
-  Home,
-  Inbox,
-  LayoutDashboard,
-  LogOut,
-  MenuSquare,
-  MessageSquareText,
-  Settings,
-  Store,
-  Ticket,
-  UserRound,
-  UsersRound,
-} from "lucide-react";
+  adminNavItems,
+  type AdminNavKey,
+} from "@/components/admin/admin-nav-items";
 import { AdminNotificationCenter } from "@/components/admin/admin-notification-center";
 import type { AdminNotification } from "@/lib/types";
 import { cn } from "@/lib/utils";
-
-const adminNavItems = [
-  { href: "/admin", label: "대시보드", icon: LayoutDashboard, key: "dashboard" },
-  { href: "/admin/home", label: "홈페이지 관리", icon: Home, key: "home" },
-  { href: "/admin/seo", label: "SEO 관리", icon: Globe, key: "seo" },
-  { href: "/admin/notifications", label: "알림함", icon: Inbox, key: "notifications" },
-  { href: "/admin/coupons", label: "쿠폰 관리", icon: Ticket, key: "coupons" },
-  { href: "/admin/members", label: "회원 관리", icon: UsersRound, key: "members" },
-  { href: "/admin/staff", label: "직원 관리", icon: UserRound, key: "staff" },
-  { href: "/admin/menu", label: "메뉴 관리", icon: MenuSquare, key: "menu" },
-  { href: "/admin/events", label: "이벤트 관리", icon: CalendarDays, key: "events" },
-  { href: "/admin/notices", label: "공지사항", icon: Bell, key: "notices" },
-  { href: "/admin/inquiries", label: "문의 관리", icon: MessageSquareText, key: "inquiries" },
-  { href: "/admin/banners", label: "배너 관리", icon: ClipboardList, key: "banners" },
-  { href: "/admin/popups", label: "팝업 관리", icon: Settings, key: "popups" },
-  { href: "/admin/reports", label: "통계 리포트", icon: BarChart3, key: "reports" },
-] as const;
-
-type AdminNavKey = (typeof adminNavItems)[number]["key"];
 
 const defaultNotifications: AdminNotification[] = [
   {
@@ -174,27 +142,7 @@ export function AdminFrame({
             </div>
           </div>
 
-          <nav className="mb-5 flex gap-2 overflow-x-auto rounded-[20px] border border-[rgba(255,255,255,.08)] bg-black/30 p-2 xl:hidden">
-            {adminNavItems.map((item) => {
-              const Icon = item.icon;
-              const selected = item.key === active;
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "hm-link-focus inline-flex min-h-11 shrink-0 items-center gap-2 rounded-[14px] px-3 text-xs font-extrabold text-white/58 transition hover:bg-white/[0.04] hover:text-[var(--hm-primary)]",
-                    selected &&
-                      "bg-[var(--hm-primary)] text-[#0d0d0d] hover:bg-[var(--hm-primary)] hover:text-[#0d0d0d]",
-                  )}
-                >
-                  <Icon className="h-4 w-4" strokeWidth={1.9} aria-hidden="true" />
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
+          <AdminMobileNav active={active} />
 
           {children}
         </section>
