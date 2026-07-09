@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Download, Share, SquarePlus, X } from "lucide-react";
 
 const SNOOZE_KEY = "hm-install-snooze-until";
@@ -40,6 +41,7 @@ export function InstallPrompt({
 }) {
   const [mode, setMode] = useState<"hidden" | "android" | "ios">("hidden");
   const deferredPromptRef = useRef<BeforeInstallPromptEvent | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (isStandalone()) return;
@@ -106,7 +108,10 @@ export function InstallPrompt({
     }
   }
 
-  if (mode === "hidden") return null;
+  // 관리자 콘솔·키오스크에서는 설치 안내를 띄우지 않는다.
+  if (mode === "hidden" || pathname.startsWith("/admin") || pathname.startsWith("/qr-coupon")) {
+    return null;
+  }
 
   return (
     <div className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+84px)] z-[55] mx-auto max-w-[440px] lg:hidden">

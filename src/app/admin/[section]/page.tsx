@@ -332,7 +332,7 @@ async function UserSection({
   return (
     <AdminFrame active={section} title={meta.title} description={meta.description}>
       <div className="grid gap-5">
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
           <AdminStatCard
             icon={<UsersRound size={24} aria-hidden="true" />}
             label="총 계정"
@@ -680,7 +680,7 @@ async function MenuSection({ query }: { query: string }) {
   return (
     <AdminFrame active="menu" title={meta.title} description={meta.description}>
       <div className="grid gap-5">
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
           <AdminStatCard icon={<MenuSquare size={24} />} label="등록 메뉴" value={<>{menuItems.length}개</>} detail={`공개 ${activeCount}개`} />
           <AdminStatCard icon={<CheckCircle2 size={24} />} label="대표 노출" value={<>{featuredCount}개</>} detail="홈 대표 메뉴 기준" />
           <AdminStatCard icon={<Ticket size={24} />} label="카테고리" value={<>{categories.length}개</>} detail="메뉴판 구성 기준" />
@@ -918,7 +918,7 @@ async function ContentSection({
   return (
     <AdminFrame active={section} title={meta.title} description={meta.description}>
       <div className="grid gap-5">
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
           <AdminStatCard icon={<FileText size={24} />} label="전체 콘텐츠" value={<>{posts.length}건</>} detail="현재 유형 기준" />
           <AdminStatCard icon={<CheckCircle2 size={24} />} label="공개" value={<>{publishedCount}건</>} detail="사용자 화면 노출" />
           <AdminStatCard icon={<Clock3 size={24} />} label="초안" value={<>{draftCount}건</>} detail="운영 검토 대기" />
@@ -1003,7 +1003,7 @@ async function InquirySection({ query }: { query: string }) {
   return (
     <AdminFrame active="inquiries" title={meta.title} description={meta.description}>
       <div className="grid gap-5">
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
           <AdminStatCard icon={<MessageSquareText size={24} />} label="전체 문의" value={<>{inquiries.length}건</>} detail="누적 접수" />
           <AdminStatCard icon={<Bell size={24} />} label="접수" value={<>{openCount}건</>} detail="응답 필요" />
           <AdminStatCard icon={<CheckCircle2 size={24} />} label="답변" value={<>{answeredCount}건</>} detail="처리 완료" />
@@ -1068,7 +1068,7 @@ async function ExposureSection({
   return (
     <AdminFrame active={section} title={meta.title} description={meta.description}>
       <div className="grid gap-5">
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
           <AdminStatCard icon={<ImageIcon size={24} />} label="전체" value={<>{items.length}개</>} detail={isBanner ? "배너 항목" : "팝업 항목"} />
           <AdminStatCard icon={<CheckCircle2 size={24} />} label="활성" value={<>{activeCount}개</>} detail="현재 노출 대상" />
           <AdminStatCard icon={<XCircle size={24} />} label="비활성" value={<>{items.length - activeCount}개</>} detail="숨김 처리" />
@@ -1173,7 +1173,7 @@ async function ReportsSection() {
   return (
     <AdminFrame active="reports" title={meta.title} description={meta.description}>
       <div className="grid gap-5">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 xl:grid-cols-4">
           <AdminStatCard icon={<Ticket size={24} />} label="쿠폰 다운로드" value={<>{downloaded}장</>} detail={`사용 ${used}장`} />
           <AdminStatCard icon={<BarChart3 size={24} />} label="쿠폰 사용률" value={<>{usageRate}%</>} detail="다운로드 대비" />
           <AdminStatCard icon={<Ticket size={24} />} label="할인 처리액" value={formatCurrency(totalUsedAmount)} detail="사용 완료 기준" />

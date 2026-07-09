@@ -341,6 +341,12 @@ function DrawerLogoutButton() {
 // 뷰포트가 아닌 헤더 기준으로 붙어버리기 때문이다.
 export function MobileBottomNav({ user }: { user: HeaderUser | null }) {
   const pathname = usePathname();
+
+  // 관리자 콘솔은 자체 네비게이션을 쓰므로 공개 사이트 하단탭을 숨긴다.
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
+
   // 로그인 상태에 따라 마지막 탭을 분별한다: 비로그인은 로그인 유도, 로그인은 마이페이지.
   const bottomNavItems = [
     ...bottomNavBaseItems,

@@ -6,6 +6,7 @@ import { InstallPrompt } from "@/components/install-prompt";
 import { LiveUpdates } from "@/components/live-updates";
 import { NavigationProgress } from "@/components/navigation-progress";
 import { PullToRefresh } from "@/components/pull-to-refresh";
+import { HideOnAdmin } from "@/components/route-chrome";
 import { ScrollChrome } from "@/components/scroll-chrome";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -156,10 +157,12 @@ export default async function RootLayout({
           logoSrc={settings["logo.image"]}
         />
         <div className="hm-surface min-h-screen pt-16 md:pt-20">{children}</div>
-        <SiteFooter
-          eyebrow={settings["footer.eyebrow"]}
-          tagline={settings["footer.tagline"]}
-        />
+        <HideOnAdmin>
+          <SiteFooter
+            eyebrow={settings["footer.eyebrow"]}
+            tagline={settings["footer.tagline"]}
+          />
+        </HideOnAdmin>
         <MobileBottomNav user={headerUser} />
         <ScrollChrome />
         <LiveUpdates />

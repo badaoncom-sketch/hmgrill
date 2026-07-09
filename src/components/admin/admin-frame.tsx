@@ -86,7 +86,10 @@ export function AdminFrame({
   }).format(new Date());
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_70%_0%,rgba(184,130,30,.08),transparent_34%),linear-gradient(135deg,#0d0d0d,#080808)] px-4 py-6 text-white md:px-6">
+    <main
+      data-admin-root
+      className="min-h-screen bg-[radial-gradient(circle_at_70%_0%,rgba(184,130,30,.08),transparent_34%),linear-gradient(135deg,#0d0d0d,#080808)] px-3 py-4 text-white md:px-6 md:py-6"
+    >
       <div className="mx-auto grid max-w-[1600px] gap-5 xl:grid-cols-[248px_minmax(0,1fr)]">
         <aside className="hidden min-h-[calc(100svh-128px)] rounded-[28px] border border-[rgba(255,255,255,.09)] bg-[linear-gradient(180deg,rgba(26,26,26,.92),rgba(10,10,10,.96))] p-5 shadow-[0_30px_90px_rgba(0,0,0,.36)] xl:flex xl:flex-col">
           <Link href="/admin" className="hm-link-focus relative block h-[78px] w-[126px]" aria-label="관리자 홈">
@@ -244,18 +247,18 @@ export function AdminStatCard({
   href?: string;
 }) {
   const card = (
-    <AdminPanel className="p-5 transition hover:-translate-y-1 hover:border-[rgba(247,230,193,.22)]">
+    <AdminPanel className="p-4 transition hover:-translate-y-1 hover:border-[rgba(247,230,193,.22)] md:p-5">
       <div className="flex items-start justify-between gap-4">
-        <div className="grid h-12 w-12 place-items-center rounded-[16px] border border-[rgba(184,130,30,.28)] text-[var(--hm-primary)]">
+        <div className="grid h-10 w-10 place-items-center rounded-[14px] border border-[rgba(184,130,30,.28)] text-[var(--hm-primary)] md:h-12 md:w-12 md:rounded-[16px]">
           {icon}
         </div>
         <span className="text-white/45">›</span>
       </div>
-      <p className="mt-4 text-sm font-semibold text-white/68">{label}</p>
-      <div className="mt-2 text-[28px] font-extrabold leading-none text-[var(--hm-primary)]">
+      <p className="mt-3 text-[13px] font-semibold text-white/68 md:mt-4 md:text-sm">{label}</p>
+      <div className="mt-1.5 text-[22px] font-extrabold leading-none text-[var(--hm-primary)] md:mt-2 md:text-[28px]">
         {value}
       </div>
-      <p className="mt-4 text-xs font-semibold leading-5 text-white/45">{detail}</p>
+      <p className="mt-2.5 text-[11px] font-semibold leading-5 text-white/45 md:mt-4 md:text-xs">{detail}</p>
     </AdminPanel>
   );
 
