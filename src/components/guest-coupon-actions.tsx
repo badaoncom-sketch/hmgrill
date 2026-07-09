@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check, ImageDown, Link2, Share2, X } from "lucide-react";
+import { siteContact } from "@/lib/navigation";
 
 // 비회원 쿠폰 보관 수단 3종: 이미지 저장(갤러리) / 기기 공유(카카오톡 등) / 링크 복사.
 export function GuestCouponActions({
@@ -32,7 +33,7 @@ export function GuestCouponActions({
     setSaving(true);
     try {
       const width = 720;
-      const height = 1000;
+      const height = 1092;
       const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
@@ -106,9 +107,24 @@ export function GuestCouponActions({
         });
       }
 
+      // 매장 안내: 주소·연락처 (구분선 아래)
+      ctx.strokeStyle = "rgba(247,230,193,.18)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(70, height - 172);
+      ctx.lineTo(width - 70, height - 172);
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(255,255,255,.62)";
+      ctx.font = `bold 21px ${sans}`;
+      ctx.fillText(siteContact.address, width / 2, height - 128);
+      ctx.fillStyle = "#f7e6c1";
+      ctx.font = `bold 24px ${sans}`;
+      ctx.fillText(`전화 ${siteContact.phoneDisplay}`, width / 2, height - 90);
+
       ctx.fillStyle = "rgba(255,255,255,.3)";
       ctx.font = `18px ${sans}`;
-      ctx.fillText("방문 시 이 이미지의 QR을 직원에게 보여주세요", width / 2, height - 56);
+      ctx.fillText("방문 시 이 이미지의 QR을 직원에게 보여주세요", width / 2, height - 48);
 
       const blob = await new Promise<Blob | null>((resolve) =>
         canvas.toBlob(resolve, "image/png"),
