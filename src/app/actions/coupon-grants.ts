@@ -114,6 +114,8 @@ export async function grantCouponAction(
   }
 
   revalidatePath("/admin/coupons");
+  revalidatePath("/admin/coupons/grant");
+  revalidatePath("/admin/coupons/grants");
   revalidatePath("/coupons/my");
 
   return { ok: true, message: "쿠폰을 지급했습니다. 회원에게 알림이 발송되었습니다." };
@@ -158,6 +160,8 @@ export async function grantAdhocCouponAction(
   }
 
   revalidatePath("/admin/coupons");
+  revalidatePath("/admin/coupons/grant");
+  revalidatePath("/admin/coupons/grants");
   revalidatePath("/coupons/my");
 
   return { ok: true, message: "쿠폰을 지급했습니다. 회원에게 알림이 발송되었습니다." };
@@ -185,5 +189,7 @@ export async function revokeGrantedCouponAction(formData: FormData) {
   }
 
   revalidatePath("/admin/coupons");
+  revalidatePath("/admin/coupons/grant");
+  revalidatePath("/admin/coupons/grants");
   revalidatePath("/coupons/my");
 }

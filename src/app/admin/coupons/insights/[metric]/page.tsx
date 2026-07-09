@@ -152,7 +152,13 @@ export default async function AdminCouponInsightPage({
   const rankedIssues = sortIssues(metric, issues).slice(0, 8);
 
   return (
-    <AdminFrame active="coupons" title={meta.title} description={meta.description}>
+    <AdminFrame
+      active="coupons"
+      title={meta.title}
+      description={meta.description}
+      backHref="/admin/coupons"
+      backLabel="쿠폰 관리"
+    >
       <div className="grid gap-5">
         <div className="flex">
           <AdminActionLink href="/admin/coupons">

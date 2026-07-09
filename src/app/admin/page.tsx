@@ -46,7 +46,7 @@ type ProfileSummaryRow = {
 };
 
 const quickActions = [
-  { href: "/admin/coupons", label: "쿠폰 생성", icon: Plus },
+  { href: "/admin/coupons/new", label: "쿠폰 생성", icon: Plus },
   { href: "/admin/menu", label: "메뉴 등록", icon: ClipboardList },
   { href: "/admin/events", label: "이벤트 등록", icon: Megaphone },
   { href: "/admin/notices", label: "공지 등록", icon: CalendarDays },

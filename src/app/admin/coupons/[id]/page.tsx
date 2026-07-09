@@ -106,6 +106,8 @@ export default async function AdminCouponDetailPage({
       active="coupons"
       title={issue.name}
       description="쿠폰 발행 상태, 다운로드 내역, 사용완료 이력을 확인합니다."
+      backHref="/admin/coupons"
+      backLabel="쿠폰 관리"
     >
       <div className="grid gap-5">
         <div className="flex">

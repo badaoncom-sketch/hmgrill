@@ -138,6 +138,7 @@ export async function issueCouponAction(
   }
 
   revalidatePath("/admin/coupons");
+  revalidatePath("/admin/coupons/grant");
   revalidatePath("/coupons");
 
   return { ok: true, message: "쿠폰을 발행했습니다." };

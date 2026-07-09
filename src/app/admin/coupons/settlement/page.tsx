@@ -223,6 +223,8 @@ export default async function CouponSettlementPage({
       active="coupons"
       title="쿠폰 정산 리포트"
       description="발행된 쿠폰의 사용·미사용·만료 수량과 금액을 쿠폰별, 기간별로 정산합니다."
+      backHref="/admin/coupons"
+      backLabel="쿠폰 관리"
     >
       {!canAccess ? (
         <AdminPanel className="p-6">

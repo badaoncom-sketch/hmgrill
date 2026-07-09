@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import { ChevronDown, LogOut, Store } from "lucide-react";
+import { ArrowLeft, ChevronDown, LogOut, Store } from "lucide-react";
 import { AdminMobileNav } from "@/components/admin/admin-mobile-nav";
 import {
   adminNavItems,
@@ -38,12 +38,16 @@ export function AdminFrame({
   active,
   title,
   description,
+  backHref,
+  backLabel,
   notifications = defaultNotifications,
   children,
 }: {
   active: AdminNavKey;
   title: string;
   description: string;
+  backHref?: string;
+  backLabel?: string;
   notifications?: AdminNotification[];
   children: ReactNode;
 }) {
@@ -128,6 +132,15 @@ export function AdminFrame({
         <section className="min-w-0">
           <div className="mb-5 flex flex-col gap-4 rounded-[24px] border border-[rgba(255,255,255,.08)] bg-[rgba(14,14,14,.72)] p-5 shadow-[0_24px_70px_rgba(0,0,0,.28)] md:flex-row md:items-center md:justify-between xl:bg-transparent xl:p-0 xl:shadow-none xl:border-0">
             <div>
+              {backHref ? (
+                <Link
+                  href={backHref}
+                  className="hm-link-focus mb-3 inline-flex items-center gap-1.5 rounded-full border border-[rgba(255,255,255,.12)] bg-white/[0.03] px-3.5 py-1.5 text-xs font-bold text-white/62 transition hover:border-[rgba(247,230,193,.34)] hover:text-[var(--hm-primary)]"
+                >
+                  <ArrowLeft size={13} aria-hidden="true" />
+                  {backLabel ?? "돌아가기"}
+                </Link>
+              ) : null}
               <p className="text-xs font-bold uppercase tracking-[.22em] text-[var(--hm-accent-gold)]">Admin Console</p>
               <h1 className="hm-serif mt-2 text-[32px] font-bold leading-tight text-[var(--hm-primary)] md:text-[40px]">
                 {title}
