@@ -134,27 +134,16 @@ export default async function CouponsPage() {
               입력해 두면 새 쿠폰이 나올 때마다 바로 받을 수 있습니다.
             </p>
           </div>
-          <div className="flex shrink-0 gap-2">
-            {user ? (
-              <>
-                <ButtonLink href="/coupons/my" variant="outline">
-                  내 쿠폰
-                </ButtonLink>
-                <ButtonLink href="/coupons/history" variant="ghost">
-                  사용내역
-                </ButtonLink>
-              </>
-            ) : (
-              <>
-                <ButtonLink href="/login" variant="outline">
-                  로그인
-                </ButtonLink>
-                <ButtonLink href="/signup" variant="ghost">
-                  회원가입
-                </ButtonLink>
-              </>
-            )}
-          </div>
+          {user ? (
+            <div className="flex shrink-0 gap-2">
+              <ButtonLink href="/coupons/my" variant="outline">
+                내 쿠폰
+              </ButtonLink>
+              <ButtonLink href="/coupons/history" variant="ghost">
+                사용내역
+              </ButtonLink>
+            </div>
+          ) : null}
         </div>
 
         {/* 쿠폰 상태 조회 — 회원·비회원 공용, 상단 고정 배치 */}
