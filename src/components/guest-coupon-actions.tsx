@@ -66,10 +66,14 @@ export function GuestCouponActions({
       const qrX = (width - qrSize) / 2;
       const qrY = 296;
       ctx.fillStyle = "#ffffff";
-      const radius = 20;
-      ctx.beginPath();
-      ctx.roundRect(qrX - 20, qrY - 20, qrSize + 40, qrSize + 40, radius);
-      ctx.fill();
+      if (typeof ctx.roundRect === "function") {
+        ctx.beginPath();
+        ctx.roundRect(qrX - 20, qrY - 20, qrSize + 40, qrSize + 40, 20);
+        ctx.fill();
+      } else {
+        // 구형 브라우저: 둥근 모서리 미지원 시 일반 사각형으로 대체
+        ctx.fillRect(qrX - 20, qrY - 20, qrSize + 40, qrSize + 40);
+      }
 
       const qrImage = new Image();
       qrImage.src = qrDataUrl;
@@ -107,12 +111,38 @@ export function GuestCouponActions({
         canvas.toBlob(resolve, "image/png"),
       );
       if (!blob) return;
+
+      const fileName = `화목-감사쿠폰-${couponNumber}.png`;
+
+      // 휴대폰: 파일 공유 시트를 열어 '이미지 저장'으로 갤러리에 바로 저장하게 한다.
+      // (iOS는 download 속성으로 사진첩 저장이 안 되므로 이 경로가 표준이다)
+      const file = new File([blob], fileName, { type: "image/png" });
+      const isTouchDevice = navigator.maxTouchPoints > 0;
+      if (
+        isTouchDevice &&
+        typeof navigator.canShare === "function" &&
+        navigator.canShare({ files: [file] })
+      ) {
+        try {
+          await navigator.share({ files: [file], title: "화목 감사쿠폰" });
+          return;
+        } catch (error) {
+          if ((error as DOMException)?.name === "AbortError") {
+            return; // 사용자가 공유 시트를 닫은 경우
+          }
+          // 공유 실패 시 아래 다운로드로 폴백
+        }
+      }
+
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `화목-감사쿠폰-${couponNumber}.png`;
+      anchor.download = fileName;
+      document.body.appendChild(anchor);
       anchor.click();
-      URL.revokeObjectURL(url);
+      anchor.remove();
+      // 다운로드가 시작되기 전에 URL을 해제하면 일부 모바일 브라우저에서 실패한다.
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
     } finally {
       setSaving(false);
     }
