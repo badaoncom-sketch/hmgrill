@@ -394,10 +394,7 @@ export default async function AdminCouponsPage({
                             </p>
                           </div>
                         </div>
-                        <div className="mt-3 flex items-center justify-between gap-3">
-                          <span className="text-[11px] font-semibold text-white/45">
-                            다운로드 후 {issue.validityDays}일
-                          </span>
+                        <div className="mt-3 flex items-center justify-end">
                           <span className="text-[11px] font-bold text-[var(--hm-accent-gold)]">
                             상세 보기 ›
                           </span>
@@ -413,7 +410,7 @@ export default async function AdminCouponsPage({
 
                   {/* PC: 행을 누르면 상세로 이동 */}
                   <div className="hidden rounded-[18px] border border-[rgba(255,255,255,.08)] lg:block">
-                    <div className="grid grid-cols-[48px_minmax(0,1fr)_100px_110px_64px_64px_72px_76px_150px] items-center gap-2 bg-white/[0.035] px-4 py-3.5 text-xs font-extrabold text-[var(--hm-accent-gold)]">
+                    <div className="grid grid-cols-[48px_minmax(0,1fr)_110px_110px_64px_64px_72px_80px] items-center gap-2 bg-white/[0.035] px-4 py-3.5 text-xs font-extrabold text-[var(--hm-accent-gold)]">
                       <span>번호</span>
                       <span>쿠폰명</span>
                       <span>종류</span>
@@ -422,14 +419,13 @@ export default async function AdminCouponsPage({
                       <span>사용</span>
                       <span>사용률</span>
                       <span>상태</span>
-                      <span>기간</span>
                     </div>
                     <div className="divide-y divide-[rgba(255,255,255,.06)]">
                       {filteredCouponIssues.map((issue, index) => (
                         <Link
                           key={issue.id}
                           href={`/admin/coupons/${issue.id}`}
-                          className="hm-link-focus grid grid-cols-[48px_minmax(0,1fr)_100px_110px_64px_64px_72px_76px_150px] items-center gap-2 px-4 py-4 text-sm transition hover:bg-white/[0.03]"
+                          className="hm-link-focus grid grid-cols-[48px_minmax(0,1fr)_110px_110px_64px_64px_72px_80px] items-center gap-2 px-4 py-4 text-sm transition hover:bg-white/[0.03]"
                         >
                           <span className="font-mono text-xs text-white/40">
                             {String(index + 1).padStart(2, "0")}
@@ -449,7 +445,6 @@ export default async function AdminCouponsPage({
                               {issue.status === "issuing" ? "활성" : "종료"}
                             </Badge>
                           </span>
-                          <span className="text-white/64">다운로드 후 {issue.validityDays}일</span>
                         </Link>
                       ))}
                     </div>
