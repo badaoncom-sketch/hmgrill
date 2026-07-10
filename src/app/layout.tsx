@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { Geist_Mono, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
+import { AppSplash } from "@/components/app-splash";
 import type { HeaderUser } from "@/components/header-user-controls";
 import { InstallPrompt } from "@/components/install-prompt";
 import { KakaoExternalEscape } from "@/components/kakao-external-escape";
@@ -20,7 +21,7 @@ import {
   memberNotificationSelect,
   type MemberNotification,
 } from "@/lib/notifications/db";
-import { fetchSiteSettings } from "@/lib/site-settings";
+import { getCachedSiteSettings } from "@/lib/site-settings";
 import { createClient } from "@/lib/supabase/server";
 import "./globals.css";
 
@@ -45,8 +46,7 @@ const geistMono = Geist_Mono({
 
 // 관리자 SEO 설정(사이트 제목·설명·키워드·대표 공유 이미지)을 전 페이지 기본값으로 쓴다.
 export async function generateMetadata(): Promise<Metadata> {
-  const supabase = await createClient();
-  const settings = await fetchSiteSettings(supabase);
+  const settings = await getCachedSiteSettings();
   const siteTitle = settings["seo.site.title"];
   const description = settings["seo.site.description"];
 
@@ -88,18 +88,14 @@ export const viewport: Viewport = {
   themeColor: "#0d0d0d",
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+// 로그인 상태·알림처럼 사용자별 조회가 필요한 상단/하단 크롬.
+// 루트 레이아웃에서 분리해 Suspense 뒤로 미뤄야 나머지 셸이 먼저 스트리밍되고,
+// 설치형 앱 실행 시 정적 OS 스플래시가 떠 있는 시간(첫 페인트까지)이 짧아진다.
+async function UserChrome({ logoSrc }: { logoSrc: string }) {
   const supabase = await createClient();
-  const [
-    {
-      data: { user },
-    },
-    settings,
-  ] = await Promise.all([supabase.auth.getUser(), fetchSiteSettings(supabase)]);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   let headerUser: HeaderUser | null = null;
   let notifications: MemberNotification[] = [];
@@ -145,19 +141,53 @@ export default async function RootLayout({
   }
 
   return (
+    <>
+      <SiteHeader
+        user={headerUser}
+        notifications={notifications}
+        unreadCount={unreadCount}
+        logoSrc={logoSrc}
+      />
+      <MobileBottomNav user={headerUser} />
+    </>
+  );
+}
+
+export default async function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const settings = await getCachedSiteSettings();
+  const logoSrc = settings["logo.image"];
+
+  return (
     <html lang="ko" className={`${notoSansKr.variable} ${notoSerifKr.variable} ${geistMono.variable}`}>
       <body>
+        <AppSplash
+          imageSrc={settings["app.splash.image"]}
+          tagline={settings["app.splash.tagline"]}
+        />
         <RestaurantStructuredData settings={settings} />
         <Suspense fallback={null}>
           <NavigationProgress />
         </Suspense>
         <PullToRefresh />
-        <SiteHeader
-          user={headerUser}
-          notifications={notifications}
-          unreadCount={unreadCount}
-          logoSrc={settings["logo.image"]}
-        />
+        <Suspense
+          fallback={
+            <>
+              <SiteHeader
+                user={null}
+                notifications={[]}
+                unreadCount={0}
+                logoSrc={logoSrc}
+              />
+              <MobileBottomNav user={null} />
+            </>
+          }
+        >
+          <UserChrome logoSrc={logoSrc} />
+        </Suspense>
         <div className="hm-surface min-h-screen pt-16 md:pt-20">{children}</div>
         <HideOnAdmin>
           <SiteFooter
@@ -165,7 +195,6 @@ export default async function RootLayout({
             tagline={settings["footer.tagline"]}
           />
         </HideOnAdmin>
-        <MobileBottomNav user={headerUser} />
         <ScrollChrome />
         <Suspense fallback={null}>
           <ScrollToTopOnNav />

@@ -1,12 +1,11 @@
 import type { MetadataRoute } from "next";
-import { fetchSiteSettings } from "@/lib/site-settings";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { getCachedSiteSettings } from "@/lib/site-settings";
 
 // 관리자(SEO 관리 → 앱 설치 설정)에서 바꾼 이름·아이콘이 접속 시 반영되도록 주기적으로 재생성한다.
 export const revalidate = 300;
 
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
-  const settings = await fetchSiteSettings(createAdminClient());
+  const settings = await getCachedSiteSettings();
   const icon = settings["app.icon"];
 
   return {

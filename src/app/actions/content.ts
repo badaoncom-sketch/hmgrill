@@ -1,9 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdminAccess } from "@/lib/auth/access";
-import { siteSettingKeys } from "@/lib/site-settings";
+import { SITE_SETTINGS_CACHE_TAG, siteSettingKeys } from "@/lib/site-settings";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { ContentPostType, ContentStatus, InquiryStatus } from "@/lib/types";
 
@@ -468,6 +468,8 @@ export async function updateSiteSettingsAction(formData: FormData) {
     }
   }
 
+  // 레이아웃·메타데이터가 쓰는 서버 캐시를 무효화해 저장 즉시 반영한다.
+  updateTag(SITE_SETTINGS_CACHE_TAG);
   revalidatePath("/", "layout");
   revalidatePath("/");
   revalidatePath("/admin/home");

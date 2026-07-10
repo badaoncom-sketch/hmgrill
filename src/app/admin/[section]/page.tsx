@@ -491,6 +491,28 @@ async function SeoSection() {
         </div>
 
         <div className="grid gap-5 lg:grid-cols-2">
+          <FormPanel title="앱 시작 화면 — 설치된 앱을 여는 동안 표시">
+            <form action={updateSiteSettingsAction} className="grid gap-4">
+              <SettingImageField
+                label="시작 화면 로고 (투명 배경 PNG 권장)"
+                name="app.splash.image"
+                settings={settings}
+              />
+              <SettingTextField
+                label="시작 화면 문구 (줄바꿈 유지)"
+                name="app.splash.tagline"
+                settings={settings}
+                textarea
+              />
+              <p className="text-xs leading-5 text-white/45">
+                홈 화면에 설치한 앱을 여는 동안 로고와 문구가 애니메이션과 함께
+                표시됩니다. 일반 브라우저 접속에는 나타나지 않으며, 값을 비우면
+                기본값으로 돌아갑니다.
+              </p>
+              <SettingsSaveButton />
+            </form>
+          </FormPanel>
+
           <FormPanel title="카카오톡 공유 설정 — 쿠폰 페이지의 카카오톡 공유 버튼">
             <form action={updateSiteSettingsAction} className="grid gap-4">
               <SettingTextField

@@ -1,4 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { unstable_cache } from "next/cache";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 // 홈페이지에서 관리자가 수정할 수 있는 키와 기본값.
 // 값이 저장되지 않았거나 비워지면 기본값으로 돌아간다.
@@ -47,6 +49,10 @@ export const siteSettingDefaults = {
   "app.name": "화목 · 참나무 장작구이",
   "app.short_name": "화목",
   "app.icon": "/icons/icon-512.png",
+
+  // ── 앱 시작 화면: 설치된 앱을 여는 동안 표시되는 로딩 화면 ──
+  "app.splash.image": "/images/brand/brand-logo-transparent.png",
+  "app.splash.tagline": "참나무 장작의 깊은 향,\n화목의 시간",
 
   // ── 카카오톡 공유: developers.kakao.com 앱의 JavaScript 키 ──
   // 키가 저장되면 쿠폰 페이지에 카카오톡 공유 버튼이 나타난다.
@@ -99,6 +105,17 @@ export const siteSettingKeys = Object.keys(
 ) as SiteSettingKey[];
 
 export type SiteSettings = Record<SiteSettingKey, string>;
+
+export const SITE_SETTINGS_CACHE_TAG = "site-settings";
+
+// 레이아웃·메타데이터가 요청마다 DB를 기다리지 않도록 서버 캐시로 감싼다.
+// 첫 화면(TTFB)이 빨라져 설치형 앱 실행 시 정적 스플래시가 떠 있는 시간이 줄어든다.
+// 관리자 저장(updateSiteSettingsAction)이 태그를 무효화해 즉시 반영된다.
+export const getCachedSiteSettings = unstable_cache(
+  async () => fetchSiteSettings(createAdminClient()),
+  [SITE_SETTINGS_CACHE_TAG],
+  { revalidate: 300, tags: [SITE_SETTINGS_CACHE_TAG] },
+);
 
 export async function fetchSiteSettings(
   client: SupabaseClient,
