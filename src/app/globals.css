@@ -583,6 +583,28 @@ button {
   pointer-events: none;
 }
 
+/* 상단 로딩 라인 — 페이지 이동 시 뜨는 NavigationProgress와 동일한
+   골드→크림 그라데이션·3px·글로우. 하이드레이션 전에도 동작해야 하므로
+   CSS 애니메이션으로 차오르는 느낌만 낸다 (iOS 상태바는 safe-area 보정). */
+.hm-splash-bar {
+  position: absolute;
+  left: 0;
+  top: env(safe-area-inset-top, 0px);
+  height: 3px;
+  width: 6%;
+  border-radius: 0 9999px 9999px 0;
+  background: linear-gradient(90deg, var(--hm-accent-gold), var(--hm-primary));
+  box-shadow: 0 0 12px rgba(247, 230, 193, 0.55);
+  animation: hm-splash-load 6s cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+}
+
+/* 사라질 때는 끝까지 채워 완료된 느낌을 준다 */
+#hm-splash.hm-splash-leave .hm-splash-bar {
+  animation: none;
+  width: 100%;
+  transition: width 200ms ease-out;
+}
+
 .hm-splash-inner {
   display: grid;
   justify-items: center;
@@ -655,6 +677,18 @@ button {
   animation-delay: 0.36s;
 }
 
+@keyframes hm-splash-load {
+  0% {
+    width: 6%;
+  }
+  55% {
+    width: 62%;
+  }
+  100% {
+    width: 92%;
+  }
+}
+
 @keyframes hm-splash-breathe {
   0%,
   100% {
@@ -714,6 +748,12 @@ button {
   .hm-splash-ring {
     animation: none;
     opacity: 0.25;
+  }
+
+  .hm-splash-bar {
+    animation: none;
+    width: 60%;
+    opacity: 0.7;
   }
 
   @keyframes hm-splash-soft-pulse {
