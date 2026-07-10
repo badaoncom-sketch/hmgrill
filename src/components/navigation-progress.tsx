@@ -103,8 +103,10 @@ export function NavigationProgress() {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 top-0 z-[100] h-[3px]">
+      {/* 그라데이션을 화면 폭 기준(100vw)으로 고정해, 바가 짧은 초반에도
+          왼쪽은 항상 골드로 시작하고 밝은 크림 끝은 완료 직전에만 보인다. */}
       <div
-        className="h-full rounded-r-full bg-[linear-gradient(90deg,var(--hm-accent-gold),var(--hm-primary))] shadow-[0_0_12px_rgba(247,230,193,.55)] transition-[width] duration-300 ease-out"
+        className="h-full rounded-r-full bg-[linear-gradient(90deg,var(--hm-accent-gold),var(--hm-primary))] bg-no-repeat [background-size:100vw_100%] shadow-[0_0_12px_rgba(184,130,30,.55)] transition-[width] duration-300 ease-out"
         style={{ width: `${progress}%` }}
       />
     </div>

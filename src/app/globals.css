@@ -585,7 +585,9 @@ button {
 
 /* 상단 로딩 라인 — 페이지 이동 시 뜨는 NavigationProgress와 동일한
    골드→크림 그라데이션·3px·글로우. 하이드레이션 전에도 동작해야 하므로
-   CSS 애니메이션으로 차오르는 느낌만 낸다 (iOS 상태바는 safe-area 보정). */
+   CSS 애니메이션으로 차오르는 느낌만 낸다 (iOS 상태바는 safe-area 보정).
+   그라데이션은 화면 폭 기준으로 고정해(100vw) 바가 짧을 때도 왼쪽은
+   항상 골드로 시작하고, 끝(흰색 크림)은 다 채워질 때만 보이게 한다. */
 .hm-splash-bar {
   position: absolute;
   left: 0;
@@ -594,7 +596,9 @@ button {
   width: 6%;
   border-radius: 0 9999px 9999px 0;
   background: linear-gradient(90deg, var(--hm-accent-gold), var(--hm-primary));
-  box-shadow: 0 0 12px rgba(247, 230, 193, 0.55);
+  background-size: 100vw 100%;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 12px rgba(184, 130, 30, 0.55);
   animation: hm-splash-load 6s cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
 }
 
