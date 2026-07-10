@@ -52,7 +52,7 @@ export function AppSplash({
   imageSrc: string;
   tagline: string;
 }) {
-  const html = `<div id="hm-splash" aria-hidden="true"><span class="hm-splash-bar"></span><div class="hm-splash-inner"><div class="hm-splash-emblem"><span class="hm-splash-ring"></span><span class="hm-splash-ring hm-splash-ring-2"></span><img src="${escapeHtml(imageSrc)}" alt="" class="hm-splash-logo" /></div><p class="hm-splash-tagline hm-serif">${escapeHtml(tagline)}</p><span class="hm-splash-dots"><i></i><i></i><i></i></span></div></div><script>${HIDE_SCRIPT}</script>`;
+  const html = `<div id="hm-splash" aria-hidden="true"><span class="hm-splash-bar"></span><div class="hm-splash-inner"><div class="hm-splash-emblem"><img src="${escapeHtml(imageSrc)}" alt="" class="hm-splash-logo" /></div><p class="hm-splash-tagline hm-serif">${escapeHtml(tagline)}</p><span class="hm-splash-dots"><i></i><i></i><i></i></span></div></div><script>${HIDE_SCRIPT}</script>`;
 
   return (
     <div suppressHydrationWarning dangerouslySetInnerHTML={{ __html: html }} />
