@@ -15,6 +15,8 @@ export type GuestClaimQrState = {
   claimUrl?: string;
   qrDataUrl?: string;
   expiresAt?: string;
+  // 서버 기준 남은 초 — 계산대 기기 시계가 어긋나도 카운트다운이 틀어지지 않게 한다.
+  ttlSeconds?: number;
   issueName?: string;
   amount?: number;
 };
@@ -92,6 +94,10 @@ export async function createGuestClaimQrAction(
     claimUrl,
     qrDataUrl,
     expiresAt: String(expiresAt),
+    ttlSeconds: Math.max(
+      0,
+      Math.round((new Date(String(expiresAt)).getTime() - Date.now()) / 1000),
+    ),
     issueName: issue?.name ?? "쿠폰",
     amount: issue?.amount ?? 0,
   };

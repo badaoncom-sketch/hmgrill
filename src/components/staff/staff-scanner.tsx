@@ -994,23 +994,36 @@ function GuestGrantOverlay({
   const [remaining, setRemaining] = useState(300);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // QR 유효시간 카운트다운 + 손님 수령 감지 폴링
+  const expired = state.ok && !claimed && remaining <= 0;
+
+  // QR 유효시간 카운트다운 — 만료 판정은 서버가 내려준 남은 초(ttlSeconds) 기준.
+  // 기기 시계가 서버와 어긋나 있어도 새 QR이 즉시 만료로 표시되는 일이 없다.
   useEffect(() => {
     if (!state.ok || !state.claimToken || claimed) return;
 
-    const expiry = state.expiresAt ? new Date(state.expiresAt).getTime() : 0;
-    const tick = setInterval(() => {
-      setRemaining(Math.max(0, Math.round((expiry - Date.now()) / 1000)));
-    }, 1000);
-    const poll = setInterval(async () => {
-      const result = await checkGuestClaimAction(state.claimToken as string);
-      if (result.claimed) setClaimed(true);
-    }, 2500);
-    return () => {
-      clearInterval(tick);
-      clearInterval(poll);
-    };
+    const deadline = Date.now() + (state.ttlSeconds ?? 300) * 1000;
+    const update = () =>
+      setRemaining(Math.max(0, Math.round((deadline - Date.now()) / 1000)));
+    // 새 QR이 도착하면 다음 틱을 기다리지 않고 만료 표시를 바로 걷어낸다.
+    update();
+    const tick = setInterval(update, 1000);
+    return () => clearInterval(tick);
   }, [state, claimed]);
+
+  // 손님 수령 감지 폴링 — 만료된 QR은 수령될 수 없으므로 만료되면 중단한다.
+  useEffect(() => {
+    if (!state.ok || !state.claimToken || claimed || expired) return;
+
+    const poll = setInterval(async () => {
+      try {
+        const result = await checkGuestClaimAction(state.claimToken as string);
+        if (result.claimed) setClaimed(true);
+      } catch {
+        // 일시적인 네트워크 오류는 다음 폴링에서 다시 시도한다.
+      }
+    }, 2500);
+    return () => clearInterval(poll);
+  }, [state, claimed, expired]);
 
   // 발급 완료 후 잠시 보여주고 자동으로 닫는다.
   useEffect(() => {
@@ -1020,8 +1033,6 @@ function GuestGrantOverlay({
       if (closeTimer.current) clearTimeout(closeTimer.current);
     };
   }, [claimed, onClose]);
-
-  const expired = state.ok && !claimed && remaining <= 0;
 
   return (
     <div className="fixed inset-0 z-[70] grid place-items-center p-4">
@@ -1079,6 +1090,11 @@ function GuestGrantOverlay({
                   </span>
                 </button>
               ))}
+              {issues.length === 0 ? (
+                <p className="rounded-[16px] border border-white/10 bg-black/25 px-4 py-6 text-sm font-semibold text-white/55">
+                  지금 발급할 수 있는 쿠폰이 없습니다. 쿠폰 발행 상태를 확인해 주세요.
+                </p>
+              ) : null}
             </div>
             {isPending ? (
               <p className="text-xs font-semibold text-white/55">QR 생성 중...</p>
@@ -1099,9 +1115,13 @@ function GuestGrantOverlay({
                 width={420}
                 height={420}
                 unoptimized
-                className={`h-auto w-full ${expired ? "opacity-20" : ""}`}
+                className={`h-auto w-full ${expired || isPending ? "opacity-20" : ""}`}
               />
-              {expired ? (
+              {isPending ? (
+                <p className="absolute inset-0 grid place-items-center text-sm font-extrabold text-[#0d0d0d]">
+                  새 QR 생성 중...
+                </p>
+              ) : expired ? (
                 <p className="absolute inset-0 grid place-items-center text-sm font-extrabold text-[#0d0d0d]">
                   QR이 만료되었습니다
                 </p>
@@ -1111,9 +1131,11 @@ function GuestGrantOverlay({
               손님 휴대폰 카메라로 QR을 스캔해 주세요
             </p>
             <p className="text-xs font-semibold text-white/45">
-              {expired
-                ? "새 QR을 생성해 주세요"
-                : `1회용 QR · ${Math.floor(remaining / 60)}분 ${remaining % 60}초 후 만료`}
+              {isPending
+                ? "새 QR을 만들고 있어요..."
+                : expired
+                  ? "새 QR을 생성해 주세요"
+                  : `1회용 QR · ${Math.floor(remaining / 60)}분 ${remaining % 60}초 후 만료`}
             </p>
             <form action={formAction}>
               <input
